@@ -10,7 +10,6 @@ extern Owl::Application* CreateApplication(Owl::ApplicationCommandLineArgs args)
 
 int main(int argc, char** argv)
 {
-
 	OWL_PROFILE_BEGIN_SESSION("Startup", "OwlProfile-Startup.json");
 	Owl::Log::Initialize();
 	Owl::Memory::Initialize();

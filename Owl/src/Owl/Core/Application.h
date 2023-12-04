@@ -43,8 +43,8 @@ namespace Owl
 		Application(ApplicationSpecification pSpecification);
 		virtual ~Application();
 
-		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, MEMORY_TAG_APPLICATION); }
-		void operator delete(void* pBlock){ OWL_FREE(pBlock, sizeof(pBlock), MEMORY_TAG_APPLICATION); }
+		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, MemoryTagApplication); }
+		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(pBlock), MemoryTagApplication); }
 
 		void InitRenderer();
 
@@ -61,7 +61,7 @@ namespace Owl
 		static Application& Get() { return *s_Instance; }
 
 	protected:
-		static constexpr Version k_EngineVersion{0, 1, 0};
+		/*static constexpr Version k_EngineVersion{0, 1, 0};
 		static constexpr std::string k_EngineName = "Owl Engine";
 
 		static constexpr Version k_ApplicationVersion{0, 1, 0};
@@ -71,14 +71,14 @@ namespace Owl
 
 		Renderer::Vulkan::Camera m_MainCamera{};
 		//private:
+		Scope<Window> m_Window;*/
 		ApplicationSpecification m_Specification;
-		Scope<Window> m_Window;
 
-		bool m_Running = true;
+		bool m_IsRunning = true;
 		bool m_IsSuspended = false;
 		float m_LastFrameTime = 0.0f;
 
-		Scope<Renderer::Vulkan::Api> m_VulkanApi;
+		/*Scope<Renderer::Vulkan::Api> m_VulkanApi;
 		std::vector<Scope<Renderer::Vulkan::Buffer>> m_UboBuffers{Renderer::Vulkan::SwapChain::k_MaxFramesInFlight};
 		std::vector<VkDescriptorSet> globalDescriptorSets{Renderer::Vulkan::SwapChain::k_MaxFramesInFlight};
 		Scope<Renderer::Vulkan::DescriptorSetLayout> globalSetLayout;
@@ -86,7 +86,7 @@ namespace Owl
 		Ref<RenderSystem2D> m_RenderSystem2D;
 
 	protected:
-		Ecs::World m_World;
+		Ecs::World m_World;*/
 
 	private:
 		static Application* s_Instance;

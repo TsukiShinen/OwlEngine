@@ -4,7 +4,7 @@
 namespace Owl
 {
 	Memory::Stats Memory::s_Stats;
-	
+
 	void Memory::Initialize()
 	{
 		OWL_PROFILE_FUNCTION();
@@ -19,7 +19,7 @@ namespace Owl
 	void* Memory::OwlAllocate(const uint64_t pSize, const MemoryTag pTag)
 	{
 		OWL_PROFILE_FUNCTION();
-		if (pTag == MEMORY_TAG_UNKNOWN)
+		if (pTag == MemoryTagUnknown)
 			OWL_CORE_WARN("OWL_ALLOCATE called using MEMORY_TAG_UNKNOWN. Re-class this allocation");
 
 		s_Stats.TotalAllocated += pSize;
@@ -34,7 +34,7 @@ namespace Owl
 	void Memory::OwlFree(void* pBlock, const uint64_t pSize, const MemoryTag pTag)
 	{
 		OWL_PROFILE_FUNCTION();
-		if (pTag == MEMORY_TAG_UNKNOWN)
+		if (pTag == MemoryTagUnknown)
 			OWL_CORE_WARN("OWL_FREE called using MEMORY_TAG_UNKNOWN. Re-class this allocation");
 
 		s_Stats.TotalAllocated -= pSize;

@@ -3,16 +3,17 @@
 
 namespace Owl
 {
-	enum SystemEventCode {
-		EVENT_CODE_APPLICATION_QUIT = 0x01,
-		EVENT_CODE_KEY_PRESSED = 0x02,
-		EVENT_CODE_KEY_RELEASED = 0x03,
-		EVENT_CODE_BUTTON_PRESSED = 0x04,
-		EVENT_CODE_BUTTON_RELEASED = 0x05,
-		EVENT_CODE_MOUSE_MOVED = 0x06,
-		EVENT_CODE_MOUSE_WHEEL = 0x07,
-		EVENT_CODE_RESIZED = 0x08,
+	enum SystemEventCode
+	{
+		EventCodeApplicationQuit = 0x01,
+		EventCodeKeyPressed = 0x02,
+		EventCodeKeyReleased = 0x03,
+		EventCodeMouseButtonPressed = 0x04,
+		EventCodeMouseButtonReleased = 0x05,
+		EventCodeMouseMoved = 0x06,
+		EventCodeMouseWheel = 0x07,
+		EventCodeResized = 0x08,
 
-		MAX_EVENT_CODE = 0xFF
+		MaxEventCode = 0xFF
 	};
 }

@@ -4,6 +4,7 @@
 #include "Owl/ECS/Components/SpriteComponent.h"
 #include "Owl/ECS/Components/TransformComponent.h"
 #include "Owl/Memory/Memory.h"
+#include "Owl/Platform/InputManager.h"
 
 namespace Owl
 {
@@ -22,6 +23,7 @@ namespace Owl
 
 		Platform::Initialize(WindowProps(pSpecification.Name.c_str(), 1280, 700, 100, 100));
 		EventManager::Initialize();
+		InputManager::Initialize();
 
 		//m_Window = CreateScope<Window>(m_Width, m_Height, k_ApplicationName);
 
@@ -31,13 +33,14 @@ namespace Owl
 	Application::~Application()
 	{
 		OWL_PROFILE_FUNCTION();
+		InputManager::Shutdown();
 		EventManager::Shutdown();
 		Platform::Shutdown();
 	}
 
 	void Application::InitRenderer()
 	{
-		OWL_PROFILE_FUNCTION();
+		OWL_PROFILE_FUNCTION(); /*
 		m_VulkanApi = CreateScope<Renderer::Vulkan::Api>(m_Window);
 
 		for (int i = 0; i < m_UboBuffers.size(); i++)
@@ -61,18 +64,18 @@ namespace Owl
 				.Build(globalDescriptorSets[i]);
 		}
 
-		m_MainCamera.SetViewTarget(glm::vec3{0.f}, glm::vec3{.0f, .0f, 2.5f});
+		m_MainCamera.SetViewTarget(glm::vec3{0.f}, glm::vec3{.0f, .0f, 2.5f});*/
 	}
 
 	void Application::Close()
 	{
-		m_Running = false;
+		m_IsRunning = false;
 	}
 
 	void Application::InitializeEcs()
 	{
 		OWL_PROFILE_FUNCTION();
-		m_World.Initialize();
+		/*m_World.Initialize();
 
 		m_World.RegisterComponent<TransformComponent>();
 		m_World.RegisterComponent<SpriteComponent>();
@@ -85,7 +88,7 @@ namespace Owl
 		m_World.SetSystemSignature<RenderSystem2D>(renderSignature);
 
 		m_RenderSystem2D->SetPipeLine(m_VulkanApi->GetDevice(), m_VulkanApi->GetRenderer().GetSwapChainRenderPass(),
-		                              globalSetLayout->GetDescriptorSetLayout());
+		                              globalSetLayout->GetDescriptorSetLayout());*/
 	}
 
 	void Application::InitializeEntities()
@@ -102,50 +105,55 @@ namespace Owl
 		OWL_PROFILE_FUNCTION();
 		OWL_CORE_INFO(Memory::OwlGetMemoryUsageString());
 
-		while (true)
+		while (m_IsRunning)
 		{
-			m_Platform->PumpMessages();
+			if (!Platform::Get()->PumpMessages())
+				m_IsRunning = false;
+
+			if (m_IsSuspended)
+				continue;
+
+			InputManager::Get()->Update();
 		}
-
-		return;
-		auto currentTime = std::chrono::high_resolution_clock::now();
-		while (!m_Window->ShouldClose())
-		{
-			OWL_PROFILE_SCOPE("RunLoop");
-
-			glfwPollEvents();
-
-			auto newTime = std::chrono::high_resolution_clock::now();
-			m_LastFrameTime = std::chrono::duration<float>(newTime - currentTime).count();
-			currentTime = newTime;
-
-			const float aspect = m_VulkanApi->GetRenderer().GetAspectRatio();
-			m_MainCamera.SetPerspectiveProjection(glm::radians(45.f), aspect, 0.1f, 100.f);
-			PlaySystem();
-
-			OWL_PROFILE_SCOPE("Render");
-			if (const auto commandBuffer = m_VulkanApi->GetRenderer().BeginFrame())
-			{
-				const int frameIndex = m_VulkanApi->GetRenderer().GetFrameIndex();
-				Renderer::Vulkan::FrameInfo frameInfo{
-					frameIndex, m_LastFrameTime, commandBuffer, m_MainCamera, globalDescriptorSets[frameIndex]
-				};
-
-				Renderer::Vulkan::GlobalUbo ubo{};
-				ubo.Projection = m_MainCamera.GetProjection();
-				ubo.View = m_MainCamera.GetView();
-				ubo.InverseView = m_MainCamera.GetInverseView();
-				m_UboBuffers[frameIndex]->WriteToBuffer(&ubo);
-				m_UboBuffers[frameIndex]->Flush();
-
-				m_VulkanApi->GetRenderer().BeginSwapChainRenderPass(commandBuffer);
-				m_RenderSystem2D->Render(frameInfo);
-				m_VulkanApi->GetRenderer().EndSwapChainRenderPass(commandBuffer);
-
-				m_VulkanApi->GetRenderer().EndFrame();
-			}
-		}
-
-		vkDeviceWaitIdle(m_VulkanApi->GetDevice().GetDevice());
+		/*
+				auto currentTime = std::chrono::high_resolution_clock::now();
+				while (!m_Window->ShouldClose())
+				{
+					OWL_PROFILE_SCOPE("RunLoop");
+		
+					glfwPollEvents();
+		
+					auto newTime = std::chrono::high_resolution_clock::now();
+					m_LastFrameTime = std::chrono::duration<float>(newTime - currentTime).count();
+					currentTime = newTime;
+		
+					const float aspect = m_VulkanApi->GetRenderer().GetAspectRatio();
+					m_MainCamera.SetPerspectiveProjection(glm::radians(45.f), aspect, 0.1f, 100.f);
+					PlaySystem();
+		
+					OWL_PROFILE_SCOPE("Render");
+					if (const auto commandBuffer = m_VulkanApi->GetRenderer().BeginFrame())
+					{
+						const int frameIndex = m_VulkanApi->GetRenderer().GetFrameIndex();
+						Renderer::Vulkan::FrameInfo frameInfo{
+							frameIndex, m_LastFrameTime, commandBuffer, m_MainCamera, globalDescriptorSets[frameIndex]
+						};
+		
+						Renderer::Vulkan::GlobalUbo ubo{};
+						ubo.Projection = m_MainCamera.GetProjection();
+						ubo.View = m_MainCamera.GetView();
+						ubo.InverseView = m_MainCamera.GetInverseView();
+						m_UboBuffers[frameIndex]->WriteToBuffer(&ubo);
+						m_UboBuffers[frameIndex]->Flush();
+		
+						m_VulkanApi->GetRenderer().BeginSwapChainRenderPass(commandBuffer);
+						m_RenderSystem2D->Render(frameInfo);
+						m_VulkanApi->GetRenderer().EndSwapChainRenderPass(commandBuffer);
+		
+						m_VulkanApi->GetRenderer().EndFrame();
+					}
+				}
+		
+				vkDeviceWaitIdle(m_VulkanApi->GetDevice().GetDevice());*/
 	}
 }

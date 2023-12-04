@@ -44,27 +44,27 @@ namespace Owl
 		const uint32_t windowWidth = pWindowProps.Width + borderRect.right - borderRect.left;
 		const uint32_t windowHeight = pWindowProps.Height + borderRect.bottom - borderRect.left;
 
-		m_Hwindow = CreateWindowExA(windowExStyle, "owl_window_class", m_WindowProps.ApplicationName, windowStyle,
+		m_HWindow = CreateWindowExA(windowExStyle, "owl_window_class", m_WindowProps.ApplicationName, windowStyle,
 		                            windowX, windowY, windowWidth, windowHeight,
 		                            nullptr, nullptr, m_HInstance, nullptr);
 
-		if (m_Hwindow == nullptr)
+		if (m_HWindow == nullptr)
 			throw std::runtime_error("[PlatformWindows] Failed to create window!");
 
-		ShowWindow(m_Hwindow, SW_SHOW);
+		ShowWindow(m_HWindow, SW_SHOW);
 	}
 
 	Windows::~Windows()
 	{
 		OWL_PROFILE_FUNCTION();
-		if (m_Hwindow)
+		if (m_HWindow)
 		{
-			DestroyWindow(m_Hwindow);
-			m_Hwindow = nullptr;
+			DestroyWindow(m_HWindow);
+			m_HWindow = nullptr;
 		}
 	}
 
-	void Windows::PumpMessages()
+	bool Windows::PumpMessages()
 	{
 		OWL_PROFILE_FUNCTION();
 		MSG message;
@@ -74,6 +74,8 @@ namespace Owl
 			TranslateMessage(&message);
 			DispatchMessageA(&message);
 		}
+
+		return true;
 	}
 
 	LRESULT Windows::ProcessMessages(const HWND pHWindow, const uint32_t pMessage, const WPARAM pWParam,

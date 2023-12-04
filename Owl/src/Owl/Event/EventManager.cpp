@@ -72,7 +72,7 @@ namespace Owl
 		OWL_CORE_ASSERT(s_Instance, "[EventManager] EventManager must be Initialize to Invoke an event")
 
 		if (m_Registered[pCode].Events == nullptr)
-			OWL_CORE_WARN("[EventManager] Try to unregister a listener from an event empty.");
+			return;
 
 		const uint64_t registeredSize = m_Registered[pCode].Events->size();
 		for (uint64_t i = 0; i < registeredSize; i++)

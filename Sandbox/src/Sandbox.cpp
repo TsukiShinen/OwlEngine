@@ -21,17 +21,15 @@ public:
 	}
 
 	void InitializeEcs() override
-	{
-		return;
+	{/*
 		Application::InitializeEcs();
 
 		m_World.RegisterComponent<KeyboardInputComponent>();
-		m_World.RegisterComponent<MovementComponent>();
+		m_World.RegisterComponent<MovementComponent>();*/
 	}
 
 	void InitializeEntities() override
-	{
-		return;
+	{/*
 		Application::InitializeEntities();
 
 		m_CameraEntity = m_World.CreateEntity();
@@ -51,19 +49,19 @@ public:
 				                     glm::vec2{1, 1},
 				                     glm::vec2{0.5f, 0.5f},
 				                     "Assets/Textures/texture.jpg")
-		                     });
+		                     });*/
 	}
 
 	void PlaySystem() override
 	{
 		Application::PlaySystem();
-
+/*
 		const auto& cameraTransform = m_World.GetComponent<Owl::TransformComponent>(m_CameraEntity);
-		m_MainCamera.SetViewYxz(cameraTransform.Position, cameraTransform.Rotation);
+		m_MainCamera.SetViewYxz(cameraTransform.Position, cameraTransform.Rotation);*/
 	}
 
 private:
-	Owl::Ecs::Entity m_CameraEntity;
+	//Owl::Ecs::Entity m_CameraEntity;
 };
 
 Owl::Application* Owl::CreateApplication(ApplicationCommandLineArgs args)

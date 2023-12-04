@@ -3,9 +3,11 @@
 
 namespace Owl
 {
-	typedef struct EventContext {
+	using event_context = struct EventContext
+	{
 		// 128 bytes
-		union {
+		union
+		{
 			int64_t i64[2];
 			uint64_t u64[2];
 			glm::float64_t f64[2];
@@ -17,24 +19,24 @@ namespace Owl
 			int16_t i16[8];
 			uint16_t u16[8];
 
+			glm::vec3 vec3[12];
+
 			int8_t i8[16];
 			uint8_t u8[16];
 			double d[16];
+			glm::vec2 vec2[16];
 
 			char c[16];
 
 			float f[32];
 		} Data;
-	} event_context;
+	};
 
-	typedef bool (*Event)(uint16_t pCode, void* pSender, void* pListener, EventContext pData);
-	
+	using Event = bool(*)(uint16_t pCode, void* pSender, void* pListener, EventContext pData);
+
 	class EventManager
 	{
 	public:
-		static void Initialize();
-		static void Shutdown();
-
 		void Register(uint16_t pCode, void* pListener, Event pEvent);
 		void UnRegister(uint16_t pCode, const void* pListener, Event pEvent) const;
 		void Invoke(uint16_t pCode, void* pSender, const EventContext& pData) const;
@@ -42,6 +44,9 @@ namespace Owl
 		static EventManager* Get() { return s_Instance; }
 
 	private:
+		static void Initialize();
+		static void Shutdown();
+
 		struct RegisteredEvent
 		{
 			void* Listener;
@@ -58,5 +63,6 @@ namespace Owl
 		EventCodeEntry m_Registered[k_MaxMessageCodes];
 
 		static EventManager* s_Instance;
+		friend class Application;
 	};
 }

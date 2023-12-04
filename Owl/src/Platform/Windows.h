@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <cstdint>
 #include <windows.h>
 
 #include "Owl/Platform/Platform.h"
@@ -15,15 +16,15 @@ namespace Owl
 		Windows(const Windows&) = delete;
 		Windows& operator=(const Windows&) = delete;
 
-		void PumpMessages() override;
+	private:
+		bool PumpMessages() override;
 
 		void Sleep(const unsigned long pMilliseconds) override { ::Sleep(pMilliseconds); }
 
-	private:
 		static LRESULT CALLBACK ProcessMessages(HWND pHWindow, uint32_t pMessage, WPARAM pWParam, LPARAM pLParam);
 
 		HINSTANCE m_HInstance;
-		HWND m_Hwindow;
+		HWND m_HWindow;
 
 		WindowProps m_WindowProps;
 	};
