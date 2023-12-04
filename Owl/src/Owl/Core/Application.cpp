@@ -17,13 +17,13 @@ namespace Owl
 		OWL_ASSERT(!s_Instance, "Application already exist!")
 		s_Instance = this;
 
-		EventManager::Initialize();
-
 		if (!m_Specification.WorkingDirectory.empty())
 			std::filesystem::current_path(m_Specification.WorkingDirectory);
 
+		Platform::Initialize(WindowProps(pSpecification.Name.c_str(), 1280, 700, 100, 100));
+		EventManager::Initialize();
+
 		//m_Window = CreateScope<Window>(m_Width, m_Height, k_ApplicationName);
-		m_Platform = Platform::Create(WindowProps(pSpecification.Name.c_str(), 1280, 700, 100, 100));
 
 		//InitRenderer();
 	}
@@ -31,8 +31,8 @@ namespace Owl
 	Application::~Application()
 	{
 		OWL_PROFILE_FUNCTION();
-		EventManager::ShutDown();
-		delete m_Platform;
+		EventManager::Shutdown();
+		Platform::Shutdown();
 	}
 
 	void Application::InitRenderer()
@@ -67,7 +67,6 @@ namespace Owl
 	void Application::Close()
 	{
 		m_Running = false;
-		delete m_Platform;
 	}
 
 	void Application::InitializeEcs()

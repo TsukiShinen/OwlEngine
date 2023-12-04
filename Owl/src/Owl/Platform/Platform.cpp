@@ -5,13 +5,19 @@
 
 namespace Owl
 {
-	Platform* Platform::Create(const WindowProps& pWindowProps)
+	Platform* Platform::s_Instance;
+	
+	void Platform::Initialize(const WindowProps& pWindowProps)
 	{
 #ifdef OWL_PLATFORM_WINDOWS
-		return new Windows(pWindowProps);
+		s_Instance =  new Windows(pWindowProps);
 #else
 		throw std::runtime_error("Can't find platform!");
-		return nullptr;
 #endif
+	}
+
+	void Platform::Shutdown()
+	{
+		delete s_Instance;
 	}
 }

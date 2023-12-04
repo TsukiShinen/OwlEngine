@@ -7,13 +7,15 @@ namespace Owl
 
 	void EventManager::Initialize()
 	{
+		OWL_PROFILE_FUNCTION();
 		OWL_CORE_ASSERT(!s_Instance, "[EventManager] EventManager is already Initialize")
 
 		s_Instance = new EventManager();
 	}
 
-	void EventManager::ShutDown()
+	void EventManager::Shutdown()
 	{
+		OWL_PROFILE_FUNCTION();
 		for (const auto& element : s_Instance->m_Registered)
 		{
 			delete element.Events;
@@ -22,6 +24,7 @@ namespace Owl
 
 	void EventManager::Register(const uint16_t pCode, void* pListener, const Event pEvent)
 	{
+		OWL_PROFILE_FUNCTION();
 		OWL_CORE_ASSERT(s_Instance, "[EventManager] EventManager must be Initialize to Register an event")
 
 		if (m_Registered[pCode].Events == nullptr)
@@ -43,6 +46,7 @@ namespace Owl
 
 	void EventManager::UnRegister(const uint16_t pCode, const void* pListener, const Event pEvent) const
 	{
+		OWL_PROFILE_FUNCTION();
 		OWL_CORE_ASSERT(s_Instance, "[EventManager] EventManager must be Initialize to UnRegister an event")
 
 		if (m_Registered[pCode].Events == nullptr)
@@ -64,6 +68,7 @@ namespace Owl
 
 	void EventManager::Invoke(const uint16_t pCode, void* pSender, const EventContext& pData) const
 	{
+		OWL_PROFILE_FUNCTION();
 		OWL_CORE_ASSERT(s_Instance, "[EventManager] EventManager must be Initialize to Invoke an event")
 
 		if (m_Registered[pCode].Events == nullptr)

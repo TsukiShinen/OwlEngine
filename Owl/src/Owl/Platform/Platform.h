@@ -16,13 +16,15 @@ namespace Owl
 	class Platform
 	{
 	public:
+		static void Initialize(const WindowProps& pWindowProps);
+		static void Shutdown();
+		
 		virtual void PumpMessages() = 0;
 
 		virtual void Sleep(unsigned long pMilliseconds) = 0;
-
-		static Platform* Create(const WindowProps& pWindowProps);
-
 	private:
+		static Platform* s_Instance;
+		
 		friend class Memory;
 	};
 }

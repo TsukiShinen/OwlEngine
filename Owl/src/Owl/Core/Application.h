@@ -61,8 +61,6 @@ namespace Owl
 		static Application& Get() { return *s_Instance; }
 
 	protected:
-		Platform* m_Platform;
-
 		static constexpr Version k_EngineVersion{0, 1, 0};
 		static constexpr std::string k_EngineName = "Owl Engine";
 

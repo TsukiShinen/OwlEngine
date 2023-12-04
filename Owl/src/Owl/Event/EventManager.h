@@ -33,7 +33,7 @@ namespace Owl
 	{
 	public:
 		static void Initialize();
-		static void ShutDown();
+		static void Shutdown();
 
 		void Register(uint16_t pCode, void* pListener, Event pEvent);
 		void UnRegister(uint16_t pCode, const void* pListener, Event pEvent) const;
