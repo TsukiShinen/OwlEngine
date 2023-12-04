@@ -19,11 +19,13 @@
 #include <sstream>
 #include <array>
 #include <vector>
+#include "Owl/Container/DArray.h"
 #include <unordered_map>
 #include <unordered_set>
 
 #include "Owl/Core/Base.h"
 
+#include "Owl/Event/EventManager.h"
 #include "Owl/Core/Utils.h"
 
 #include "Owl/Debug/Instrumentor.h"

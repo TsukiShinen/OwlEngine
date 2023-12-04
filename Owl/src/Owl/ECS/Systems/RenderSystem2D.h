@@ -6,7 +6,7 @@
 
 namespace Owl
 {
-	class RenderSystem2D : public System
+	class RenderSystem2D : public Ecs::System
 	{
 	public:
 		class Pipeline
@@ -29,7 +29,7 @@ namespace Owl
 			VkPipelineLayout m_PipelineLayout;
 		};
 
-		explicit RenderSystem2D(World* pWorld)
+		explicit RenderSystem2D(Ecs::World* pWorld)
 			: System(pWorld)
 		{
 		}

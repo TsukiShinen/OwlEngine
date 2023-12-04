@@ -6,7 +6,7 @@
 #include "ComponentArray.h"
 #include "Ecs.h"
 
-namespace Owl
+namespace Owl::Ecs
 {
 	class ComponentManager
 	{

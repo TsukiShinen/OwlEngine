@@ -5,7 +5,7 @@
 #include "../Components/KeyboardInputComponent.h"
 #include "../Components/MovementComponent.h"
 
-class MovementControllerSystem : public Owl::System
+class MovementControllerSystem : public Owl::Ecs::System
 {
 public:
 	void MoveInPlaneXZ(GLFWwindow* pWindow, float pDeltaTime)

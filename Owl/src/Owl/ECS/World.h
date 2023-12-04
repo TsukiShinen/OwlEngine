@@ -3,10 +3,9 @@
 
 #include "ComponentManager.h"
 #include "EntityManager.h"
-#include "EventManager.h"
 #include "SystemManager.h"
 
-namespace Owl
+namespace Owl::Ecs
 {
 	class World
 	{
@@ -73,23 +72,9 @@ namespace Owl
 			m_SystemManager->SetSignature<T>(pSignature);
 		}
 
-		template <class T, class EventType>
-		void SubscribeEvent(T* pInstance, void (T::*pMemberFunction)(EventType*))
-		{
-			m_EventManager->Subscribe(pInstance, pMemberFunction);
-		}
-
-		template <typename EventType>
-		void PublishEvent(EventType* pEvent)
-		{
-			m_EventManager->Publish(pEvent);
-		}
-
 	private:
 		std::unique_ptr<ComponentManager> m_ComponentManager;
 		std::unique_ptr<EntityManager> m_EntityManager;
 		std::unique_ptr<SystemManager> m_SystemManager;
-
-		std::unique_ptr<EventManager> m_EventManager;
 	};
 }

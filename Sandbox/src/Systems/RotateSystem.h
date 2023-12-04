@@ -3,7 +3,7 @@
 #include "Owl/ECS/World.h"
 #include "Owl/ECS/Components/TransformComponent.h"
 
-class RotateSystem : public Owl::System
+class RotateSystem : public Owl::Ecs::System
 {
 public:
 	void Rotate()

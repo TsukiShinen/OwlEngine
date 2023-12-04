@@ -63,7 +63,7 @@ public:
 	}
 
 private:
-	Owl::Entity m_CameraEntity;
+	Owl::Ecs::Entity m_CameraEntity;
 };
 
 Owl::Application* Owl::CreateApplication(ApplicationCommandLineArgs args)

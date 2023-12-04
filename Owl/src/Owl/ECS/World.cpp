@@ -1,7 +1,7 @@
 ﻿#include "opch.h"
 #include "World.h"
 
-namespace Owl
+namespace Owl::Ecs
 {
 	World::~World()
 	{

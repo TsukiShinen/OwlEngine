@@ -6,7 +6,7 @@
 
 namespace Owl
 {
-	class PointLightSystem : public System
+	class PointLightSystem : public Ecs::System
 	{
 	public:
 		class Pipeline
@@ -32,7 +32,7 @@ namespace Owl
 			VkPipelineLayout m_PipelineLayout;
 		};
 
-		explicit PointLightSystem(World* pWorld)
+		explicit PointLightSystem(Ecs::World* pWorld)
 			: System(pWorld)
 		{
 		}

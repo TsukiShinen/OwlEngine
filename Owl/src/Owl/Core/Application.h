@@ -88,7 +88,7 @@ namespace Owl
 		Ref<RenderSystem2D> m_RenderSystem2D;
 
 	protected:
-		World m_World;
+		Ecs::World m_World;
 
 	private:
 		static Application* s_Instance;

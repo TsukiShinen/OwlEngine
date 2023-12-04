@@ -3,7 +3,7 @@
 
 #include <ranges>
 
-namespace Owl
+namespace Owl::Ecs
 {
 	void SystemManager::EntityDestroyed(const Entity pEntity)
 	{

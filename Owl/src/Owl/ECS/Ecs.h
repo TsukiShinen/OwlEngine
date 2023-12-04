@@ -3,7 +3,7 @@
 #include <set>
 
 
-namespace Owl
+namespace Owl::Ecs
 {
 	class World;
 

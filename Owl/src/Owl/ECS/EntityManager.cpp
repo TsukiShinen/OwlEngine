@@ -1,7 +1,7 @@
 ﻿#include "opch.h"
 #include "EntityManager.h"
 
-namespace Owl
+namespace Owl::Ecs
 {
 	EntityManager::EntityManager()
 		: m_LivingEntityCount(0)

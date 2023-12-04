@@ -3,7 +3,7 @@
 
 #include "Ecs.h"
 
-namespace Owl
+namespace Owl::Ecs
 {
 	class IComponentArray
 	{

@@ -17,6 +17,8 @@ namespace Owl
 		OWL_ASSERT(!s_Instance, "Application already exist!")
 		s_Instance = this;
 
+		EventManager::Initialize();
+
 		if (!m_Specification.WorkingDirectory.empty())
 			std::filesystem::current_path(m_Specification.WorkingDirectory);
 
@@ -29,6 +31,7 @@ namespace Owl
 	Application::~Application()
 	{
 		OWL_PROFILE_FUNCTION();
+		EventManager::ShutDown();
 		delete m_Platform;
 	}
 
@@ -77,7 +80,7 @@ namespace Owl
 
 		m_RenderSystem2D = m_World.RegisterSystem<RenderSystem2D>();
 
-		Signature renderSignature;
+		Ecs::Signature renderSignature;
 		renderSignature.set(m_World.GetComponentType<TransformComponent>());
 		renderSignature.set(m_World.GetComponentType<SpriteComponent>());
 		m_World.SetSystemSignature<RenderSystem2D>(renderSignature);
