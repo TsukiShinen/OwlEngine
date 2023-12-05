@@ -15,7 +15,7 @@ namespace Owl::Renderer::Vulkan
 	class Renderer
 	{
 	public:
-		Renderer(Scope<Window>& pWindow, Device& pDevice);
+		Renderer(Scope<WindowOld>& pWindow, Device& pDevice);
 		~Renderer();
 
 		Device& GetDevice() { return m_Device; }
@@ -49,7 +49,7 @@ namespace Owl::Renderer::Vulkan
 		void FreeCommandBuffers();
 		void RecreateSwapChain();
 
-		Scope<Window>& m_Window;
+		Scope<WindowOld>& m_Window;
 		Device& m_Device;
 		std::unique_ptr<SwapChain> m_SwapChain;
 		std::vector<VkCommandBuffer> m_CommandBuffers;

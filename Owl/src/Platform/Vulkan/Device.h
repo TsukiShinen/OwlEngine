@@ -2,7 +2,7 @@
 #include <optional>
 #include <vector>
 
-#include "Platform/Windows/Window.h"
+#include "Platform/Windows/WindowOld.h"
 
 namespace Owl::Renderer::Vulkan
 {
@@ -28,7 +28,7 @@ namespace Owl::Renderer::Vulkan
 	class Device
 	{
 	public:
-		Device(Scope<Window>& pWindow);
+		Device(Scope<WindowOld>& pWindow);
 		~Device();
 
 		[[nodiscard]] VkDevice GetDevice() const { return m_Device; }
@@ -95,7 +95,7 @@ namespace Owl::Renderer::Vulkan
 		VkInstance m_Instance;
 		VkDebugUtilsMessengerEXT m_DebugMessenger;
 		VkPhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;
-		Scope<Window>& m_Window;
+		Scope<WindowOld>& m_Window;
 		VkCommandPool m_GraphicsCommandPool;
 		VkCommandPool m_TransferCommandPool;
 

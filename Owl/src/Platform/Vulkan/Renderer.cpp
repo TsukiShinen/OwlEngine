@@ -3,7 +3,7 @@
 
 namespace Owl::Renderer::Vulkan
 {
-	Renderer::Renderer(Scope<Window>& pWindow, Device& pDevice)
+	Renderer::Renderer(Scope<WindowOld>& pWindow, Device& pDevice)
 		: m_Window(pWindow), m_Device(pDevice)
 	{
 		RecreateSwapChain();

@@ -1,37 +1,37 @@
 ﻿#include "opch.h"
-#include "Window.h"
+#include "WindowOld.h"
 
 #include <stdexcept>
 
 namespace Owl
 {
-	Window::Window(const int pWidth, const int pHeight, std::string pName)
+	WindowOld::WindowOld(const int pWidth, const int pHeight, std::string pName)
 		: m_Width(pWidth), m_Height(pHeight), m_Name(std::move(pName))
 	{
 		InitializeWindow();
 	}
 
-	Window::~Window()
+	WindowOld::~WindowOld()
 	{
 		glfwDestroyWindow(m_Window);
 		glfwTerminate();
 	}
 
-	void Window::CreateWindowSurface(VkInstance pInstance, VkSurfaceKHR* pSurface)
+	void WindowOld::CreateWindowSurface(VkInstance pInstance, VkSurfaceKHR* pSurface)
 	{
 		if (glfwCreateWindowSurface(pInstance, m_Window, nullptr, pSurface) != VK_SUCCESS)
 			throw std::runtime_error("failed to create window surface");
 	}
 
-	void Window::FramebufferResizeCallback(GLFWwindow* pWindow, const int pWidth, const int pHeight)
+	void WindowOld::FramebufferResizeCallback(GLFWwindow* pWindow, const int pWidth, const int pHeight)
 	{
-		const auto window = static_cast<Window*>(glfwGetWindowUserPointer(pWindow));
+		const auto window = static_cast<WindowOld*>(glfwGetWindowUserPointer(pWindow));
 		window->m_IsFramebufferResized = true;
 		window->m_Width = pWidth;
 		window->m_Height = pHeight;
 	}
 
-	void Window::InitializeWindow()
+	void WindowOld::InitializeWindow()
 	{
 		OWL_PROFILE_FUNCTION();
 		glfwInit();

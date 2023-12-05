@@ -5,11 +5,11 @@
 
 namespace Owl
 {
-	class Window
+	class WindowOld
 	{
 	public:
-		Window(int pWidth, int pHeight, std::string pName);
-		~Window();
+		WindowOld(int pWidth, int pHeight, std::string pName);
+		~WindowOld();
 		void CreateWindowSurface(VkInstance pInstance, VkSurfaceKHR* pSurface);
 
 		[[nodiscard]] VkExtent2D GetExtent() const
@@ -17,8 +17,8 @@ namespace Owl
 			return {static_cast<uint32_t>(m_Width), static_cast<uint32_t>(m_Height)};
 		}
 
-		Window(const Window&) = delete;
-		Window& operator=(const Window&) = delete;
+		WindowOld(const WindowOld&) = delete;
+		WindowOld& operator=(const WindowOld&) = delete;
 
 		[[nodiscard]] bool ShouldClose() const { return glfwWindowShouldClose(m_Window); }
 		[[nodiscard]] bool WasWindowResized() const { return m_IsFramebufferResized; }

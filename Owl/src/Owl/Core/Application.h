@@ -4,10 +4,11 @@
 #include "Owl/Core/Base.h"
 #include "Owl/ECS/World.h"
 #include "Owl/ECS/Systems/RenderSystem2D.h"
+#include "Owl/Events/ApplicationEvent.h"
 #include "Owl/Memory/Memory.h"
-#include "Owl/Platform/Platform.h"
+#include "Owl/Platform/Window.h"
 #include "Platform/Vulkan/Api.h"
-#include "Platform/Windows/Window.h"
+#include "Platform/Windows/WindowOld.h"
 
 namespace Owl
 {
@@ -61,6 +62,11 @@ namespace Owl
 		static Application& Get() { return *s_Instance; }
 
 	protected:
+		virtual void OnEvent(Event& pEvent);
+		
+		bool OnWindowClose(WindowCloseEvent& pEvent);
+		bool OnWindowResize(WindowResizeEvent& pEvent);
+		
 		/*static constexpr Version k_EngineVersion{0, 1, 0};
 		static constexpr std::string k_EngineName = "Owl Engine";
 
@@ -75,7 +81,7 @@ namespace Owl
 		ApplicationSpecification m_Specification;
 
 		bool m_IsRunning = true;
-		bool m_IsSuspended = false;
+		bool m_IsMinimized = false;
 		float m_LastFrameTime = 0.0f;
 
 		/*Scope<Renderer::Vulkan::Api> m_VulkanApi;
@@ -89,6 +95,8 @@ namespace Owl
 		Ecs::World m_World;*/
 
 	private:
+		Scope<Window> m_Window;
+		
 		static Application* s_Instance;
 	};
 

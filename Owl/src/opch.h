@@ -25,7 +25,6 @@
 
 #include "Owl/Core/Base.h"
 
-#include "Owl/Event/EventManager.h"
 #include "Owl/Core/Utils.h"
 
 #include "Owl/Debug/Instrumentor.h"

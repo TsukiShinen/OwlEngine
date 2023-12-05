@@ -11,7 +11,7 @@ namespace Owl::Renderer::Vulkan
 	class Api
 	{
 	public:
-		Api(Scope<Window>& pWindow);
+		Api(Scope<WindowOld>& pWindow);
 		~Api();
 
 		Api(const Api&) = delete;
@@ -23,7 +23,7 @@ namespace Owl::Renderer::Vulkan
 		std::unique_ptr<DescriptorPool>& GetGlobalDescriptorPool() { return m_GlobalPool; }
 
 	private:
-		Scope<Window>& m_Window;
+		Scope<WindowOld>& m_Window;
 		Device m_Device;
 		Renderer m_Renderer;
 

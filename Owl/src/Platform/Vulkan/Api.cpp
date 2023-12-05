@@ -3,7 +3,7 @@
 
 namespace Owl::Renderer::Vulkan
 {
-	Api::Api(Scope<Window>& pWindow)
+	Api::Api(Scope<WindowOld>& pWindow)
 		: m_Window(pWindow), m_Device(m_Window), m_Renderer(m_Window, m_Device)
 	{
 		m_GlobalPool = DescriptorPool::Builder(m_Device)

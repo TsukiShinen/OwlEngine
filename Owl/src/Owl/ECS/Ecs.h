@@ -29,8 +29,4 @@ namespace Owl::Ecs
 		std::set<Entity> m_Entities;
 		World* m_World;
 	};
-
-	struct Event
-	{
-	};
 }

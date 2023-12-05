@@ -3,8 +3,7 @@
 
 #include "Owl/ECS/Components/SpriteComponent.h"
 #include "Owl/ECS/Components/TransformComponent.h"
-#include "Owl/Memory/Memory.h"
-#include "Owl/Platform/InputManager.h"
+#include "Owl/Events/KeyEvent.h"
 
 namespace Owl
 {
@@ -21,9 +20,8 @@ namespace Owl
 		if (!m_Specification.WorkingDirectory.empty())
 			std::filesystem::current_path(m_Specification.WorkingDirectory);
 
-		Platform::Initialize(WindowProps(pSpecification.Name.c_str(), 1280, 700, 100, 100));
-		EventManager::Initialize();
-		InputManager::Initialize();
+		m_Window = Window::Create(WindowProps(pSpecification.Name.c_str(), 1280, 700));
+		m_Window->SetEventCallback(OWL_BIND_EVENT_FN(Application::OnEvent));
 
 		//m_Window = CreateScope<Window>(m_Width, m_Height, k_ApplicationName);
 
@@ -33,9 +31,6 @@ namespace Owl
 	Application::~Application()
 	{
 		OWL_PROFILE_FUNCTION();
-		InputManager::Shutdown();
-		EventManager::Shutdown();
-		Platform::Shutdown();
 	}
 
 	void Application::InitRenderer()
@@ -107,13 +102,12 @@ namespace Owl
 
 		while (m_IsRunning)
 		{
-			if (!Platform::Get()->PumpMessages())
-				m_IsRunning = false;
+			if (!m_IsMinimized)
+			{
+				OWL_PROFILE_SCOPE("RunLoop");
+			}
 
-			if (m_IsSuspended)
-				continue;
-
-			InputManager::Get()->Update();
+			m_Window->Update();
 		}
 		/*
 				auto currentTime = std::chrono::high_resolution_clock::now();
@@ -155,5 +149,42 @@ namespace Owl
 				}
 		
 				vkDeviceWaitIdle(m_VulkanApi->GetDevice().GetDevice());*/
+	}
+
+	void Application::OnEvent(Event& pEvent)
+	{
+		OWL_PROFILE_FUNCTION();
+
+		EventDispatcher dispatcher(pEvent);
+		dispatcher.Dispatch<WindowCloseEvent>(OWL_BIND_EVENT_FN(Application::OnWindowClose));
+		dispatcher.Dispatch<WindowResizeEvent>(OWL_BIND_EVENT_FN(Application::OnWindowResize));
+
+		dispatcher.Dispatch<KeyPressedEvent>([](const KeyPressedEvent& pEvent1)
+		{
+			OWL_CORE_TRACE("Key pressed : " + pEvent1.GetKeyCode());
+			return true;
+		});
+	}
+
+	bool Application::OnWindowClose(WindowCloseEvent& pEvent)
+	{
+		m_IsRunning = false;
+		return true;
+	}
+
+	bool Application::OnWindowResize(WindowResizeEvent& pEvent)
+	{
+		OWL_PROFILE_FUNCTION();
+
+		if (pEvent.GetWidth() == 0 || pEvent.GetHeight() == 0)
+		{
+			m_IsMinimized = true;
+			return false;
+		}
+
+		m_IsMinimized = false;
+		// Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+
+		return false;
 	}
 }

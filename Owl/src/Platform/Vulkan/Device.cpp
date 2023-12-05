@@ -50,7 +50,7 @@ namespace Owl::Renderer::Vulkan
 			func(pInstance, pDebugMessenger, pAllocator);
 	}
 
-	Device::Device(Scope<Window>& pWindow)
+	Device::Device(Scope<WindowOld>& pWindow)
 		: m_Window(pWindow)
 	{
 		OWL_PROFILE_FUNCTION();
