@@ -94,7 +94,7 @@ namespace Owl
 		createInfo.hinstance = m_Instance;
 		createInfo.hwnd = m_Window;
 
-		if (const VkResult result = vkCreateWin32SurfaceKHR(pRenderer->m_Instance, &createInfo, pRenderer->m_Allocator,
+		if (const VkResult result = vkCreateWin32SurfaceKHR(pRenderer->m_Context->Instance, &createInfo, pRenderer->m_Context->Allocator,
 		                                                    &surface); result != VK_SUCCESS)
 		{
 			throw std::runtime_error("[WindowsWindow] Failed creating Vulkan surface.");

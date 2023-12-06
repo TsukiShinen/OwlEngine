@@ -5,45 +5,51 @@
 
 namespace Owl
 {
-	VulkanDevice::VulkanDevice(const VkInstance pInstance, const VkSurfaceKHR pSurface)
+	VulkanDevice::VulkanDevice(VulkanContext* pContext)
+		: m_Context(pContext)
 	{
 		OWL_PROFILE_FUNCTION();
-		SelectPhysicalDevice(pInstance, pSurface);
+		SelectPhysicalDevice();
+		CreateLogicalDevice();
 	}
 
-	void VulkanDevice::QuerySwapchainSupport(const VkPhysicalDevice pDevice, const VkSurfaceKHR pSurface,
-	                                         SwapchainInfo& pSwapchainInfo)
+	VulkanDevice::~VulkanDevice()
+	{
+		vkDestroyDevice(m_Device, m_Context->Allocator);
+	}
+
+	void VulkanDevice::QuerySwapchainSupport(const VkPhysicalDevice pDevice, SwapchainInfo& pSwapchainInfo)
 	{
 		OWL_PROFILE_FUNCTION();
-		auto result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(pDevice, pSurface,
+		auto result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(pDevice, m_Context->Surface,
 		                                                        &pSwapchainInfo.Capabilities);
 		OWL_CORE_ASSERT(result == VK_SUCCESS, "[VulkanDevice] Couldn't Get surface capabilities!")
 
-		result = vkGetPhysicalDeviceSurfaceFormatsKHR(pDevice, pSurface, &pSwapchainInfo.FormatCount,
+		result = vkGetPhysicalDeviceSurfaceFormatsKHR(pDevice, m_Context->Surface, &pSwapchainInfo.FormatCount,
 		                                              nullptr);
 		OWL_CORE_ASSERT(result == VK_SUCCESS, "[VulkanDevice] Couldn't Get surface format count!")
-		result = vkGetPhysicalDeviceSurfaceFormatsKHR(pDevice, pSurface, &pSwapchainInfo.FormatCount,
+		result = vkGetPhysicalDeviceSurfaceFormatsKHR(pDevice, m_Context->Surface, &pSwapchainInfo.FormatCount,
 		                                              pSwapchainInfo.Formats.data());
 		OWL_CORE_ASSERT(result == VK_SUCCESS, "[VulkanDevice] Couldn't Get surface formats!")
 
-		result = vkGetPhysicalDeviceSurfacePresentModesKHR(pDevice, pSurface,
+		result = vkGetPhysicalDeviceSurfacePresentModesKHR(pDevice, m_Context->Surface,
 		                                                   &pSwapchainInfo.PresentModeCount, nullptr);
 		OWL_CORE_ASSERT(result == VK_SUCCESS, "[VulkanDevice] Couldn't Get surface present mode count!")
-		result = vkGetPhysicalDeviceSurfacePresentModesKHR(pDevice, pSurface,
+		result = vkGetPhysicalDeviceSurfacePresentModesKHR(pDevice, m_Context->Surface,
 		                                                   &pSwapchainInfo.PresentModeCount,
 		                                                   pSwapchainInfo.PresentModes.data());
 		OWL_CORE_ASSERT(result == VK_SUCCESS, "[VulkanDevice] Couldn't Get surface present modes!")
 	}
 
-	void VulkanDevice::SelectPhysicalDevice(const VkInstance pInstance, const VkSurfaceKHR pSurface)
+	void VulkanDevice::SelectPhysicalDevice()
 	{
 		OWL_PROFILE_FUNCTION();
 		uint32_t physicalDeviceCount = 0;
-		auto result = vkEnumeratePhysicalDevices(pInstance, &physicalDeviceCount, nullptr);
+		auto result = vkEnumeratePhysicalDevices(m_Context->Instance, &physicalDeviceCount, nullptr);
 		OWL_CORE_ASSERT(physicalDeviceCount > 0, "[VulkanDevice] No devices which support Vulkan were found!")
 
 		std::vector<VkPhysicalDevice> physicalDevices(physicalDeviceCount);
-		result = vkEnumeratePhysicalDevices(pInstance, &physicalDeviceCount, physicalDevices.data());
+		result = vkEnumeratePhysicalDevices(m_Context->Instance, &physicalDeviceCount, physicalDevices.data());
 		OWL_CORE_ASSERT(physicalDeviceCount > 0, "[VulkanDevice] Failed to get physical devices!")
 
 		for (uint32_t i = 0; i < physicalDeviceCount; ++i)
@@ -59,7 +65,7 @@ namespace Owl
 
 			QueueFamilyIndices queueFamilyIndices;
 			SwapchainInfo swapchainInfo;
-			if (!DoPhysicalDeviceMeetRequirements(physicalDevices[i], pSurface, &features, queueFamilyIndices,
+			if (!DoPhysicalDeviceMeetRequirements(physicalDevices[i], &features, queueFamilyIndices,
 			                                      swapchainInfo))
 				continue;
 
@@ -77,10 +83,10 @@ namespace Owl
 		if (!m_PhysicalDevice)
 			throw std::runtime_error("No physical devices were found which meet the requirements.");
 
-		OWL_CORE_INFO("Vulkan physical device found!");
+		OWL_CORE_INFO("=== Vulkan physical device found!");
 	}
 
-	bool VulkanDevice::DoPhysicalDeviceMeetRequirements(const VkPhysicalDevice pDevice, const VkSurfaceKHR pSurface,
+	bool VulkanDevice::DoPhysicalDeviceMeetRequirements(const VkPhysicalDevice pDevice,
 	                                                    const VkPhysicalDeviceFeatures* pFeatures,
 	                                                    QueueFamilyIndices& pQueueFamilyIndices,
 	                                                    SwapchainInfo& pSwapchainInfo)
@@ -119,7 +125,7 @@ namespace Owl
 			}
 
 			VkBool32 supportsPresent = VK_FALSE;
-			if (vkGetPhysicalDeviceSurfaceSupportKHR(pDevice, i, pSurface, &supportsPresent) == VK_SUCCESS)
+			if (vkGetPhysicalDeviceSurfaceSupportKHR(pDevice, i, m_Context->Surface, &supportsPresent) == VK_SUCCESS)
 			{
 				pQueueFamilyIndices.PresentFamily = i;
 			}
@@ -136,7 +142,7 @@ namespace Owl
 			return false;
 		}
 
-		QuerySwapchainSupport(pDevice, pSurface, pSwapchainInfo);
+		QuerySwapchainSupport(pDevice, pSwapchainInfo);
 
 		if (pSwapchainInfo.FormatCount < 1 || pSwapchainInfo.PresentModeCount < 1)
 		{
@@ -188,5 +194,56 @@ namespace Owl
 		}
 
 		return true;
+	}
+
+	void VulkanDevice::CreateLogicalDevice()
+	{
+		OWL_PROFILE_FUNCTION();
+		const bool presentSharesGraphicsQueue = m_QueueFamilyIndices.GraphicsFamily == m_QueueFamilyIndices.PresentFamily;
+		const bool transferSharesGraphicsQueue = m_QueueFamilyIndices.GraphicsFamily == m_QueueFamilyIndices.TransferFamily;
+		uint32_t indexCount = 1;
+		if (!presentSharesGraphicsQueue)
+			indexCount++;
+		if (!transferSharesGraphicsQueue)
+			indexCount++;
+		std::vector<uint32_t> indices(indexCount);
+		uint8_t index = 0;
+		indices[index++] = m_QueueFamilyIndices.GraphicsFamily;
+		if (!presentSharesGraphicsQueue)
+			indices[index++] = m_QueueFamilyIndices.PresentFamily;
+		if (!transferSharesGraphicsQueue)
+			indices[index] = m_QueueFamilyIndices.TransferFamily;
+
+		float queuePriority = 1.0f;
+		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos(indexCount);
+		for (uint32_t i = 0; i < indexCount; ++i) {
+			queueCreateInfos[i].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+			queueCreateInfos[i].queueFamilyIndex = indices[i];
+			queueCreateInfos[i].queueCount = 1;
+			queueCreateInfos[i].pQueuePriorities = &queuePriority;
+			queueCreateInfos[i].flags = 0;
+			queueCreateInfos[i].pNext = nullptr;
+		}
+
+		VkPhysicalDeviceFeatures deviceFeatures = {};
+		deviceFeatures.samplerAnisotropy = m_PhysicalDeviceRequirement.SamplerAnisotropy;
+
+		VkDeviceCreateInfo deviceCreateInfo{VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO};
+		deviceCreateInfo.queueCreateInfoCount = indexCount;
+		deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
+		deviceCreateInfo.pEnabledFeatures = &deviceFeatures;
+		auto extensionNames = m_PhysicalDeviceRequirement.ExtensionNames;
+		deviceCreateInfo.enabledExtensionCount = static_cast<glm::uint32_t>(extensionNames.size());
+		deviceCreateInfo.ppEnabledExtensionNames = extensionNames.data();
+
+		deviceCreateInfo.enabledLayerCount = 0;
+		deviceCreateInfo.ppEnabledLayerNames = nullptr;
+
+		if (auto result = vkCreateDevice(m_PhysicalDevice, &deviceCreateInfo, m_Context->Allocator, &m_Device); result != VK_SUCCESS)
+		{
+			throw std::runtime_error("Couldn't create vulkan logical device!");
+		}
+
+		OWL_CORE_INFO("=== Vulkan Logical device created.");
 	}
 }

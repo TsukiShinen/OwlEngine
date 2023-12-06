@@ -5,7 +5,7 @@
 
 #include <vulkan/vulkan.h>
 
-#include "VulkanDevice.h"
+#include "VulkanContext.h"
 #include "Owl/Core/Base.h"
 
 namespace Owl
@@ -31,14 +31,7 @@ namespace Owl
 		                                                    const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 		                                                    void* pUserData);
 
-		VkInstance m_Instance;
-		VkAllocationCallbacks* m_Allocator;
-#ifdef OWL_DEBUG
-		VkDebugUtilsMessengerEXT m_DebugMessenger;
-#endif
-		VkSurfaceKHR m_Surface;
-
-		Scope<VulkanDevice> m_Device;
+		VulkanContext* m_Context;
 
 		friend class WindowsWindow;
 	};

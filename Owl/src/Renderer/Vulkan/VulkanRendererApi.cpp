@@ -1,5 +1,6 @@
 ﻿#include "VulkanRendererApi.h"
 
+#include "VulkanDevice.h"
 #include "Owl/Core/Application.h"
 #include "Owl/Debug/Assert.h"
 
@@ -8,30 +9,34 @@ namespace Owl
 	VulkanRendererApi::VulkanRendererApi(const std::string& pApplicationName)
 	{
 		OWL_PROFILE_FUNCTION();
+		OWL_CORE_INFO("========== Vulkan Renderer ==========");
+		m_Context = new VulkanContext();
 		// TODO: Custom allocator
-		m_Allocator = nullptr;
+		m_Context->Allocator = nullptr;
 
 		InitializeInstance(pApplicationName);
 		InitializeDebugMessage();
-		m_Surface = Application::Get().GetWindow()->CreateVulkanSurface(this);
-		m_Device = CreateScope<VulkanDevice>(m_Instance, m_Surface);
+		m_Context->Surface = Application::Get().GetWindow()->CreateVulkanSurface(this);
+		m_Context->Device = new VulkanDevice(m_Context);
 
-		OWL_CORE_INFO("Vulkan renderer initialized successfully.");
+		OWL_CORE_INFO("=====================================");
 	}
 
 	VulkanRendererApi::~VulkanRendererApi()
 	{
 		OWL_PROFILE_FUNCTION();
 #ifdef OWL_DEBUG
-		if (m_DebugMessenger)
+		if (m_Context->DebugMessenger)
 		{
 			const auto func = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(
-				m_Instance, "vkDestroyDebugUtilsMessengerEXT"));
-			func(m_Instance, m_DebugMessenger, m_Allocator);
+				m_Context->Instance, "vkDestroyDebugUtilsMessengerEXT"));
+			func(m_Context->Instance, m_Context->DebugMessenger, m_Context->Allocator);
 		}
 #endif
-		vkDestroySurfaceKHR(m_Instance, m_Surface, m_Allocator);
-		vkDestroyInstance(m_Instance, m_Allocator);
+		delete m_Context->Device;
+		vkDestroySurfaceKHR(m_Context->Instance, m_Context->Surface, m_Context->Allocator);
+		vkDestroyInstance(m_Context->Instance, m_Context->Allocator);
+		delete m_Context;
 	}
 
 	void VulkanRendererApi::Resize(glm::vec2 pSize)
@@ -80,10 +85,10 @@ namespace Owl
 		createInfo.enabledLayerCount = static_cast<uint32_t>(requiredValidationLayer.size());
 		createInfo.ppEnabledLayerNames = requiredValidationLayer.data();
 
-		const VkResult result = vkCreateInstance(&createInfo, m_Allocator, &m_Instance);
+		const VkResult result = vkCreateInstance(&createInfo,  m_Context->Allocator, &m_Context->Instance);
 		OWL_CORE_ASSERT(result == VK_SUCCESS, "[VulkanRendererApi] Failed to create vkInstance!")
 
-		OWL_CORE_INFO("Vulkan Instance created successfully.");
+		OWL_CORE_INFO("=== Vulkan Instance created successfully.");
 	}
 
 #ifdef OWL_DEBUG
@@ -102,12 +107,12 @@ namespace Owl
 		debugCreateInfo.pfnUserCallback = DebugCallback;
 
 		const auto func = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(
-			vkGetInstanceProcAddr(m_Instance, "vkCreateDebugUtilsMessengerEXT"));
+			vkGetInstanceProcAddr(m_Context->Instance, "vkCreateDebugUtilsMessengerEXT"));
 		OWL_ASSERT(func, "[VulkanRendererApi] Failed to create debug messenger")
-		OWL_ASSERT(func(m_Instance, &debugCreateInfo, m_Allocator, &m_DebugMessenger) == VK_SUCCESS,
+		OWL_ASSERT(func(m_Context->Instance, &debugCreateInfo, m_Context->Allocator, &m_Context->DebugMessenger) == VK_SUCCESS,
 		           "[VulkanRendererApi] Failed to create debug messenger")
 
-		OWL_CORE_INFO("Vulkan debug message initialized successfully.");
+		OWL_CORE_INFO("=== Vulkan debug message initialized successfully.");
 	}
 #endif
 
@@ -116,19 +121,21 @@ namespace Owl
 	                                          const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 	                                          void* pUserData)
 	{
+		std::string error = "[Vulkan Debug] ";
+		error += pCallbackData->pMessage;
 		switch (pMessageSeverity)
 		{
 		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-			OWL_CORE_ERROR(pCallbackData->pMessage);
+			OWL_CORE_ERROR(error);
 			break;
 		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-			OWL_CORE_WARN(pCallbackData->pMessage);
+			OWL_CORE_WARN(error);
 			break;
 		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-			OWL_CORE_INFO(pCallbackData->pMessage);
+			OWL_CORE_INFO(error);
 			break;
 		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-			OWL_CORE_TRACE(pCallbackData->pMessage);
+			OWL_CORE_TRACE(error);
 			break;
 		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_FLAG_BITS_MAX_ENUM_EXT:
 			break;

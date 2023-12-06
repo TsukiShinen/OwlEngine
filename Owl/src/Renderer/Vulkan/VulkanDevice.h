@@ -3,12 +3,14 @@
 #include <vector>
 #include <vulkan/vulkan.h>
 
+#include "VulkanContext.h"
 #include "Owl/Memory/Memory.h"
 
 namespace Owl
 {
 	struct PhysicalDeviceRequirement
 	{
+		// TODO : Should be in config
 		bool Graphics = true;
 		bool Present = true;
 		bool Compute = true;
@@ -43,20 +45,23 @@ namespace Owl
 	class VulkanDevice
 	{
 	public:
-		VulkanDevice(VkInstance pInstance, VkSurfaceKHR pSurface);
-		~VulkanDevice() = default;
+		VulkanDevice(VulkanContext* pContext);
+		~VulkanDevice();
 
 		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, MemoryTagRenderer); }
 		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(pBlock), MemoryTagRenderer); }
 
 	private:
-		static void QuerySwapchainSupport(VkPhysicalDevice pDevice, VkSurfaceKHR pSurface,
+		void QuerySwapchainSupport(VkPhysicalDevice pDevice,
 		                                  SwapchainInfo& pSwapchainInfo);
-		void SelectPhysicalDevice(VkInstance pInstance, VkSurfaceKHR pSurface);
-		bool DoPhysicalDeviceMeetRequirements(VkPhysicalDevice pDevice, VkSurfaceKHR pSurface,
+		void SelectPhysicalDevice();
+		bool DoPhysicalDeviceMeetRequirements(VkPhysicalDevice pDevice,
 		                                      const VkPhysicalDeviceFeatures* pFeatures,
 		                                      QueueFamilyIndices& pQueueFamilyIndices, SwapchainInfo& pSwapchainInfo);
+		void CreateLogicalDevice();
 
+		VulkanContext* m_Context;
+		
 		VkDevice m_Device;
 		VkPhysicalDevice m_PhysicalDevice;
 
