@@ -3,10 +3,8 @@
 
 #include "Components/MovementComponent.h"
 #include "Owl/ECS/Components/TransformComponent.h"
-#include "Platform/Vulkan/Sprite.h"
 #include "Systems/MovementControllerSystem.h"
 #include "Owl/Core/EntryPoint.h"
-#include "Owl/ECS/Components/SpriteComponent.h"
 
 class Sandbox final : public Owl::Application
 {

@@ -3,12 +3,9 @@
 
 #include "Owl/Core/Base.h"
 #include "Owl/ECS/World.h"
-#include "Owl/ECS/Systems/RenderSystem2D.h"
 #include "Owl/Events/ApplicationEvent.h"
 #include "Owl/Memory/Memory.h"
 #include "Owl/Platform/Window.h"
-#include "Platform/Vulkan/Api.h"
-#include "Platform/Windows/WindowOld.h"
 
 namespace Owl
 {
@@ -59,6 +56,8 @@ namespace Owl
 
 		const ApplicationSpecification& GetSpecification() const { return m_Specification; }
 
+		const Scope<Window>& GetWindow() { return m_Window; }
+
 		static Application& Get() { return *s_Instance; }
 
 	protected:
@@ -67,30 +66,13 @@ namespace Owl
 		bool OnWindowClose(WindowCloseEvent& pEvent);
 		bool OnWindowResize(WindowResizeEvent& pEvent);
 		
-		/*static constexpr Version k_EngineVersion{0, 1, 0};
-		static constexpr std::string k_EngineName = "Owl Engine";
-
-		static constexpr Version k_ApplicationVersion{0, 1, 0};
-		static constexpr std::string k_ApplicationName = "Test Owl Engine";
-		int m_Width = 1280;
-		int m_Height = 720;
-
-		Renderer::Vulkan::Camera m_MainCamera{};
-		//private:
-		Scope<Window> m_Window;*/
 		ApplicationSpecification m_Specification;
 
 		bool m_IsRunning = true;
 		bool m_IsMinimized = false;
 		float m_LastFrameTime = 0.0f;
 
-		/*Scope<Renderer::Vulkan::Api> m_VulkanApi;
-		std::vector<Scope<Renderer::Vulkan::Buffer>> m_UboBuffers{Renderer::Vulkan::SwapChain::k_MaxFramesInFlight};
-		std::vector<VkDescriptorSet> globalDescriptorSets{Renderer::Vulkan::SwapChain::k_MaxFramesInFlight};
-		Scope<Renderer::Vulkan::DescriptorSetLayout> globalSetLayout;
-
-		Ref<RenderSystem2D> m_RenderSystem2D;
-
+		/*
 	protected:
 		Ecs::World m_World;*/
 

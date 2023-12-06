@@ -39,8 +39,6 @@ namespace Owl
 		m_Data.Width = pWindowProps.Width;
 		m_Data.Height = pWindowProps.Height;
 
-		OWL_CORE_INFO("Creating Window {0} ({1}, {2})", m_Data.Title, m_Data.Width, m_Data.Height);
-
 		m_Instance = GetModuleHandle(nullptr);
 		OWL_CORE_ASSERT(m_Instance, "[WindowsWindow] Failed to create window instance!")
 
@@ -82,6 +80,8 @@ namespace Owl
 
 		ShowWindow(m_Window, SW_SHOW);
 		s_WindowCount++;
+
+		OWL_CORE_INFO("Window initialized successfully : {0} ({1}, {2})", m_Data.Title, m_Data.Width, m_Data.Height);
 	}
 
 	void WindowsWindow::Update()

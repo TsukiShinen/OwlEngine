@@ -6,12 +6,6 @@ namespace Owl
 	enum MemoryTag
 	{
 		MemoryTagUnknown,
-		MemoryTagArray,
-		MemoryTagDarray,
-		MemoryTagDict,
-		MemoryTagRingQueue,
-		MemoryTagBst,
-		MemoryTagString,
 		MemoryTagApplication,
 		MemoryTagJob,
 		MemoryTagTexture,
@@ -53,12 +47,6 @@ namespace Owl
 
 		inline static const char* k_MemoryTagStrings[MEMORY_TAG_MAX_TAGS] = {
 			"UNKNOWN    ",
-			"ARRAY      ",
-			"DARRAY     ",
-			"DICT       ",
-			"RING_QUEUE ",
-			"BST        ",
-			"STRING     ",
 			"APPLICATION",
 			"JOB        ",
 			"TEXTURE    ",

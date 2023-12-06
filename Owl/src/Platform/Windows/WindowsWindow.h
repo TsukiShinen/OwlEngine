@@ -22,11 +22,14 @@ namespace Owl
 		void SetEventCallback(const EventCallbackFn& pCallback) override { m_Data.EventCallback = pCallback; }
 		
 		void Sleep(const unsigned long pMilliseconds) override { ::Sleep(pMilliseconds); }
+		
+		const char* GetVulkanRequiredExtension() override { return "VK_KHR_win32_surface"; }
 
 	private:
 		LRESULT ProcessMessages(uint32_t pMessage, WPARAM pWParam, LPARAM pLParam);
 		static LRESULT CALLBACK WindowProc(HWND pWindow, uint32_t pMessage, WPARAM pWParam, LPARAM pLParam);
 
+	private:
 		HINSTANCE m_Instance;
 		HWND m_Window;
 
