@@ -20,7 +20,7 @@ namespace Owl
 		if (!m_Specification.WorkingDirectory.empty())
 			std::filesystem::current_path(m_Specification.WorkingDirectory);
 
-		m_Window = Window::Create(WindowProps(pSpecification.Name.c_str(), 1280, 700));
+		m_Window = Window::Create(WindowProps(pSpecification.Name, 1280, 700));
 		m_Window->SetEventCallback(OWL_BIND_EVENT_FN(Application::OnEvent));
 
 		//m_Window = CreateScope<Window>(m_Width, m_Height, k_ApplicationName);
@@ -161,7 +161,7 @@ namespace Owl
 
 		dispatcher.Dispatch<KeyPressedEvent>([](const KeyPressedEvent& pEvent1)
 		{
-			OWL_CORE_TRACE("Key pressed : " + pEvent1.GetKeyCode());
+			OWL_CORE_TRACE("Key pressed : " + std::to_string(pEvent1.GetKeyCode()));
 			return true;
 		});
 	}

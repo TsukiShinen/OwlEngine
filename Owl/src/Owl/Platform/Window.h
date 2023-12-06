@@ -6,7 +6,7 @@ namespace Owl
 {
 	struct WindowProps
 	{
-		const char* Title = "Owl Application";
+		std::string Title = "Owl Application";
 		uint32_t Width = 1600;
 		uint32_t Height = 900;
 	};

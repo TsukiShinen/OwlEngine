@@ -32,7 +32,7 @@ namespace Owl
 
 		struct WindowData
 		{
-			const char* Title;
+			std::string Title;
 			uint32_t Width , Height;
 
 			EventCallbackFn EventCallback;

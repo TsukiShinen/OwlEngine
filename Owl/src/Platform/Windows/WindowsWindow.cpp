@@ -41,11 +41,11 @@ namespace Owl
 
 		OWL_CORE_INFO("Creating Window {0} ({1}, {2})", m_Data.Title, m_Data.Width, m_Data.Height);
 
-		m_Instance = GetModuleHandleA(nullptr);
+		m_Instance = GetModuleHandle(nullptr);
 		OWL_CORE_ASSERT(m_Instance, "[WindowsWindow] Failed to create window instance!")
 
-		WNDCLASSA windowClass = {};
-		windowClass.style = CS_DBLCLKS;
+		WNDCLASS windowClass = {};
+		windowClass.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
 		windowClass.lpfnWndProc = WindowProc;
 		windowClass.cbClsExtra = 0;
 		windowClass.cbWndExtra = 0;
@@ -53,31 +53,30 @@ namespace Owl
 		windowClass.hIcon = LoadIcon(m_Instance, IDI_APPLICATION);
 		windowClass.hCursor = LoadCursor(nullptr, IDC_ARROW);
 		windowClass.hbrBackground = nullptr;
-		windowClass.lpszClassName = "owl_window_class";
+		windowClass.lpszClassName = L"owl_window_class";
 
-		if (!RegisterClassA(&windowClass))
+		if (!RegisterClass(&windowClass))
 		{
 			throw std::runtime_error("[PlatformWindows] Failed to register window!");
 		}
 
-		uint32_t windowStyle = WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION;
-		uint32_t windowExStyle = WS_EX_APPWINDOW;
+		uint32_t windowStyle = WS_OVERLAPPEDWINDOW;
 
-		windowStyle |= WS_MAXIMIZE;
-		windowStyle |= WS_MINIMIZE;
-		windowStyle |= WS_THICKFRAME;
+		RECT clientRect = { 0, 0, m_Data.Width, m_Data.Height };
+		AdjustWindowRectEx(&clientRect, windowStyle, FALSE, WS_EX_OVERLAPPEDWINDOW);
 
-		RECT borderRect = {0, 0, 0, 0};
-		AdjustWindowRectEx(&borderRect, windowStyle, 0, windowExStyle);
+		const uint32_t windowX = 100;
+		const uint32_t windowY = 100;
 
-		const uint32_t windowX = 100 + borderRect.left;
-		const uint32_t windowY = 100 + borderRect.top;
-		const uint32_t windowWidth = m_Data.Width + borderRect.right - borderRect.left;
-		const uint32_t windowHeight = m_Data.Height + borderRect.bottom - borderRect.left;
-
-		m_Window = CreateWindowExA(windowExStyle, "owl_window_class", m_Data.Title, windowStyle,
-									windowX, windowY, windowWidth, windowHeight,
-									nullptr, nullptr, m_Instance, nullptr);
+		m_Window = CreateWindowEx(
+			WS_EX_OVERLAPPEDWINDOW,
+			L"owl_window_class",
+			std::wstring(m_Data.Title.begin(), m_Data.Title.end()).c_str(),
+			windowStyle,
+			windowX, windowY,
+			clientRect.right - clientRect.left,
+			clientRect.bottom - clientRect.top,
+			nullptr, nullptr, m_Instance, nullptr);
 		OWL_CORE_ASSERT(m_Window, GetLastError())
 		SetWindowLongPtr(m_Window, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 
@@ -89,11 +88,11 @@ namespace Owl
 	{
 		OWL_PROFILE_FUNCTION();
 		MSG message;
-		while (PeekMessageA(&message, nullptr, 0, 0, PM_REMOVE))
+		while (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE))
 		{
 			OWL_PROFILE_SCOPE("Process Message");
 			TranslateMessage(&message);
-			DispatchMessageA(&message);
+			DispatchMessage(&message);
 		}
 	}
 
@@ -127,21 +126,22 @@ namespace Owl
 			break;
 		case WM_KEYDOWN:
 		case WM_SYSKEYDOWN:
-		case WM_KEYUP:
-		case WM_SYSKEYUP:
 			{
 				if ((pLParam & (1 << 30)) != 0)
 					KeyPressedEvent event(static_cast<KeyCode>(pWParam), true);
-				else if (pMessage == WM_KEYDOWN || pMessage == WM_SYSKEYDOWN)
-				{
-					KeyPressedEvent event(static_cast<KeyCode>(pWParam), false);
-					Input::s_Keys[static_cast<KeyCode>(pWParam)] = true;
-				}
 				else
 				{
-					KeyReleasedEvent event(static_cast<KeyCode>(pWParam));
-					Input::s_Keys[static_cast<KeyCode>(pWParam)] = false;
+					KeyPressedEvent event(static_cast<KeyCode>(pWParam), false);
+					m_Data.EventCallback(event);
+					Input::s_Keys[static_cast<KeyCode>(pWParam)] = true;
 				}
+		case WM_KEYUP:
+		case WM_SYSKEYUP:
+			{
+				KeyReleasedEvent event(static_cast<KeyCode>(pWParam));
+				m_Data.EventCallback(event);
+				Input::s_Keys[static_cast<KeyCode>(pWParam)] = false;
+			}
 			}
 			break;
 		case WM_CHAR:
@@ -183,7 +183,7 @@ namespace Owl
 			break;
 		}
 
-		return DefWindowProcA(m_Window, pMessage, pWParam, pLParam);
+		return DefWindowProc(m_Window, pMessage, pWParam, pLParam);
 	}
 
 	LRESULT WindowsWindow::WindowProc(const HWND pWindow, const uint32_t pMessage, WPARAM pWParam, LPARAM pLParam)
