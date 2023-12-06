@@ -5,6 +5,9 @@
 
 #include <vulkan/vulkan.h>
 
+#include "VulkanDevice.h"
+#include "Owl/Core/Base.h"
+
 namespace Owl
 {
 	class VulkanRendererApi : public RendererApi
@@ -22,17 +25,21 @@ namespace Owl
 #ifdef OWL_DEBUG
 		void InitializeDebugMessage();
 #endif
-		
+
 		static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT pMessageSeverity,
-		                                             VkDebugUtilsMessageTypeFlagsEXT pMessageTypes,
-		                                             const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-		                                             void* pUserData);
+		                                                    VkDebugUtilsMessageTypeFlagsEXT pMessageTypes,
+		                                                    const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+		                                                    void* pUserData);
 
 		VkInstance m_Instance;
 		VkAllocationCallbacks* m_Allocator;
-
 #ifdef OWL_DEBUG
 		VkDebugUtilsMessengerEXT m_DebugMessenger;
 #endif
+		VkSurfaceKHR m_Surface;
+
+		Scope<VulkanDevice> m_Device;
+
+		friend class WindowsWindow;
 	};
 }

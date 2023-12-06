@@ -5,8 +5,8 @@
 
 #include <glm/glm.hpp>
 
-namespace Owl {
-
+namespace Owl
+{
 	class Input
 	{
 	public:
@@ -16,12 +16,13 @@ namespace Owl {
 		static glm::vec2 GetMousePosition() { return s_MousePosition; }
 		static float GetMouseX() { return s_MousePosition.x; }
 		static float GetMouseY() { return s_MousePosition.y; }
+
 	private:
 		static bool s_Keys[512];
-		
+
 		static bool s_MouseButtons[16];
 		static glm::vec2 s_MousePosition;
-		
+
 		friend class WindowsWindow;
 	};
 }

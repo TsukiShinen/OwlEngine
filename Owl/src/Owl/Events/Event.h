@@ -5,24 +5,36 @@
 
 #include <functional>
 
-namespace Owl {
+namespace Owl
+{
 	enum class EventType
 	{
 		None = 0,
-		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
-		AppTick, AppUpdate, AppRender,
-		KeyPressed, KeyReleased, KeyTyped,
-		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
+		WindowClose,
+		WindowResize,
+		WindowFocus,
+		WindowLostFocus,
+		WindowMoved,
+		AppTick,
+		AppUpdate,
+		AppRender,
+		KeyPressed,
+		KeyReleased,
+		KeyTyped,
+		MouseButtonPressed,
+		MouseButtonReleased,
+		MouseMoved,
+		MouseScrolled
 	};
 
 	enum EventCategory
 	{
 		None = 0,
-		EventCategoryApplication    = BIT(0),
-		EventCategoryInput          = BIT(1),
-		EventCategoryKeyboard       = BIT(2),
-		EventCategoryMouse          = BIT(3),
-		EventCategoryMouseButton    = BIT(4)
+		EventCategoryApplication = BIT(0),
+		EventCategoryInput = BIT(1),
+		EventCategoryKeyboard = BIT(2),
+		EventCategoryMouse = BIT(3),
+		EventCategoryMouseButton = BIT(4)
 	};
 
 #define EVENT_CLASS_TYPE(type) static EventType GetStaticType() { return EventType::type; }\
@@ -56,9 +68,9 @@ namespace Owl {
 			: m_Event(event)
 		{
 		}
-		
+
 		// F will be deduced by the compiler
-		template<typename T, typename F>
+		template <typename T, typename F>
 		bool Dispatch(const F& func)
 		{
 			if (m_Event.GetEventType() == T::GetStaticType())
@@ -68,6 +80,7 @@ namespace Owl {
 			}
 			return false;
 		}
+
 	private:
 		Event& m_Event;
 	};
@@ -76,5 +89,4 @@ namespace Owl {
 	{
 		return os << e.ToString();
 	}
-
 }

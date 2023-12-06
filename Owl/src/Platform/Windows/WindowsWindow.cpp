@@ -2,17 +2,19 @@
 
 #include <stdexcept>
 #include <windowsx.h>
+#include <vulkan/vulkan_win32.h>
 
 #include "Owl/Debug/Instrumentor.h"
 #include "Owl/Events/ApplicationEvent.h"
 #include "Owl/Events/KeyEvent.h"
 #include "Owl/Events/MouseEvent.h"
 #include "Owl/Platform/Input.h"
+#include "Renderer/Vulkan/VulkanRendererApi.h"
 
 namespace Owl
 {
 	static uint8_t s_WindowCount = 0;
-	
+
 	WindowsWindow::WindowsWindow(const WindowProps& pWindowProps)
 	{
 		OWL_PROFILE_FUNCTION();
@@ -34,7 +36,7 @@ namespace Owl
 	void WindowsWindow::Initialize(const WindowProps& pWindowProps)
 	{
 		OWL_PROFILE_FUNCTION();
-		
+
 		m_Data.Title = pWindowProps.Title;
 		m_Data.Width = pWindowProps.Width;
 		m_Data.Height = pWindowProps.Height;
@@ -60,7 +62,7 @@ namespace Owl
 
 		uint32_t windowStyle = WS_OVERLAPPEDWINDOW;
 
-		RECT clientRect = { 0, 0, m_Data.Width, m_Data.Height };
+		RECT clientRect = {0, 0, m_Data.Width, m_Data.Height};
 		AdjustWindowRectEx(&clientRect, windowStyle, FALSE, WS_EX_OVERLAPPEDWINDOW);
 
 		const uint32_t windowX = 100;
@@ -84,6 +86,23 @@ namespace Owl
 		OWL_CORE_INFO("Window initialized successfully : {0} ({1}, {2})", m_Data.Title, m_Data.Width, m_Data.Height);
 	}
 
+	VkSurfaceKHR WindowsWindow::CreateVulkanSurface(VulkanRendererApi* pRenderer)
+	{
+		VkSurfaceKHR surface;
+
+		VkWin32SurfaceCreateInfoKHR createInfo{VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR};
+		createInfo.hinstance = m_Instance;
+		createInfo.hwnd = m_Window;
+
+		if (const VkResult result = vkCreateWin32SurfaceKHR(pRenderer->m_Instance, &createInfo, pRenderer->m_Allocator,
+		                                                    &surface); result != VK_SUCCESS)
+		{
+			throw std::runtime_error("[WindowsWindow] Failed creating Vulkan surface.");
+		}
+
+		return surface;
+	}
+
 	void WindowsWindow::Update()
 	{
 		OWL_PROFILE_FUNCTION();
@@ -99,14 +118,14 @@ namespace Owl
 	LRESULT WindowsWindow::ProcessMessages(const uint32_t pMessage, WPARAM pWParam, LPARAM pLParam)
 	{
 		OWL_PROFILE_FUNCTION();
-		
+
 		switch (pMessage)
 		{
 		case WM_CLOSE:
 			{
 				WindowCloseEvent event;
 				m_Data.EventCallback(event);
-				
+
 				return 1;
 			}
 		case WM_DESTROY:
@@ -135,13 +154,13 @@ namespace Owl
 					m_Data.EventCallback(event);
 					Input::s_Keys[static_cast<KeyCode>(pWParam)] = true;
 				}
-		case WM_KEYUP:
-		case WM_SYSKEYUP:
-			{
-				KeyReleasedEvent event(static_cast<KeyCode>(pWParam));
-				m_Data.EventCallback(event);
-				Input::s_Keys[static_cast<KeyCode>(pWParam)] = false;
-			}
+			case WM_KEYUP:
+			case WM_SYSKEYUP:
+				{
+					KeyReleasedEvent event(static_cast<KeyCode>(pWParam));
+					m_Data.EventCallback(event);
+					Input::s_Keys[static_cast<KeyCode>(pWParam)] = false;
+				}
 			}
 			break;
 		case WM_CHAR:
@@ -170,13 +189,15 @@ namespace Owl
 			break;
 		case WM_MOUSEWHEEL:
 			{
-				MouseScrolledEvent event(static_cast<float>(GET_X_LPARAM(pLParam)), static_cast<float>(GET_X_LPARAM(pLParam)));
+				MouseScrolledEvent event(static_cast<float>(GET_X_LPARAM(pLParam)),
+				                         static_cast<float>(GET_X_LPARAM(pLParam)));
 				m_Data.EventCallback(event);
 			}
 			break;
 		case WM_MOUSEMOVE:
 			{
-				MouseMovedEvent event(static_cast<float>(GET_X_LPARAM(pLParam)), static_cast<float>(GET_X_LPARAM(pLParam)));
+				MouseMovedEvent event(static_cast<float>(GET_X_LPARAM(pLParam)),
+				                      static_cast<float>(GET_X_LPARAM(pLParam)));
 				m_Data.EventCallback(event);
 				Input::s_MousePosition = glm::vec2(event.GetX(), event.GetY());
 			}
@@ -190,7 +211,7 @@ namespace Owl
 	{
 		if (auto* window = reinterpret_cast<WindowsWindow*>(GetWindowLongPtr(pWindow, GWLP_USERDATA)))
 			return window->ProcessMessages(pMessage, pWParam, pLParam);
-		else 
+		else
 			return DefWindowProc(pWindow, pMessage, pWParam, pLParam);
 	}
 }

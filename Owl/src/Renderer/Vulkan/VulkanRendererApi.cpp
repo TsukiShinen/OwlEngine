@@ -10,11 +10,13 @@ namespace Owl
 		OWL_PROFILE_FUNCTION();
 		// TODO: Custom allocator
 		m_Allocator = nullptr;
-		
+
 		InitializeInstance(pApplicationName);
 		InitializeDebugMessage();
-		
-		OWL_INFO("Vulkan renderer initialized successfully.");
+		m_Surface = Application::Get().GetWindow()->CreateVulkanSurface(this);
+		m_Device = CreateScope<VulkanDevice>(m_Instance, m_Surface);
+
+		OWL_CORE_INFO("Vulkan renderer initialized successfully.");
 	}
 
 	VulkanRendererApi::~VulkanRendererApi()
@@ -90,43 +92,46 @@ namespace Owl
 		OWL_PROFILE_FUNCTION();
 
 		constexpr uint32_t logSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT |
-					  VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
-					  VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT;
+			VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
+			VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT;
 
 		VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT};
 		debugCreateInfo.messageSeverity = logSeverity;
-		debugCreateInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
+		debugCreateInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
+			VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
 		debugCreateInfo.pfnUserCallback = DebugCallback;
 
 		const auto func = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(
-				vkGetInstanceProcAddr(m_Instance, "vkCreateDebugUtilsMessengerEXT"));
+			vkGetInstanceProcAddr(m_Instance, "vkCreateDebugUtilsMessengerEXT"));
 		OWL_ASSERT(func, "[VulkanRendererApi] Failed to create debug messenger")
 		OWL_ASSERT(func(m_Instance, &debugCreateInfo, m_Allocator, &m_DebugMessenger) == VK_SUCCESS,
-			"[VulkanRendererApi] Failed to create debug messenger")
-		
+		           "[VulkanRendererApi] Failed to create debug messenger")
+
 		OWL_CORE_INFO("Vulkan debug message initialized successfully.");
 	}
 #endif
 
 	VkBool32 VulkanRendererApi::DebugCallback(const VkDebugUtilsMessageSeverityFlagBitsEXT pMessageSeverity,
-	                                          VkDebugUtilsMessageTypeFlagsEXT pMessageTypes, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+	                                          VkDebugUtilsMessageTypeFlagsEXT pMessageTypes,
+	                                          const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 	                                          void* pUserData)
 	{
-		switch (pMessageSeverity) {
-			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-				OWL_CORE_ERROR(pCallbackData->pMessage);
-				break;
-			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-				OWL_CORE_WARN(pCallbackData->pMessage);
-				break;
-			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-				OWL_CORE_INFO(pCallbackData->pMessage);
-				break;
-			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-				OWL_CORE_TRACE(pCallbackData->pMessage);
-				break;
-			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_FLAG_BITS_MAX_ENUM_EXT:
-				break;
+		switch (pMessageSeverity)
+		{
+		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
+			OWL_CORE_ERROR(pCallbackData->pMessage);
+			break;
+		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
+			OWL_CORE_WARN(pCallbackData->pMessage);
+			break;
+		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
+			OWL_CORE_INFO(pCallbackData->pMessage);
+			break;
+		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
+			OWL_CORE_TRACE(pCallbackData->pMessage);
+			break;
+		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_FLAG_BITS_MAX_ENUM_EXT:
+			break;
 		}
 		return VK_FALSE;
 	}

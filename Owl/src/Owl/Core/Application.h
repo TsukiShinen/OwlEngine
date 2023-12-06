@@ -62,10 +62,10 @@ namespace Owl
 
 	protected:
 		virtual void OnEvent(Event& pEvent);
-		
+
 		bool OnWindowClose(WindowCloseEvent& pEvent);
 		bool OnWindowResize(WindowResizeEvent& pEvent);
-		
+
 		ApplicationSpecification m_Specification;
 
 		bool m_IsRunning = true;
@@ -78,7 +78,7 @@ namespace Owl
 
 	private:
 		Scope<Window> m_Window;
-		
+
 		static Application* s_Instance;
 	};
 

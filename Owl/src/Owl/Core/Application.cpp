@@ -68,7 +68,7 @@ namespace Owl
 	void Application::Run()
 	{
 		OWL_PROFILE_FUNCTION();
-		OWL_CORE_INFO(Memory::OwlGetMemoryUsageString());
+		OWL_CORE_TRACE(Memory::OwlGetMemoryUsageString());
 
 		while (m_IsRunning)
 		{

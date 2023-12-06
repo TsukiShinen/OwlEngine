@@ -17,5 +17,4 @@ namespace Owl
 		virtual void BeginFrame() = 0;
 		virtual void EndFrame() = 0;
 	};
-	
 }

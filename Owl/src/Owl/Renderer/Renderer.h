@@ -19,5 +19,4 @@ namespace Owl
 	private:
 		static RendererApi* s_Instance;
 	};
-	
 }
