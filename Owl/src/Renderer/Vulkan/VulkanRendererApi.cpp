@@ -30,7 +30,7 @@ namespace Owl
 			func(m_Instance, m_DebugMessenger, m_Allocator);
 		}
 #endif
-
+		vkDestroySurfaceKHR(m_Instance, m_Surface, m_Allocator);
 		vkDestroyInstance(m_Instance, m_Allocator);
 	}
 
