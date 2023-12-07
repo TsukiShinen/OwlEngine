@@ -11,11 +11,12 @@ namespace Owl
 		OWL_PROFILE_FUNCTION();
 		SelectPhysicalDevice();
 		CreateLogicalDevice();
+		GetQueues();
 	}
 
 	VulkanDevice::~VulkanDevice()
 	{
-		vkDestroyDevice(m_Device, m_Context->Allocator);
+		vkDestroyDevice(m_LogicalDevice, m_Context->Allocator);
 	}
 
 	void VulkanDevice::QuerySwapchainSupport(const VkPhysicalDevice pDevice, SwapchainInfo& pSwapchainInfo)
@@ -239,11 +240,33 @@ namespace Owl
 		deviceCreateInfo.enabledLayerCount = 0;
 		deviceCreateInfo.ppEnabledLayerNames = nullptr;
 
-		if (auto result = vkCreateDevice(m_PhysicalDevice, &deviceCreateInfo, m_Context->Allocator, &m_Device); result != VK_SUCCESS)
+		if (auto result = vkCreateDevice(m_PhysicalDevice, &deviceCreateInfo, m_Context->Allocator, &m_LogicalDevice); result != VK_SUCCESS)
 		{
 			throw std::runtime_error("Couldn't create vulkan logical device!");
 		}
 
 		OWL_CORE_INFO("=== Vulkan Logical device created.");
+	}
+
+	void VulkanDevice::GetQueues()
+	{
+		vkGetDeviceQueue(
+		m_LogicalDevice,
+		m_QueueFamilyIndices.GraphicsFamily,
+		0,
+		&m_Graphics);
+
+		vkGetDeviceQueue(
+			m_LogicalDevice,
+			m_QueueFamilyIndices.PresentFamily,
+			0,
+			&m_Present);
+
+		vkGetDeviceQueue(
+			m_LogicalDevice,
+			m_QueueFamilyIndices.TransferFamily,
+			0,
+			&m_Transfer);
+		OWL_CORE_INFO("=== Vulkan Queues obtained.");
 	}
 }

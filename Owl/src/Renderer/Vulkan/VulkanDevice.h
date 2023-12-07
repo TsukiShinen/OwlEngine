@@ -29,7 +29,7 @@ namespace Owl
 
 		bool IsValid()
 		{
-			return GraphicsFamily != -1 || PresentFamily != -1 || ComputeFamily != -1 || TransferFamily != -1;
+			return GraphicsFamily != -1 || PresentFamily != -1 || TransferFamily != -1;
 		}
 	};
 
@@ -59,16 +59,20 @@ namespace Owl
 		                                      const VkPhysicalDeviceFeatures* pFeatures,
 		                                      QueueFamilyIndices& pQueueFamilyIndices, SwapchainInfo& pSwapchainInfo);
 		void CreateLogicalDevice();
+		void GetQueues();
 
 		VulkanContext* m_Context;
 		
-		VkDevice m_Device;
+		VkDevice m_LogicalDevice;
 		VkPhysicalDevice m_PhysicalDevice;
 
 		VkPhysicalDeviceProperties m_Properties;
 		VkPhysicalDeviceFeatures m_Features;
 		VkPhysicalDeviceMemoryProperties m_Memory;
 
+		VkQueue m_Graphics;
+		VkQueue m_Present;
+		VkQueue m_Transfer;
 
 		PhysicalDeviceRequirement m_PhysicalDeviceRequirement{};
 		QueueFamilyIndices m_QueueFamilyIndices{};
