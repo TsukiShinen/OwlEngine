@@ -21,6 +21,7 @@ namespace Owl
 		void Present(VkSemaphore pRenderCompleted, uint32_t pImageIndex);
 
 		[[nodiscard]] VkSurfaceFormatKHR GetImageFormat() const { return m_ImageFormat; }
+		[[nodiscard]] uint32_t GetImageCount() const { return m_ImageCount; }
 
 	private:
 		void Create(uint32_t pWidth, uint32_t pHeight);

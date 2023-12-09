@@ -69,6 +69,8 @@ namespace Owl
 		VkQueue& GetPresentQueue() { return m_Present; }
 		VkQueue& GetTransferQueue() { return m_Transfer; }
 
+		VkCommandPool& GetGraphicsCommandPool() { return m_GraphicsCommandPool; }
+
 		VkFormat& GetDepthFormat() { return m_DepthFormat; }
 
 	private:
@@ -78,6 +80,7 @@ namespace Owl
 		                                      QueueFamilyIndices& pQueueFamilyIndices, SwapchainInfo& pSwapchainInfo);
 		void CreateLogicalDevice();
 		void GetQueues();
+		void CreateCommandPools();
 
 		VulkanContext* m_Context;
 		
@@ -91,6 +94,8 @@ namespace Owl
 		VkQueue m_Graphics;
 		VkQueue m_Present;
 		VkQueue m_Transfer;
+
+		VkCommandPool m_GraphicsCommandPool;
 
 		PhysicalDeviceRequirement m_PhysicalDeviceRequirement{};
 		QueueFamilyIndices m_QueueFamilyIndices{};

@@ -13,10 +13,13 @@ namespace Owl
 		CreateLogicalDevice();
 		GetQueues();
 		DetectDepthFormat();
+		CreateCommandPools();
 	}
 
 	VulkanDevice::~VulkanDevice()
 	{
+		vkDestroyCommandPool(m_LogicalDevice, m_GraphicsCommandPool, m_Context->Allocator);
+		
 		vkDestroyDevice(m_LogicalDevice, m_Context->Allocator);
 	}
 
@@ -266,10 +269,8 @@ namespace Owl
 		deviceCreateInfo.enabledLayerCount = 0;
 		deviceCreateInfo.ppEnabledLayerNames = nullptr;
 
-		if (auto result = vkCreateDevice(m_PhysicalDevice, &deviceCreateInfo, m_Context->Allocator, &m_LogicalDevice); result != VK_SUCCESS)
-		{
+		if (vkCreateDevice(m_PhysicalDevice, &deviceCreateInfo, m_Context->Allocator, &m_LogicalDevice) != VK_SUCCESS)
 			throw std::runtime_error("Couldn't create vulkan logical device!");
-		}
 
 		OWL_CORE_INFO("=== Vulkan Logical device created.");
 	}
@@ -294,5 +295,16 @@ namespace Owl
 			0,
 			&m_Transfer);
 		OWL_CORE_INFO("=== Vulkan Queues obtained.");
+	}
+
+	void VulkanDevice::CreateCommandPools()
+	{
+		VkCommandPoolCreateInfo poolCreateInfo{VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO};
+		poolCreateInfo.queueFamilyIndex = m_QueueFamilyIndices.GraphicsFamily;
+		poolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+		if (vkCreateCommandPool(m_LogicalDevice, &poolCreateInfo, m_Context->Allocator, &m_GraphicsCommandPool) != VK_SUCCESS)
+			throw std::runtime_error("Couldn't create vulkan logical device!");
+		
+		OWL_CORE_INFO("=== Graphics command pool created.");
 	}
 }

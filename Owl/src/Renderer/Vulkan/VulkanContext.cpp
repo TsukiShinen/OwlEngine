@@ -1,6 +1,7 @@
 ﻿#include "opch.h"
 #include "VulkanContext.h"
 
+#include "VulkanCommandBuffer.h"
 #include "VulkanRenderPass.h"
 #include "VulkanDevice.h"
 #include "VulkanSwapchain.h"
@@ -10,14 +11,19 @@ namespace Owl
 {
 	void VulkanContext::Initialize()
 	{
+		OWL_PROFILE_FUNCTION();
 		Surface = Application::Get()->GetWindow()->CreateVulkanSurface(this);
 		Device = new VulkanDevice(this);
 		Swapchain = new VulkanSwapchain(this, FramebufferWidth, FramebufferHeight);
 		MainRenderPass = new VulkanRenderPass(this, {0, 0, FramebufferWidth, FramebufferHeight}, 1, 0);
+		CreateCommandBuffers();
 	}
 
 	VulkanContext::~VulkanContext()
 	{
+		OWL_PROFILE_FUNCTION();
+		for (const auto& graphicsCommandBuffer : GraphicsCommandBuffers)
+			delete graphicsCommandBuffer;
 		delete MainRenderPass;
 		delete Swapchain;
 		delete Device;
@@ -40,5 +46,15 @@ namespace Owl
 
 		OWL_CORE_WARN("[VulkanContext] Unable to find suitable memory type!");
 		return -1;
+	}
+
+	void VulkanContext::CreateCommandBuffers()
+	{
+		OWL_PROFILE_FUNCTION();
+		GraphicsCommandBuffers.resize(Swapchain->GetImageCount());
+
+		for (uint32_t i = 0; i < Swapchain->GetImageCount(); ++i) {
+			GraphicsCommandBuffers[i] = new VulkanCommandBuffer(this, Device->GetGraphicsCommandPool(), true);
+		}
 	}
 }
