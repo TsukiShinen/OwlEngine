@@ -1,6 +1,7 @@
 ﻿#include "opch.h"
 #include "VulkanContext.h"
 
+#include "VulkanRenderPass.h"
 #include "VulkanDevice.h"
 #include "VulkanSwapchain.h"
 #include "Owl/Core/Application.h"
@@ -12,10 +13,12 @@ namespace Owl
 		Surface = Application::Get()->GetWindow()->CreateVulkanSurface(this);
 		Device = new VulkanDevice(this);
 		Swapchain = new VulkanSwapchain(this, FramebufferWidth, FramebufferHeight);
+		MainRenderPass = new VulkanRenderPass(this, {0, 0, FramebufferWidth, FramebufferHeight}, 1, 0);
 	}
 
 	VulkanContext::~VulkanContext()
 	{
+		delete MainRenderPass;
 		delete Swapchain;
 		delete Device;
 		vkDestroySurfaceKHR(Instance, Surface, Allocator);

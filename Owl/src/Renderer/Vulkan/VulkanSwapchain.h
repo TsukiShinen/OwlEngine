@@ -20,6 +20,8 @@ namespace Owl
 		uint32_t AcquireNextImage(uint64_t pTimeoutNanoSecond, VkSemaphore pImageSemaphore, VkFence pFence);
 		void Present(VkSemaphore pRenderCompleted, uint32_t pImageIndex);
 
+		[[nodiscard]] VkSurfaceFormatKHR GetImageFormat() const { return m_ImageFormat; }
+
 	private:
 		void Create(uint32_t pWidth, uint32_t pHeight);
 		void Destroy();

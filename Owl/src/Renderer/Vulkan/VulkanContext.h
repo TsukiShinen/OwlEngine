@@ -8,6 +8,7 @@ namespace Owl
 {
 	class VulkanDevice;
 	class VulkanSwapchain;
+	class VulkanRenderPass;
 
 	struct VulkanContext
 	{
@@ -27,6 +28,7 @@ namespace Owl
 		VkSurfaceKHR Surface;
 		VulkanDevice* Device;
 		VulkanSwapchain* Swapchain;
+		VulkanRenderPass* MainRenderPass;
 
 		uint32_t FramebufferWidth;
 		uint32_t FramebufferHeight;
