@@ -1,6 +1,7 @@
 ﻿#include "VulkanRendererApi.h"
 
 #include "VulkanDevice.h"
+#include "VulkanSwapchain.h"
 #include "Owl/Core/Application.h"
 #include "Owl/Debug/Assert.h"
 
@@ -18,6 +19,7 @@ namespace Owl
 		InitializeDebugMessage();
 		m_Context->Surface = Application::Get().GetWindow()->CreateVulkanSurface(this);
 		m_Context->Device = new VulkanDevice(m_Context);
+		m_Context->Swapchain = new VulkanSwapchain(m_Context, m_Context->FramebufferWidth, m_Context->FramebufferHeight);
 
 		OWL_CORE_INFO("=====================================");
 	}
@@ -33,6 +35,7 @@ namespace Owl
 			func(m_Context->Instance, m_Context->DebugMessenger, m_Context->Allocator);
 		}
 #endif
+		delete m_Context->Swapchain;
 		delete m_Context->Device;
 		vkDestroySurfaceKHR(m_Context->Instance, m_Context->Surface, m_Context->Allocator);
 		vkDestroyInstance(m_Context->Instance, m_Context->Allocator);

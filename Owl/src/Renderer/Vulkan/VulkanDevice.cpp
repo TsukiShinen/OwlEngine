@@ -12,6 +12,7 @@ namespace Owl
 		SelectPhysicalDevice();
 		CreateLogicalDevice();
 		GetQueues();
+		DetectDepthFormat();
 	}
 
 	VulkanDevice::~VulkanDevice()
@@ -19,7 +20,7 @@ namespace Owl
 		vkDestroyDevice(m_LogicalDevice, m_Context->Allocator);
 	}
 
-	void VulkanDevice::QuerySwapchainSupport(const VkPhysicalDevice pDevice, SwapchainInfo& pSwapchainInfo)
+	void VulkanDevice::QuerySwapchainSupport(const VkPhysicalDevice pDevice, SwapchainInfo& pSwapchainInfo) const
 	{
 		OWL_PROFILE_FUNCTION();
 		auto result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(pDevice, m_Context->Surface,
@@ -28,18 +29,41 @@ namespace Owl
 
 		result = vkGetPhysicalDeviceSurfaceFormatsKHR(pDevice, m_Context->Surface, &pSwapchainInfo.FormatCount,
 		                                              nullptr);
-		OWL_CORE_ASSERT(result == VK_SUCCESS, "[VulkanDevice] Couldn't Get surface format count!")
-		result = vkGetPhysicalDeviceSurfaceFormatsKHR(pDevice, m_Context->Surface, &pSwapchainInfo.FormatCount,
-		                                              pSwapchainInfo.Formats.data());
 		OWL_CORE_ASSERT(result == VK_SUCCESS, "[VulkanDevice] Couldn't Get surface formats!")
+		pSwapchainInfo.Formats.resize(pSwapchainInfo.FormatCount);
+		vkGetPhysicalDeviceSurfaceFormatsKHR(pDevice, m_Context->Surface, &pSwapchainInfo.FormatCount,
+		                                              pSwapchainInfo.Formats.data());
 
 		result = vkGetPhysicalDeviceSurfacePresentModesKHR(pDevice, m_Context->Surface,
 		                                                   &pSwapchainInfo.PresentModeCount, nullptr);
-		OWL_CORE_ASSERT(result == VK_SUCCESS, "[VulkanDevice] Couldn't Get surface present mode count!")
-		result = vkGetPhysicalDeviceSurfacePresentModesKHR(pDevice, m_Context->Surface,
+		OWL_CORE_ASSERT(result == VK_SUCCESS, "[VulkanDevice] Couldn't Get surface present modes!")
+		pSwapchainInfo.PresentModes.resize(pSwapchainInfo.PresentModeCount);
+		vkGetPhysicalDeviceSurfacePresentModesKHR(pDevice, m_Context->Surface,
 		                                                   &pSwapchainInfo.PresentModeCount,
 		                                                   pSwapchainInfo.PresentModes.data());
-		OWL_CORE_ASSERT(result == VK_SUCCESS, "[VulkanDevice] Couldn't Get surface present modes!")
+	}
+
+	void VulkanDevice::DetectDepthFormat()
+	{
+		OWL_PROFILE_FUNCTION();
+		constexpr uint64_t candidateCount = 3;
+		constexpr VkFormat candidates[3] = {
+			VK_FORMAT_D32_SFLOAT,
+			VK_FORMAT_D32_SFLOAT_S8_UINT,
+			VK_FORMAT_D24_UNORM_S8_UINT};
+
+		constexpr uint32_t flags = VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT;
+		for (uint64_t i = 0; i < candidateCount; ++i) {
+			VkFormatProperties properties;
+			vkGetPhysicalDeviceFormatProperties(m_PhysicalDevice, candidates[i], &properties);
+
+			if ((properties.linearTilingFeatures & flags) == flags)
+				m_DepthFormat = candidates[i];
+			else if ((properties.optimalTilingFeatures & flags) == flags)
+				m_DepthFormat = candidates[i];
+		}
+		if (!m_DepthFormat)
+			throw std::runtime_error("[VulkanDevice] Failed to find a supported format!");
 	}
 
 	void VulkanDevice::SelectPhysicalDevice()

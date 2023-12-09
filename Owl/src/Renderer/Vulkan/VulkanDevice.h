@@ -29,6 +29,7 @@ namespace Owl
 
 		bool IsValid()
 		{
+			// TODO : Should be in config
 			return GraphicsFamily != -1 || PresentFamily != -1 || TransferFamily != -1;
 		}
 	};
@@ -51,9 +52,23 @@ namespace Owl
 		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, MemoryTagRenderer); }
 		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(pBlock), MemoryTagRenderer); }
 
-	private:
 		void QuerySwapchainSupport(VkPhysicalDevice pDevice,
-		                                  SwapchainInfo& pSwapchainInfo);
+								   SwapchainInfo& pSwapchainInfo) const;
+		void DetectDepthFormat();
+
+		VkDevice& GetLogicalDevice() { return m_LogicalDevice; }
+		VkPhysicalDevice& GetPhysicalDevice() { return m_PhysicalDevice; }
+
+		QueueFamilyIndices& GetQueueFamilyIndices() { return m_QueueFamilyIndices; }
+		SwapchainInfo& GetSwapchainInfo() { return m_SwapchainInfo; }
+		
+		VkQueue& GetGraphicsQueue() { return m_Graphics; }
+		VkQueue& GetPresentQueue() { return m_Present; }
+		VkQueue& GetTransferQueue() { return m_Transfer; }
+
+		VkFormat& GetDepthFormat() { return m_DepthFormat; }
+
+	private:
 		void SelectPhysicalDevice();
 		bool DoPhysicalDeviceMeetRequirements(VkPhysicalDevice pDevice,
 		                                      const VkPhysicalDeviceFeatures* pFeatures,
@@ -77,5 +92,7 @@ namespace Owl
 		PhysicalDeviceRequirement m_PhysicalDeviceRequirement{};
 		QueueFamilyIndices m_QueueFamilyIndices{};
 		SwapchainInfo m_SwapchainInfo{};
+
+		VkFormat m_DepthFormat;
 	};
 }
