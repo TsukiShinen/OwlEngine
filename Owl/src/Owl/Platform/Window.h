@@ -21,7 +21,7 @@ namespace Owl
 
 		virtual ~Window() = default;
 
-		virtual VkSurfaceKHR CreateVulkanSurface(VulkanRendererApi* pRenderer) = 0;
+		virtual VkSurfaceKHR CreateVulkanSurface(const VulkanContext* pRenderer) = 0;
 		virtual void Update() = 0;
 
 		[[nodiscard]] virtual uint32_t GetWidth() const = 0;

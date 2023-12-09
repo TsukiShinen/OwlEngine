@@ -17,9 +17,7 @@ namespace Owl
 
 		InitializeInstance(pApplicationName);
 		InitializeDebugMessage();
-		m_Context->Surface = Application::Get().GetWindow()->CreateVulkanSurface(this);
-		m_Context->Device = new VulkanDevice(m_Context);
-		m_Context->Swapchain = new VulkanSwapchain(m_Context, m_Context->FramebufferWidth, m_Context->FramebufferHeight);
+		m_Context->Initialize();
 
 		OWL_CORE_INFO("=====================================");
 	}
@@ -35,10 +33,6 @@ namespace Owl
 			func(m_Context->Instance, m_Context->DebugMessenger, m_Context->Allocator);
 		}
 #endif
-		delete m_Context->Swapchain;
-		delete m_Context->Device;
-		vkDestroySurfaceKHR(m_Context->Instance, m_Context->Surface, m_Context->Allocator);
-		vkDestroyInstance(m_Context->Instance, m_Context->Allocator);
 		delete m_Context;
 	}
 
@@ -73,7 +67,7 @@ namespace Owl
 		// ===== Required Extensions =====
 		std::vector<const char*> requiredExtensions{};
 		requiredExtensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME);
-		requiredExtensions.emplace_back(Application::Get().GetWindow()->GetVulkanRequiredExtension());
+		requiredExtensions.emplace_back(Application::Get()->GetWindow()->GetVulkanRequiredExtension());
 #ifdef OWL_DEBUG
 		requiredExtensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 #endif

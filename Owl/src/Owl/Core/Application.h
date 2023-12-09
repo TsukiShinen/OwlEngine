@@ -58,7 +58,7 @@ namespace Owl
 
 		const Scope<Window>& GetWindow() { return m_Window; }
 
-		static Application& Get() { return *s_Instance; }
+		static Application* Get() { return s_Instance; }
 
 	protected:
 		virtual void OnEvent(Event& pEvent);

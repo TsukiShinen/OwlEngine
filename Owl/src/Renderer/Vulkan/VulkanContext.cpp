@@ -7,7 +7,7 @@
 
 namespace Owl
 {
-	VulkanContext::VulkanContext()
+	void VulkanContext::Initialize()
 	{
 		Surface = Application::Get()->GetWindow()->CreateVulkanSurface(this);
 		Device = new VulkanDevice(this);
@@ -22,7 +22,7 @@ namespace Owl
 		vkDestroyInstance(Instance, Allocator);
 	}
 
-	int VulkanContext::FindMemoryIndex(const uint32_t pTypeFilter, const VkFlags pPropertyFlags)
+	int VulkanContext::FindMemoryIndex(const uint32_t pTypeFilter, const VkFlags pPropertyFlags) const
 	{
 		OWL_PROFILE_FUNCTION();
 		VkPhysicalDeviceMemoryProperties memoryProperties;

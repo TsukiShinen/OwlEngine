@@ -17,7 +17,7 @@ namespace Owl
 		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(pBlock), MemoryTagWindow); }
 
 		void Initialize(const WindowProps& pWindowProps);
-		VkSurfaceKHR CreateVulkanSurface(VulkanRendererApi* pRenderer) override;
+		VkSurfaceKHR CreateVulkanSurface(const VulkanContext* pRenderer) override;
 		void Update() override;
 
 		[[nodiscard]] uint32_t GetWidth() const override { return m_Data.Width; }

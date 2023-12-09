@@ -174,7 +174,7 @@ namespace Owl
 			VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
 			true, VK_IMAGE_ASPECT_DEPTH_BIT);
 
-		OWL_INFO("Vulkan Swapchain created successfully.");
+		OWL_CORE_INFO("=== Vulkan Swapchain created successfully.");
 	}
 
 	void VulkanSwapchain::Destroy()
