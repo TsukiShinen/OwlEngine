@@ -28,6 +28,8 @@ namespace Owl
 		
 		void Begin(VulkanCommandBuffer pCommandBuffer, VkFramebuffer pFramebuffer);
 		void End(VulkanCommandBuffer pCommandBuffer);
+		
+		VkRenderPass& GetHandle() { return m_Handle; }
 
 	private:
 		VulkanContext* m_Context;

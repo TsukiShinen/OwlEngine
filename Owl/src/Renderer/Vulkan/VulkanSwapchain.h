@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "VulkanContext.h"
+#include "VulkanFrameBuffer.h"
 #include "VulkanImage.h"
 
 namespace Owl
@@ -8,7 +9,6 @@ namespace Owl
 	class VulkanSwapchain
 	{
 	public:
-		static constexpr uint8_t k_MaxFrameInFlight = 2;
 		
 		VulkanSwapchain(VulkanContext* pContext, uint32_t pWidth, uint32_t pHeight);
 		~VulkanSwapchain();
@@ -22,6 +22,7 @@ namespace Owl
 
 		[[nodiscard]] VkSurfaceFormatKHR GetImageFormat() const { return m_ImageFormat; }
 		[[nodiscard]] uint32_t GetImageCount() const { return m_ImageCount; }
+		[[nodiscard]] uint8_t GetMaxFrameInFlight() const { return m_MaxFrameInFlight; }
 
 	private:
 		void Create(uint32_t pWidth, uint32_t pHeight);
@@ -36,6 +37,10 @@ namespace Owl
 		VkImageView* m_Views;
 
 		VulkanImage* m_DepthAttachment;
+
+		std::vector<VulkanFrameBuffer*> m_FrameBuffers;
+		uint8_t m_MaxFrameInFlight = 2;
+		friend class VulkanContext;
 	};
 	
 }

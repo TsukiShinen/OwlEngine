@@ -11,6 +11,7 @@ namespace Owl
 	class VulkanSwapchain;
 	class VulkanRenderPass;
 	class VulkanCommandBuffer;
+	class VulkanFence;
 
 	struct VulkanContext
 	{
@@ -34,11 +35,19 @@ namespace Owl
 
 		std::vector<VulkanCommandBuffer*> GraphicsCommandBuffers;
 
+		std::vector<VkSemaphore> ImageAvailableSemaphore;
+		std::vector<VkSemaphore> QueueCompleteSemaphore;
+		std::vector<VulkanFence*> InFlightFences;
+
+		VulkanFence** ImagesInFlight;
+
 		uint32_t FramebufferWidth;
 		uint32_t FramebufferHeight;
 
 		uint8_t CurrentFrame;
 	private:
+		void RegenerateFrameBuffers();
 		void CreateCommandBuffers();
+		void CreateSemaphoresAndFences();
 	};
 }

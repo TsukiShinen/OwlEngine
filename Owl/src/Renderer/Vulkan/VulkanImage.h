@@ -25,5 +25,6 @@ namespace Owl
 		VkImageView m_View;
 		uint32_t m_Width;
 		uint32_t m_Height;
+		friend class VulkanContext;
 	};
 }

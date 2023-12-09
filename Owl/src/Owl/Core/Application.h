@@ -53,11 +53,13 @@ namespace Owl
 		virtual void PlaySystem();
 
 		void Run();
+		glm::vec2 GetFrameBufferSize() const;
 
 		const ApplicationSpecification& GetSpecification() const { return m_Specification; }
-
+		
 		const Scope<Window>& GetWindow() { return m_Window; }
 
+		
 		static Application* Get() { return s_Instance; }
 
 	protected:

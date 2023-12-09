@@ -62,6 +62,8 @@ namespace Owl
 		} else if (result != VK_SUCCESS) {
 			OWL_CORE_CRITICAL("[VulkanSwapchain] Failed to present swap chain image!");
 		}
+
+		m_Context->CurrentFrame = (m_Context->CurrentFrame + 1) % m_MaxFrameInFlight;
 	}
 
 	void VulkanSwapchain::Create(const uint32_t pWidth, const uint32_t pHeight)

@@ -81,6 +81,11 @@ namespace Owl
 		}
 	}
 
+	glm::vec2 Application::GetFrameBufferSize() const
+	{
+		return glm::vec2(m_Window->GetWidth(), m_Window->GetHeight());
+	}
+
 	void Application::OnEvent(Event& pEvent)
 	{
 		OWL_PROFILE_FUNCTION();
