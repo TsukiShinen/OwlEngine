@@ -27,19 +27,22 @@ namespace Owl
 		int ComputeFamily = -1;
 		int TransferFamily = -1;
 
-		bool IsValid()
+		[[nodiscard]] bool IsValid(const PhysicalDeviceRequirement& pRequirement) const
 		{
-			// TODO : Should be in config
-			return GraphicsFamily != -1 || PresentFamily != -1 || TransferFamily != -1;
+			return (!pRequirement.Graphics || (pRequirement.Graphics && GraphicsFamily != -1))
+				&& (!pRequirement.Present || (pRequirement.Graphics && PresentFamily != -1))
+				&& (!pRequirement.Compute || (pRequirement.Graphics && ComputeFamily != -1))
+				&& (!pRequirement.Transfer || (pRequirement.Graphics && TransferFamily != -1));
 		}
+
+		[[nodiscard]] bool HaveSeparatePresentFamily() const { return GraphicsFamily != PresentFamily; }
+		[[nodiscard]] bool HaveSeparateTransferFamily() const { return GraphicsFamily != TransferFamily; }
 	};
 
 	struct SwapchainInfo
 	{
 		VkSurfaceCapabilitiesKHR Capabilities;
-		uint32_t FormatCount;
 		std::vector<VkSurfaceFormatKHR> Formats;
-		uint32_t PresentModeCount;
 		std::vector<VkPresentModeKHR> PresentModes;
 	};
 

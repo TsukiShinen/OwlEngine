@@ -2,9 +2,26 @@
 #include "VulkanContext.h"
 
 #include "VulkanDevice.h"
+#include "VulkanSwapchain.h"
+#include "Owl/Core/Application.h"
 
 namespace Owl
 {
+	VulkanContext::VulkanContext()
+	{
+		Surface = Application::Get()->GetWindow()->CreateVulkanSurface(this);
+		Device = new VulkanDevice(this);
+		Swapchain = new VulkanSwapchain(this, FramebufferWidth, FramebufferHeight);
+	}
+
+	VulkanContext::~VulkanContext()
+	{
+		delete Swapchain;
+		delete Device;
+		vkDestroySurfaceKHR(Instance, Surface, Allocator);
+		vkDestroyInstance(Instance, Allocator);
+	}
+
 	int VulkanContext::FindMemoryIndex(const uint32_t pTypeFilter, const VkFlags pPropertyFlags)
 	{
 		OWL_PROFILE_FUNCTION();

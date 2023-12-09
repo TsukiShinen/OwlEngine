@@ -118,7 +118,7 @@ namespace Owl
 		swapchainCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
 		// Setup the queue family indices
-		if (m_Context->Device->GetQueueFamilyIndices().GraphicsFamily != m_Context->Device->GetQueueFamilyIndices().PresentFamily) {
+		if (m_Context->Device->GetQueueFamilyIndices().HaveSeparatePresentFamily()) {
 			const uint32_t queueFamilyIndices[] = {
 				static_cast<uint32_t>(m_Context->Device->GetQueueFamilyIndices().GraphicsFamily),
 				static_cast<uint32_t>(m_Context->Device->GetQueueFamilyIndices().PresentFamily)};

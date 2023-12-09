@@ -27,19 +27,21 @@ namespace Owl
 		                                                        &pSwapchainInfo.Capabilities);
 		OWL_CORE_ASSERT(result == VK_SUCCESS, "[VulkanDevice] Couldn't Get surface capabilities!")
 
-		result = vkGetPhysicalDeviceSurfaceFormatsKHR(pDevice, m_Context->Surface, &pSwapchainInfo.FormatCount,
+		uint32_t formatsCount;
+		result = vkGetPhysicalDeviceSurfaceFormatsKHR(pDevice, m_Context->Surface, &formatsCount,
 		                                              nullptr);
 		OWL_CORE_ASSERT(result == VK_SUCCESS, "[VulkanDevice] Couldn't Get surface formats!")
-		pSwapchainInfo.Formats.resize(pSwapchainInfo.FormatCount);
-		vkGetPhysicalDeviceSurfaceFormatsKHR(pDevice, m_Context->Surface, &pSwapchainInfo.FormatCount,
+		pSwapchainInfo.Formats.resize(formatsCount);
+		vkGetPhysicalDeviceSurfaceFormatsKHR(pDevice, m_Context->Surface, &formatsCount,
 		                                              pSwapchainInfo.Formats.data());
 
+		uint32_t modesCount;
 		result = vkGetPhysicalDeviceSurfacePresentModesKHR(pDevice, m_Context->Surface,
-		                                                   &pSwapchainInfo.PresentModeCount, nullptr);
+		                                                   &modesCount, nullptr);
 		OWL_CORE_ASSERT(result == VK_SUCCESS, "[VulkanDevice] Couldn't Get surface present modes!")
-		pSwapchainInfo.PresentModes.resize(pSwapchainInfo.PresentModeCount);
+		pSwapchainInfo.PresentModes.resize(modesCount);
 		vkGetPhysicalDeviceSurfacePresentModesKHR(pDevice, m_Context->Surface,
-		                                                   &pSwapchainInfo.PresentModeCount,
+		                                                   &modesCount,
 		                                                   pSwapchainInfo.PresentModes.data());
 	}
 
@@ -161,7 +163,7 @@ namespace Owl
 			}
 		}
 
-		if (!pQueueFamilyIndices.IsValid())
+		if (!pQueueFamilyIndices.IsValid(m_PhysicalDeviceRequirement))
 		{
 			OWL_CORE_ERROR("[VulkanDevice] Missing queue family!");
 			return false;
@@ -169,7 +171,7 @@ namespace Owl
 
 		QuerySwapchainSupport(pDevice, pSwapchainInfo);
 
-		if (pSwapchainInfo.FormatCount < 1 || pSwapchainInfo.PresentModeCount < 1)
+		if (pSwapchainInfo.Formats.size() < 1 || pSwapchainInfo.PresentModes.size() < 1)
 		{
 			OWL_CORE_ERROR("[VulkanDevice] SwapchainInfo not valid!");
 			return false;
@@ -224,8 +226,8 @@ namespace Owl
 	void VulkanDevice::CreateLogicalDevice()
 	{
 		OWL_PROFILE_FUNCTION();
-		const bool presentSharesGraphicsQueue = m_QueueFamilyIndices.GraphicsFamily == m_QueueFamilyIndices.PresentFamily;
-		const bool transferSharesGraphicsQueue = m_QueueFamilyIndices.GraphicsFamily == m_QueueFamilyIndices.TransferFamily;
+		const bool presentSharesGraphicsQueue = !m_QueueFamilyIndices.HaveSeparatePresentFamily();
+		const bool transferSharesGraphicsQueue = !m_QueueFamilyIndices.HaveSeparateTransferFamily();
 		uint32_t indexCount = 1;
 		if (!presentSharesGraphicsQueue)
 			indexCount++;
