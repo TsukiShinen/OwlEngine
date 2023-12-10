@@ -28,18 +28,22 @@ namespace Owl
 		vkFreeCommandBuffers(m_Context->Device->GetLogicalDevice(), m_Pool, 1, &m_Handle);
 	}
 
-	void VulkanCommandBuffer::Begin(const bool pIsRenderPassContinue, const bool pIsSimultaneousUse, const bool pIsSingUse)
+	void VulkanCommandBuffer::Begin(const bool pIsRenderPassContinue, const bool pIsSimultaneousUse,
+	                                const bool pIsSingUse)
 	{
 		OWL_PROFILE_FUNCTION();
 		VkCommandBufferBeginInfo beginInfo = {VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
 		beginInfo.flags = 0;
-		if (pIsSingUse) {
+		if (pIsSingUse)
+		{
 			beginInfo.flags |= VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 		}
-		if (pIsRenderPassContinue) {
+		if (pIsRenderPassContinue)
+		{
 			beginInfo.flags |= VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
 		}
-		if (pIsSimultaneousUse) {
+		if (pIsSimultaneousUse)
+		{
 			beginInfo.flags |= VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 		}
 
@@ -69,7 +73,7 @@ namespace Owl
 	}
 
 	VulkanCommandBuffer* VulkanCommandBuffer::CreateAndBeginSingleTimeUse(VulkanContext* pVulkanContext,
-		VkCommandPool& pPool)
+	                                                                      VkCommandPool& pPool)
 	{
 		OWL_PROFILE_FUNCTION();
 		const auto commandBuffer = new VulkanCommandBuffer(pVulkanContext, pPool, true);
@@ -78,7 +82,7 @@ namespace Owl
 	}
 
 	void VulkanCommandBuffer::DeleteAndEndSingleTimeUse(VulkanContext* pVulkanContext, VkCommandPool& pPool,
-		VulkanCommandBuffer* pCommandBuffer, VkQueue pQueue)
+	                                                    VulkanCommandBuffer* pCommandBuffer, VkQueue pQueue)
 	{
 		OWL_PROFILE_FUNCTION();
 		pCommandBuffer->End();

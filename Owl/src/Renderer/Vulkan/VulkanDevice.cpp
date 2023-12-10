@@ -19,7 +19,7 @@ namespace Owl
 	VulkanDevice::~VulkanDevice()
 	{
 		vkDestroyCommandPool(m_LogicalDevice, m_GraphicsCommandPool, m_Context->Allocator);
-		
+
 		vkDestroyDevice(m_LogicalDevice, m_Context->Allocator);
 	}
 
@@ -36,7 +36,7 @@ namespace Owl
 		OWL_CORE_ASSERT(result == VK_SUCCESS, "[VulkanDevice] Couldn't Get surface formats!")
 		pSwapchainInfo.Formats.resize(formatsCount);
 		vkGetPhysicalDeviceSurfaceFormatsKHR(pDevice, m_Context->Surface, &formatsCount,
-		                                              pSwapchainInfo.Formats.data());
+		                                     pSwapchainInfo.Formats.data());
 
 		uint32_t modesCount;
 		result = vkGetPhysicalDeviceSurfacePresentModesKHR(pDevice, m_Context->Surface,
@@ -44,8 +44,8 @@ namespace Owl
 		OWL_CORE_ASSERT(result == VK_SUCCESS, "[VulkanDevice] Couldn't Get surface present modes!")
 		pSwapchainInfo.PresentModes.resize(modesCount);
 		vkGetPhysicalDeviceSurfacePresentModesKHR(pDevice, m_Context->Surface,
-		                                                   &modesCount,
-		                                                   pSwapchainInfo.PresentModes.data());
+		                                          &modesCount,
+		                                          pSwapchainInfo.PresentModes.data());
 	}
 
 	void VulkanDevice::DetectDepthFormat()
@@ -55,10 +55,12 @@ namespace Owl
 		constexpr VkFormat candidates[3] = {
 			VK_FORMAT_D32_SFLOAT,
 			VK_FORMAT_D32_SFLOAT_S8_UINT,
-			VK_FORMAT_D24_UNORM_S8_UINT};
+			VK_FORMAT_D24_UNORM_S8_UINT
+		};
 
 		constexpr uint32_t flags = VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT;
-		for (uint64_t i = 0; i < candidateCount; ++i) {
+		for (uint64_t i = 0; i < candidateCount; ++i)
+		{
 			VkFormatProperties properties;
 			vkGetPhysicalDeviceFormatProperties(m_PhysicalDevice, candidates[i], &properties);
 
@@ -246,7 +248,8 @@ namespace Owl
 
 		float queuePriority = 1.0f;
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos(indexCount);
-		for (uint32_t i = 0; i < indexCount; ++i) {
+		for (uint32_t i = 0; i < indexCount; ++i)
+		{
 			queueCreateInfos[i].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 			queueCreateInfos[i].queueFamilyIndex = indices[i];
 			queueCreateInfos[i].queueCount = 1;
@@ -278,10 +281,10 @@ namespace Owl
 	void VulkanDevice::GetQueues()
 	{
 		vkGetDeviceQueue(
-		m_LogicalDevice,
-		m_QueueFamilyIndices.GraphicsFamily,
-		0,
-		&m_Graphics);
+			m_LogicalDevice,
+			m_QueueFamilyIndices.GraphicsFamily,
+			0,
+			&m_Graphics);
 
 		vkGetDeviceQueue(
 			m_LogicalDevice,
@@ -302,9 +305,10 @@ namespace Owl
 		VkCommandPoolCreateInfo poolCreateInfo{VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO};
 		poolCreateInfo.queueFamilyIndex = m_QueueFamilyIndices.GraphicsFamily;
 		poolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-		if (vkCreateCommandPool(m_LogicalDevice, &poolCreateInfo, m_Context->Allocator, &m_GraphicsCommandPool) != VK_SUCCESS)
+		if (vkCreateCommandPool(m_LogicalDevice, &poolCreateInfo, m_Context->Allocator, &m_GraphicsCommandPool) !=
+			VK_SUCCESS)
 			throw std::runtime_error("Couldn't create vulkan logical device!");
-		
+
 		OWL_CORE_INFO("=== Graphics command pool created.");
 	}
 }

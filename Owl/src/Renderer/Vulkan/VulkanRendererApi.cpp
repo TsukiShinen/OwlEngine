@@ -65,13 +65,14 @@ namespace Owl
 
 			if (m_Context->RecreateSwapChain())
 				OWL_CORE_INFO("=== Vulkan Swapchain resized succesfully!");
-			
+
 			return false;
 		}
 
 		m_Context->InFlightFences[m_Context->CurrentFrame]->Wait(UINT64_MAX);
 
-		if (!m_Context->Swapchain->AcquireNextImage(UINT64_MAX, m_Context->ImageAvailableSemaphore[m_Context->CurrentFrame], nullptr, m_Context->ImageIndex))
+		if (!m_Context->Swapchain->AcquireNextImage(
+			UINT64_MAX, m_Context->ImageAvailableSemaphore[m_Context->CurrentFrame], nullptr, m_Context->ImageIndex))
 			return false;
 
 		VulkanCommandBuffer* commandBuffer = m_Context->GraphicsCommandBuffers[m_Context->ImageIndex];
@@ -95,8 +96,9 @@ namespace Owl
 		vkCmdSetViewport(commandBuffer->GetHandle(), 0, 1, &viewport);
 		vkCmdSetScissor(commandBuffer->GetHandle(), 0, 1, &scissor);
 
-		m_Context->MainRenderPass->Begin(commandBuffer, m_Context->Swapchain->GetFrameBufferAt(m_Context->ImageIndex)->GetHandle());
-		
+		m_Context->MainRenderPass->Begin(commandBuffer,
+		                                 m_Context->Swapchain->GetFrameBufferAt(m_Context->ImageIndex)->GetHandle());
+
 		return true;
 	}
 
@@ -106,40 +108,42 @@ namespace Owl
 
 		VulkanCommandBuffer* commandBuffer = m_Context->GraphicsCommandBuffers[m_Context->ImageIndex];
 
-	    m_Context->MainRenderPass->End(commandBuffer);
-		
-	    commandBuffer->End();
+		m_Context->MainRenderPass->End(commandBuffer);
 
-	    if (m_Context->ImagesInFlight[m_Context->ImageIndex] != nullptr)
-	        m_Context->ImagesInFlight[m_Context->ImageIndex]->Wait(UINT64_MAX);
+		commandBuffer->End();
 
-	    m_Context->ImagesInFlight[m_Context->ImageIndex] = m_Context->InFlightFences[m_Context->CurrentFrame];
+		if (m_Context->ImagesInFlight[m_Context->ImageIndex] != nullptr)
+			m_Context->ImagesInFlight[m_Context->ImageIndex]->Wait(UINT64_MAX);
 
-	    m_Context->InFlightFences[m_Context->CurrentFrame]->Reset();
+		m_Context->ImagesInFlight[m_Context->ImageIndex] = m_Context->InFlightFences[m_Context->CurrentFrame];
 
-	    VkSubmitInfo submitInfo{VK_STRUCTURE_TYPE_SUBMIT_INFO};
-	    submitInfo.commandBufferCount = 1;
-	    submitInfo.pCommandBuffers = &commandBuffer->GetHandle();
-	    submitInfo.signalSemaphoreCount = 1;
-	    submitInfo.pSignalSemaphores = &m_Context->QueueCompleteSemaphore[m_Context->CurrentFrame];
-	    submitInfo.waitSemaphoreCount = 1;
-	    submitInfo.pWaitSemaphores = &m_Context->ImageAvailableSemaphore[m_Context->CurrentFrame];
+		m_Context->InFlightFences[m_Context->CurrentFrame]->Reset();
+
+		VkSubmitInfo submitInfo{VK_STRUCTURE_TYPE_SUBMIT_INFO};
+		submitInfo.commandBufferCount = 1;
+		submitInfo.pCommandBuffers = &commandBuffer->GetHandle();
+		submitInfo.signalSemaphoreCount = 1;
+		submitInfo.pSignalSemaphores = &m_Context->QueueCompleteSemaphore[m_Context->CurrentFrame];
+		submitInfo.waitSemaphoreCount = 1;
+		submitInfo.pWaitSemaphores = &m_Context->ImageAvailableSemaphore[m_Context->CurrentFrame];
 
 		constexpr VkPipelineStageFlags flags[1] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
-	    submitInfo.pWaitDstStageMask = flags;
+		submitInfo.pWaitDstStageMask = flags;
 
 		if (VkResult result = vkQueueSubmit(
 			m_Context->Device->GetGraphicsQueue(),
 			1,
 			&submitInfo,
-			m_Context->InFlightFences[m_Context->CurrentFrame]->GetHandle()); result != VK_SUCCESS) {
-	        OWL_CORE_ERROR("vkQueueSubmit failed with result: {0}", result);
-	        return;
-	    }
+			m_Context->InFlightFences[m_Context->CurrentFrame]->GetHandle()); result != VK_SUCCESS)
+		{
+			OWL_CORE_ERROR("vkQueueSubmit failed with result: {0}", result);
+			return;
+		}
 
-	    commandBuffer->Submitted();
+		commandBuffer->Submitted();
 
-	    m_Context->Swapchain->Present(m_Context->QueueCompleteSemaphore[m_Context->CurrentFrame], m_Context->ImageIndex);
+		m_Context->Swapchain->Present(m_Context->QueueCompleteSemaphore[m_Context->CurrentFrame],
+		                              m_Context->ImageIndex);
 	}
 
 	void VulkanRendererApi::InitializeInstance(const std::string& pApplicationName) const
@@ -173,7 +177,7 @@ namespace Owl
 		createInfo.enabledLayerCount = static_cast<uint32_t>(requiredValidationLayer.size());
 		createInfo.ppEnabledLayerNames = requiredValidationLayer.data();
 
-		const VkResult result = vkCreateInstance(&createInfo,  m_Context->Allocator, &m_Context->Instance);
+		const VkResult result = vkCreateInstance(&createInfo, m_Context->Allocator, &m_Context->Instance);
 		OWL_CORE_ASSERT(result == VK_SUCCESS, "[VulkanRendererApi] Failed to create vkInstance!")
 
 		OWL_CORE_INFO("=== Vulkan Instance created successfully.");
@@ -197,8 +201,9 @@ namespace Owl
 		const auto func = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(
 			vkGetInstanceProcAddr(m_Context->Instance, "vkCreateDebugUtilsMessengerEXT"));
 		OWL_ASSERT(func, "[VulkanRendererApi] Failed to create debug messenger")
-		OWL_ASSERT(func(m_Context->Instance, &debugCreateInfo, m_Context->Allocator, &m_Context->DebugMessenger) == VK_SUCCESS,
-		           "[VulkanRendererApi] Failed to create debug messenger")
+		OWL_ASSERT(
+			func(m_Context->Instance, &debugCreateInfo, m_Context->Allocator, &m_Context->DebugMessenger) == VK_SUCCESS,
+			"[VulkanRendererApi] Failed to create debug messenger")
 
 		OWL_CORE_INFO("=== Vulkan debug message initialized successfully.");
 	}

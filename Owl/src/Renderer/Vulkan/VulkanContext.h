@@ -17,7 +17,7 @@ namespace Owl
 	{
 		void Initialize();
 		~VulkanContext();
-		
+
 		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, MemoryTagRenderer); }
 		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(pBlock), MemoryTagRenderer); }
 
@@ -50,6 +50,7 @@ namespace Owl
 
 		uint8_t CurrentFrame;
 		uint32_t ImageIndex;
+
 	private:
 		void RegenerateFrameBuffers();
 		void CreateCommandBuffers();

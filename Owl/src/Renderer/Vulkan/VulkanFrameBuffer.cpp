@@ -8,7 +8,7 @@ namespace Owl
 {
 	VulkanFrameBuffer::VulkanFrameBuffer(VulkanContext* pContext, VulkanRenderPass* pRenderPass, const uint32_t pWidth,
 	                                     const uint32_t pHeight, std::vector<VkImageView>& pAttachments)
-			: m_Context(pContext), m_Attachments(pAttachments), m_RenderPass(pRenderPass)
+		: m_Context(pContext), m_Attachments(pAttachments), m_RenderPass(pRenderPass)
 	{
 		VkFramebufferCreateInfo framebufferCreateInfo = {VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO};
 		framebufferCreateInfo.renderPass = m_RenderPass->GetHandle();
@@ -18,8 +18,9 @@ namespace Owl
 		framebufferCreateInfo.height = pHeight;
 		framebufferCreateInfo.layers = 1;
 
-		if (vkCreateFramebuffer(m_Context->Device->GetLogicalDevice(), &framebufferCreateInfo, m_Context->Allocator, &m_Handle) != VK_SUCCESS)
-				throw std::runtime_error("[VulkanFrameBuffer] Failed to create framebuffer!");
+		if (vkCreateFramebuffer(m_Context->Device->GetLogicalDevice(), &framebufferCreateInfo, m_Context->Allocator,
+		                        &m_Handle) != VK_SUCCESS)
+			throw std::runtime_error("[VulkanFrameBuffer] Failed to create framebuffer!");
 	};
 
 	VulkanFrameBuffer::~VulkanFrameBuffer()

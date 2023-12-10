@@ -75,15 +75,13 @@ namespace Owl
 			if (!m_IsMinimized)
 			{
 				OWL_PROFILE_SCOPE("RunLoop");
-				
+
 				if (Renderer::BeginFrame())
 				{
-					
-				
 					Renderer::EndFrame();
 				}
 			}
-			
+
 			m_Window->Update();
 		}
 	}

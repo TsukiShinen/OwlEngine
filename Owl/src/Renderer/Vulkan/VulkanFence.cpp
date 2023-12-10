@@ -11,11 +11,13 @@ namespace Owl
 		: m_Context(pContext), m_IsSignaled(pCreateSignaled)
 	{
 		VkFenceCreateInfo fenceCreateInfo{VK_STRUCTURE_TYPE_FENCE_CREATE_INFO};
-		if (m_IsSignaled) {
+		if (m_IsSignaled)
+		{
 			fenceCreateInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 		}
 
-		if (vkCreateFence(m_Context->Device->GetLogicalDevice(), &fenceCreateInfo, m_Context->Allocator, &m_Handle) != VK_SUCCESS)
+		if (vkCreateFence(m_Context->Device->GetLogicalDevice(), &fenceCreateInfo, m_Context->Allocator, &m_Handle) !=
+			VK_SUCCESS)
 			throw std::runtime_error("[VulkanFence] Failed to create fence!");
 	}
 
@@ -26,8 +28,10 @@ namespace Owl
 
 	bool VulkanFence::Wait(const uint64_t pTimoutNanoSecond)
 	{
-		if (!m_IsSignaled) {
-			switch (vkWaitForFences(m_Context->Device->GetLogicalDevice(), 1, &m_Handle, true, pTimoutNanoSecond)) {
+		if (!m_IsSignaled)
+		{
+			switch (vkWaitForFences(m_Context->Device->GetLogicalDevice(), 1, &m_Handle, true, pTimoutNanoSecond))
+			{
 			case VK_SUCCESS:
 				m_IsSignaled = true;
 				return true;
@@ -47,7 +51,8 @@ namespace Owl
 				OWL_CORE_WARN("[VulkanFence] - An unknown error has occurred.");
 				break;
 			}
-		} else
+		}
+		else
 			return true;
 
 		return false;
@@ -55,7 +60,8 @@ namespace Owl
 
 	void VulkanFence::Reset()
 	{
-		if (m_IsSignaled) {
+		if (m_IsSignaled)
+		{
 			if (vkResetFences(m_Context->Device->GetLogicalDevice(), 1, &m_Handle) != VK_SUCCESS)
 				throw std::runtime_error("[VulkanFence] Failed to reset fences");
 			m_IsSignaled = false;

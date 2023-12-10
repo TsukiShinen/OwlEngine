@@ -10,7 +10,6 @@
 
 namespace Owl
 {
-
 	void VulkanContext::Initialize()
 	{
 		OWL_PROFILE_FUNCTION();
@@ -18,7 +17,7 @@ namespace Owl
 		const auto sizeFrameBuffer = Application::Get()->GetFrameBufferSize();
 		FramebufferWidth = sizeFrameBuffer.x;
 		FramebufferHeight = sizeFrameBuffer.y;
-		
+
 		Surface = Application::Get()->GetWindow()->CreateVulkanSurface(this);
 		Device = new VulkanDevice(this);
 		Swapchain = new VulkanSwapchain(this, FramebufferWidth, FramebufferHeight);
@@ -33,7 +32,7 @@ namespace Owl
 	{
 		OWL_PROFILE_FUNCTION();
 		vkDeviceWaitIdle(Device->GetLogicalDevice());
-		
+
 		for (const auto& semaphore : ImageAvailableSemaphore)
 			vkDestroySemaphore(Device->GetLogicalDevice(), semaphore, Allocator);
 		for (const auto& semaphore : QueueCompleteSemaphore)
@@ -54,42 +53,45 @@ namespace Owl
 	bool VulkanContext::RecreateSwapChain()
 	{
 		if (IsRecreatingSwapchain)
-	        return false;
+			return false;
 
-	    if (FramebufferWidth == 0 || FramebufferHeight == 0) {
-	        Application::Get()->SetMinimized(true);
-	        return false;
-	    }
+		if (FramebufferWidth == 0 || FramebufferHeight == 0)
+		{
+			Application::Get()->SetMinimized(true);
+			return false;
+		}
 		Application::Get()->SetMinimized(false);
 
-	    IsRecreatingSwapchain = true;
+		IsRecreatingSwapchain = true;
 
-	    vkDeviceWaitIdle(Device->GetLogicalDevice());
+		vkDeviceWaitIdle(Device->GetLogicalDevice());
 
-	    for (uint32_t i = 0; i < Swapchain->GetImageCount(); ++i) {
-	        ImagesInFlight[i] = nullptr;
-	    }
+		for (uint32_t i = 0; i < Swapchain->GetImageCount(); ++i)
+		{
+			ImagesInFlight[i] = nullptr;
+		}
 
-	    Device->QuerySwapchainSupport(Device->GetPhysicalDevice(), Device->GetSwapchainInfo());
-	    Device->DetectDepthFormat();
+		Device->QuerySwapchainSupport(Device->GetPhysicalDevice(), Device->GetSwapchainInfo());
+		Device->DetectDepthFormat();
 
-	    Swapchain->ReCreate(FramebufferWidth, FramebufferHeight);
+		Swapchain->ReCreate(FramebufferWidth, FramebufferHeight);
 
-	    MainRenderPass->SetWidth(FramebufferWidth);
-	    MainRenderPass->SetHeight(FramebufferHeight);
+		MainRenderPass->SetWidth(FramebufferWidth);
+		MainRenderPass->SetHeight(FramebufferHeight);
 
-		for (uint32_t i = 0; i < Swapchain->GetImageCount(); ++i) {
-	        delete  GraphicsCommandBuffers[i];
-	        delete  Swapchain->GetFrameBufferAt(i);
-	    }
+		for (uint32_t i = 0; i < Swapchain->GetImageCount(); ++i)
+		{
+			delete GraphicsCommandBuffers[i];
+			delete Swapchain->GetFrameBufferAt(i);
+		}
 
-	    RegenerateFrameBuffers();
-	    CreateCommandBuffers();
+		RegenerateFrameBuffers();
+		CreateCommandBuffers();
 
-	    IsRecreatingSwapchain = false;
+		IsRecreatingSwapchain = false;
 		NeedNewSwapchain = false;
 
-	    return true;
+		return true;
 	}
 
 	int VulkanContext::FindMemoryIndex(const uint32_t pTypeFilter, const VkFlags pPropertyFlags) const
@@ -98,9 +100,12 @@ namespace Owl
 		VkPhysicalDeviceMemoryProperties memoryProperties;
 		vkGetPhysicalDeviceMemoryProperties(Device->GetPhysicalDevice(), &memoryProperties);
 
-		for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; ++i) {
+		for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; ++i)
+		{
 			// Check each memory type to see if its bit is set to 1.
-			if (pTypeFilter & (1 << i) && (memoryProperties.memoryTypes[i].propertyFlags & pPropertyFlags) == pPropertyFlags) {
+			if (pTypeFilter & (1 << i) && (memoryProperties.memoryTypes[i].propertyFlags & pPropertyFlags) ==
+				pPropertyFlags)
+			{
 				return i;
 			}
 		}
@@ -120,7 +125,8 @@ namespace Owl
 				Swapchain->m_DepthAttachment->m_View
 			};
 
-			Swapchain->m_FrameBuffers[i] = new VulkanFrameBuffer(this, MainRenderPass, FramebufferWidth, FramebufferHeight, attachments);
+			Swapchain->m_FrameBuffers[i] = new VulkanFrameBuffer(this, MainRenderPass, FramebufferWidth,
+			                                                     FramebufferHeight, attachments);
 		}
 	}
 
@@ -129,11 +135,12 @@ namespace Owl
 		OWL_PROFILE_FUNCTION();
 		GraphicsCommandBuffers.resize(Swapchain->GetImageCount());
 
-		for (uint32_t i = 0; i < Swapchain->GetImageCount(); ++i) {
+		for (uint32_t i = 0; i < Swapchain->GetImageCount(); ++i)
+		{
 			GraphicsCommandBuffers[i] = new VulkanCommandBuffer(this, Device->GetGraphicsCommandPool(), true);
 		}
 	}
-	
+
 	void VulkanContext::CreateSemaphoresAndFences()
 	{
 		ImageAvailableSemaphore.resize(Swapchain->GetMaxFrameInFlight());

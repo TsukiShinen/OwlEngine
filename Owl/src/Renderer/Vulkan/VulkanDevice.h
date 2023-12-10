@@ -56,7 +56,7 @@ namespace Owl
 		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(pBlock), MemoryTagRenderer); }
 
 		void QuerySwapchainSupport(VkPhysicalDevice pDevice,
-								   SwapchainInfo& pSwapchainInfo) const;
+		                           SwapchainInfo& pSwapchainInfo) const;
 		void DetectDepthFormat();
 
 		VkDevice& GetLogicalDevice() { return m_LogicalDevice; }
@@ -64,7 +64,7 @@ namespace Owl
 
 		QueueFamilyIndices& GetQueueFamilyIndices() { return m_QueueFamilyIndices; }
 		SwapchainInfo& GetSwapchainInfo() { return m_SwapchainInfo; }
-		
+
 		VkQueue& GetGraphicsQueue() { return m_Graphics; }
 		VkQueue& GetPresentQueue() { return m_Present; }
 		VkQueue& GetTransferQueue() { return m_Transfer; }
@@ -83,7 +83,7 @@ namespace Owl
 		void CreateCommandPools();
 
 		VulkanContext* m_Context;
-		
+
 		VkDevice m_LogicalDevice;
 		VkPhysicalDevice m_PhysicalDevice;
 
