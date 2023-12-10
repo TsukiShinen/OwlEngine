@@ -146,21 +146,64 @@ namespace Owl
 		case WM_KEYDOWN:
 		case WM_SYSKEYDOWN:
 			{
+				auto key = static_cast<KeyCode>(pWParam);
+				if (pWParam == VK_MENU) {
+					if (GetKeyState(VK_RMENU) & 0x8000) {
+						key = Key::RightAlt;
+					} else if (GetKeyState(VK_LMENU) & 0x8000) {
+						key = Key::LeftAlt;
+					}
+				} else if (pWParam == VK_SHIFT) {
+					if (GetKeyState(VK_RSHIFT) & 0x8000) {
+						key = Key::RightShift;
+					} else if (GetKeyState(VK_LSHIFT) & 0x8000) {
+						key = Key::LeftShift;
+					}
+				} else if (pWParam == VK_CONTROL) {
+					if (GetKeyState(VK_RCONTROL) & 0x8000) {
+						key = Key::RightControl;
+					} else if (GetKeyState(VK_LCONTROL) & 0x8000) {
+						key = Key::LeftControl;
+					}
+				}
+				
 				if ((pLParam & (1 << 30)) != 0)
-					KeyPressedEvent event(static_cast<KeyCode>(pWParam), true);
+					KeyPressedEvent event(key, true);
 				else
 				{
-					KeyPressedEvent event(static_cast<KeyCode>(pWParam), false);
+					KeyPressedEvent event(key, false);
 					m_Data.EventCallback(event);
-					Input::s_Keys[static_cast<KeyCode>(pWParam)] = true;
+					Input::s_Keys[key] = true;
 				}
-			case WM_KEYUP:
-			case WM_SYSKEYUP:
+			}
+			break;
+		case WM_KEYUP:
+		case WM_SYSKEYUP:
 				{
-					KeyReleasedEvent event(static_cast<KeyCode>(pWParam));
-					m_Data.EventCallback(event);
-					Input::s_Keys[static_cast<KeyCode>(pWParam)] = false;
-				}
+					auto key = static_cast<KeyCode>(pWParam);
+					if (pWParam == VK_MENU) {
+						if (GetKeyState(VK_RMENU) & 0x8000) {
+							key = Key::RightAlt;
+						} else if (GetKeyState(VK_LMENU) & 0x8000) {
+							key = Key::LeftAlt;
+						}
+					} else if (pWParam == VK_SHIFT) {
+						if (GetKeyState(VK_RSHIFT) & 0x8000) {
+							key = Key::RightShift;
+						} else if (GetKeyState(VK_LSHIFT) & 0x8000) {
+							key = Key::LeftShift;
+						}
+					} else if (pWParam == VK_CONTROL) {
+						if (GetKeyState(VK_RCONTROL) & 0x8000) {
+							key = Key::RightControl;
+						} else if (GetKeyState(VK_LCONTROL) & 0x8000) {
+							key = Key::LeftControl;
+						}
+					}
+					
+				KeyReleasedEvent event(key);
+				m_Data.EventCallback(event);
+				Input::s_Keys[key] = false;
 			}
 			break;
 		case WM_CHAR:
