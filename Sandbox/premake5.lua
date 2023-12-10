@@ -10,7 +10,9 @@ project "Sandbox"
     files
 	{
 		"src/**.h",
-		"src/**.cpp"
+		"src/**.cpp",
+		"**.vert",
+		"**.frag"
 	}
 
 	includedirs
@@ -27,6 +29,19 @@ project "Sandbox"
 	{
 		"Owl"
 	}
+
+	filter "files:**.vert"
+		buildmessage 'Compiling shader: %{file.abspath}'
+		buildcommands  {
+			'D:/VulkanSDK/1.3.268.0/Bin/glslc.exe %{file.abspath} -o %{wks.location}/bin/' .. outputdir .. '/%{prj.name}/%{file.reldirectory}/%{file.name}.spv'
+		}
+		buildoutputs { '%{wks.location}/bin/' .. outputdir .. '/%{prj.name}/%{file.reldirectory}/%{file.name}.spv' }
+	filter "files:**.frag"
+		buildmessage 'Compiling shader: %{file.abspath}'
+		buildcommands  {
+			'D:/VulkanSDK/1.3.268.0/Bin/glslc.exe %{file.abspath} -o %{wks.location}/bin/' .. outputdir .. '/%{prj.name}/%{file.reldirectory}/%{file.name}.spv'
+		}
+		buildoutputs { '%{wks.location}/bin/' .. outputdir .. '/%{prj.name}/%{file.reldirectory}/%{file.name}.spv' }
 
 	filter "system:windows"
 		systemversion "latest"
