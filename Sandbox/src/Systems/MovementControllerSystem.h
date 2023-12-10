@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <GLFW/glfw3.h>
 
 #include "RotateSystem.h"
 #include "../Components/KeyboardInputComponent.h"
@@ -7,7 +6,7 @@
 
 class MovementControllerSystem : public Owl::Ecs::System
 {
-public:
+public:/*
 	void MoveInPlaneXZ(GLFWwindow* pWindow, float pDeltaTime)
 	{
 		for (const auto entity : m_Entities)
@@ -44,5 +43,5 @@ public:
 			if (dot(moveDirection, moveDirection) > std::numeric_limits<float>::epsilon())
 				transform.Position += movement.MoveSpeed * pDeltaTime * normalize(moveDirection);
 		}
-	}
+	}*/
 };

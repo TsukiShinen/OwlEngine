@@ -26,12 +26,11 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 group "Dependencies"
     include "vendor/premake"
-    include "Owl/vendor/GLFW"
 group ""
 
 group "Core"
     include "Owl"
-    include "Owl-ScriptCore"
+    include "Owl-Test"
 group ""
 
 group "Tools"

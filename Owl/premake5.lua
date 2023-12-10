@@ -22,28 +22,25 @@ project "Owl"
 
     defines
 	{
-		"_CRT_SECURE_NO_WARNINGS",
-		"GLFW_INCLUDE_NONE"
+		"_CRT_SECURE_NO_WARNINGS"
 	}
 
     includedirs
     {
         "src",
 		"vendor/spdlog/include",
-		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.VulkanSDK}"
     }
     
     libdirs
-	 {
+	{
 		"%{LibraryDir.VulkanSDK}"
-	 }
+	}
     
     links
     {
-		"GLFW",
 		"%{Library.Vulkan}"
     }
 	

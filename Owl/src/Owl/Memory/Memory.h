@@ -6,6 +6,7 @@ namespace Owl
 	enum MemoryTag
 	{
 		MemoryTagUnknown,
+		MemoryTagLinearAllocator,
 		MemoryTagApplication,
 		MemoryTagWindow,
 		MemoryTagRenderer,
@@ -48,6 +49,7 @@ namespace Owl
 
 		inline static const char* k_MemoryTagStrings[MEMORY_TAG_MAX_TAGS] = {
 			"UNKNOWN    ",
+			"LINEAR     ",
 			"APPLICATION",
 			"WINDOW     ",
 			"RENDERER   ",
