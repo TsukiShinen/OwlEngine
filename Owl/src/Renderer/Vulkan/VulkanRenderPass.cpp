@@ -4,11 +4,12 @@
 
 #include "VulkanDevice.h"
 #include "VulkanSwapchain.h"
+#include "Owl/Debug/Log.h"
 
 namespace Owl
 {
-	VulkanRenderPass::VulkanRenderPass(VulkanContext* pContext, const glm::vec4 pRect, float pDepth, uint32_t pStencil)
-		: m_Context(pContext), m_Depth(pDepth), m_Stencil(pStencil)
+	VulkanRenderPass::VulkanRenderPass(VulkanContext* pContext, const glm::vec4 pRect)
+		: m_Context(pContext)
 	{
 		// Main subpass
 	    VkSubpassDescription subpass = {};
@@ -101,8 +102,8 @@ namespace Owl
 		m_Info.renderPass = m_Handle;
 		m_Info.renderArea.offset.x = pRect.x;
 		m_Info.renderArea.offset.y = pRect.y;
-		m_Info.renderArea.extent.width = pRect.w;
-		m_Info.renderArea.extent.height = pRect.z;
+		m_Info.renderArea.extent.width = pRect.z;
+		m_Info.renderArea.extent.height = pRect.w;
 
 		SetClearColor({0.2f, 0.2f, 0.2f, 1.f});
 	}
@@ -113,31 +114,29 @@ namespace Owl
 			vkDestroyRenderPass(m_Context->Device->GetLogicalDevice(), m_Handle, m_Context->Allocator);
 	}
 
-	void VulkanRenderPass::SetClearColor(const glm::vec4 pColor)
+	void VulkanRenderPass::SetClearColor(const glm::vec4 pColor, const float pDepth, const uint32_t pStencil)
 	{
-		VkClearValue clearValues[2];
-		clearValues[0].color.float32[0] = pColor.r;
-		clearValues[0].color.float32[1] = pColor.g;
-		clearValues[0].color.float32[2] = pColor.b;
-		clearValues[0].color.float32[3] = pColor.a;
-		clearValues[1].depthStencil.depth = m_Depth;
-		clearValues[1].depthStencil.stencil = m_Stencil;
+		m_ClearValues[0].color.float32[0] = pColor.r;
+		m_ClearValues[0].color.float32[1] = pColor.g;
+		m_ClearValues[0].color.float32[2] = pColor.b;
+		m_ClearValues[0].color.float32[3] = pColor.a;
+		m_ClearValues[1].depthStencil.depth = pDepth;
+		m_ClearValues[1].depthStencil.stencil = pStencil;
 
 		m_Info.clearValueCount = 2;
-		m_Info.pClearValues = clearValues;
+		m_Info.pClearValues = m_ClearValues;
 	}
 
-	void VulkanRenderPass::Begin(VulkanCommandBuffer pCommandBuffer, VkFramebuffer pFramebuffer)
+	void VulkanRenderPass::Begin(VulkanCommandBuffer* pCommandBuffer, const VkFramebuffer pFramebuffer)
 	{
 		m_Info.framebuffer = pFramebuffer;
-
-		vkCmdBeginRenderPass(pCommandBuffer.GetHandle(), &m_Info, VK_SUBPASS_CONTENTS_INLINE);
-		pCommandBuffer.SetState(CommandBufferStateInRenderPass);
+		vkCmdBeginRenderPass(pCommandBuffer->GetHandle(), &m_Info, VK_SUBPASS_CONTENTS_INLINE);
+		pCommandBuffer->SetState(CommandBufferStateInRenderPass);
 	}
 
-	void VulkanRenderPass::End(VulkanCommandBuffer pCommandBuffer)
+	void VulkanRenderPass::End(VulkanCommandBuffer* pCommandBuffer)
 	{
-		vkCmdEndRenderPass(pCommandBuffer.GetHandle());
-		pCommandBuffer.SetState(CommandBufferStateRecording);
+		vkCmdEndRenderPass(pCommandBuffer->GetHandle());
+		pCommandBuffer->SetState(CommandBufferStateRecording);
 	}
 }

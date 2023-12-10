@@ -20,11 +20,11 @@ namespace Owl
 		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(pBlock), MemoryTagRenderer); }
 
 		void Resize(glm::vec2 pSize) override;
-		void BeginFrame() override;
+		bool BeginFrame() override;
 		void EndFrame() override;
 
 	private:
-		void InitializeInstance(const std::string& pApplicationName);
+		void InitializeInstance(const std::string& pApplicationName) const;
 #ifdef OWL_DEBUG
 		void InitializeDebugMessage();
 #endif

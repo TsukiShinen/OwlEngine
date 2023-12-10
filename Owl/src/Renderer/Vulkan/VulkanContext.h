@@ -21,6 +21,8 @@ namespace Owl
 		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, MemoryTagRenderer); }
 		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(pBlock), MemoryTagRenderer); }
 
+		bool RecreateSwapChain();
+
 		[[nodiscard]] int FindMemoryIndex(uint32_t pTypeFilter, VkFlags pPropertyFlags) const;
 
 		VkInstance Instance;
@@ -39,12 +41,15 @@ namespace Owl
 		std::vector<VkSemaphore> QueueCompleteSemaphore;
 		std::vector<VulkanFence*> InFlightFences;
 
-		VulkanFence** ImagesInFlight;
+		std::vector<VulkanFence*> ImagesInFlight;
 
 		uint32_t FramebufferWidth;
 		uint32_t FramebufferHeight;
+		bool IsRecreatingSwapchain;
+		bool NeedNewSwapchain;
 
 		uint8_t CurrentFrame;
+		uint32_t ImageIndex;
 	private:
 		void RegenerateFrameBuffers();
 		void CreateCommandBuffers();

@@ -28,7 +28,7 @@ namespace Owl
 		void Submitted();
 		void Reset();
 
-		[[nodiscard]] VkCommandBuffer GetHandle() const { return m_Handle; }
+		[[nodiscard]] VkCommandBuffer& GetHandle() { return m_Handle; }
 		[[nodiscard]] VulkanCommandBufferState GetState() const { return m_State; }
 		void SetState(const VulkanCommandBufferState pState) { m_State = pState; }
 

@@ -10,6 +10,8 @@ namespace Owl
 		: m_Context(pContext)
 	{
 		Create(pWidth, pHeight);
+
+		OWL_CORE_INFO("=== Vulkan Swapchain created successfully.");
 	}
 
 	VulkanSwapchain::~VulkanSwapchain()
@@ -24,25 +26,25 @@ namespace Owl
 		Create(pWidth, pHeight);
 	}
 
-	uint32_t VulkanSwapchain::AcquireNextImage(const uint64_t pTimeoutNanoSecond, const VkSemaphore pImageSemaphore, const VkFence pFence)
+	bool VulkanSwapchain::AcquireNextImage(const uint64_t pTimeoutNanoSecond, const VkSemaphore pImageSemaphore, const VkFence pFence, uint32_t& pImageIndex)
 	{
 		OWL_PROFILE_FUNCTION();
-		uint32_t imageIndex;
-		const VkResult result = vkAcquireNextImageKHR(
+
+		if (const VkResult result = vkAcquireNextImageKHR(
 			m_Context->Device->GetLogicalDevice(),
 			m_Handle,
 			pTimeoutNanoSecond,
 			pImageSemaphore,
 			pFence,
-			&imageIndex);
-
-		if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+			&pImageIndex); result == VK_ERROR_OUT_OF_DATE_KHR) {
 			ReCreate(m_Context->FramebufferWidth, m_Context->FramebufferHeight);
+			return false;
 		} else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
 			OWL_CORE_CRITICAL("[VulkanSwapchain] Failed to acquire swapchain image!");
+			return false;
 		}
 		
-		return imageIndex;
+		return true;
 	}
 
 	void VulkanSwapchain::Present(const VkSemaphore pRenderCompleted, const uint32_t pImageIndex)
@@ -175,13 +177,12 @@ namespace Owl
 		m_DepthAttachment = new VulkanImage(m_Context, swapchainExtent.width, swapchainExtent.height, m_Context->Device->GetDepthFormat(),
 			VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
 			true, VK_IMAGE_ASPECT_DEPTH_BIT);
-
-		OWL_CORE_INFO("=== Vulkan Swapchain created successfully.");
 	}
 
-	void VulkanSwapchain::Destroy()
+	void VulkanSwapchain::Destroy() const
 	{
 		OWL_PROFILE_FUNCTION();
+		vkDeviceWaitIdle(m_Context->Device->GetLogicalDevice());
 		delete m_DepthAttachment;
 
 		for (uint32_t i = 0; i < m_ImageCount; ++i) {

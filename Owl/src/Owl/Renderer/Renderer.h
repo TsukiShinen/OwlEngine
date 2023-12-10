@@ -13,7 +13,7 @@ namespace Owl
 
 		static void Resize(const glm::vec2 pSize) { s_Instance->Resize(pSize); }
 
-		static void BeginFrame() { s_Instance->BeginFrame(); }
+		static bool BeginFrame() { return s_Instance->BeginFrame(); }
 		static void EndFrame() { s_Instance->EndFrame(); }
 
 	private:

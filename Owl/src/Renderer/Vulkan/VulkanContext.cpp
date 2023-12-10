@@ -15,17 +15,18 @@ namespace Owl
 	{
 		OWL_PROFILE_FUNCTION();
 
-		auto sizeFrameBuffer = Application::Get()->GetFrameBufferSize();
+		const auto sizeFrameBuffer = Application::Get()->GetFrameBufferSize();
 		FramebufferWidth = sizeFrameBuffer.x;
 		FramebufferHeight = sizeFrameBuffer.y;
 		
 		Surface = Application::Get()->GetWindow()->CreateVulkanSurface(this);
 		Device = new VulkanDevice(this);
 		Swapchain = new VulkanSwapchain(this, FramebufferWidth, FramebufferHeight);
-		MainRenderPass = new VulkanRenderPass(this, {0, 0, FramebufferWidth, FramebufferHeight}, 1, 0);
+		MainRenderPass = new VulkanRenderPass(this, {0, 0, FramebufferWidth, FramebufferHeight});
 		RegenerateFrameBuffers();
 		CreateCommandBuffers();
 		CreateSemaphoresAndFences();
+		ImageIndex = 0;
 	}
 
 	VulkanContext::~VulkanContext()
@@ -48,6 +49,47 @@ namespace Owl
 		delete Device;
 		vkDestroySurfaceKHR(Instance, Surface, Allocator);
 		vkDestroyInstance(Instance, Allocator);
+	}
+
+	bool VulkanContext::RecreateSwapChain()
+	{
+		if (IsRecreatingSwapchain)
+	        return false;
+
+	    if (FramebufferWidth == 0 || FramebufferHeight == 0) {
+	        Application::Get()->SetMinimized(true);
+	        return false;
+	    }
+		Application::Get()->SetMinimized(false);
+
+	    IsRecreatingSwapchain = true;
+
+	    vkDeviceWaitIdle(Device->GetLogicalDevice());
+
+	    for (uint32_t i = 0; i < Swapchain->GetImageCount(); ++i) {
+	        ImagesInFlight[i] = nullptr;
+	    }
+
+	    Device->QuerySwapchainSupport(Device->GetPhysicalDevice(), Device->GetSwapchainInfo());
+	    Device->DetectDepthFormat();
+
+	    Swapchain->ReCreate(FramebufferWidth, FramebufferHeight);
+
+	    MainRenderPass->SetWidth(FramebufferWidth);
+	    MainRenderPass->SetHeight(FramebufferHeight);
+
+		for (uint32_t i = 0; i < Swapchain->GetImageCount(); ++i) {
+	        delete  GraphicsCommandBuffers[i];
+	        delete  Swapchain->GetFrameBufferAt(i);
+	    }
+
+	    RegenerateFrameBuffers();
+	    CreateCommandBuffers();
+
+	    IsRecreatingSwapchain = false;
+		NeedNewSwapchain = false;
+
+	    return true;
 	}
 
 	int VulkanContext::FindMemoryIndex(const uint32_t pTypeFilter, const VkFlags pPropertyFlags) const
@@ -97,6 +139,7 @@ namespace Owl
 		ImageAvailableSemaphore.resize(Swapchain->GetMaxFrameInFlight());
 		QueueCompleteSemaphore.resize(Swapchain->GetMaxFrameInFlight());
 		InFlightFences.resize(Swapchain->GetMaxFrameInFlight());
+		ImagesInFlight.resize(Swapchain->GetImageCount());
 
 		for (uint8_t i = 0; i < Swapchain->GetMaxFrameInFlight(); ++i)
 		{

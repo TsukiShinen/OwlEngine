@@ -58,7 +58,7 @@ namespace Owl
 		const ApplicationSpecification& GetSpecification() const { return m_Specification; }
 		
 		const Scope<Window>& GetWindow() { return m_Window; }
-
+		void SetMinimized(const bool pValue) { m_IsMinimized = pValue; }
 		
 		static Application* Get() { return s_Instance; }
 
@@ -66,7 +66,7 @@ namespace Owl
 		virtual void OnEvent(Event& pEvent);
 
 		bool OnWindowClose(WindowCloseEvent& pEvent);
-		bool OnWindowResize(WindowResizeEvent& pEvent);
+		bool OnWindowResize(const WindowResizeEvent& pEvent);
 
 		ApplicationSpecification m_Specification;
 

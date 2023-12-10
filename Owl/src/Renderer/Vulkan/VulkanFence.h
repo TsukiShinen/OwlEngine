@@ -16,6 +16,8 @@ namespace Owl
 		bool Wait(uint64_t pTimoutNanoSecond);
 		void Reset();
 
+		VkFence& GetHandle() { return m_Handle; }
+
 	private:
 		VulkanContext* m_Context;
 		VkFence m_Handle;

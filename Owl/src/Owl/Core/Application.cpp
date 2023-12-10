@@ -75,8 +75,15 @@ namespace Owl
 			if (!m_IsMinimized)
 			{
 				OWL_PROFILE_SCOPE("RunLoop");
+				
+				if (Renderer::BeginFrame())
+				{
+					
+				
+					Renderer::EndFrame();
+				}
 			}
-
+			
 			m_Window->Update();
 		}
 	}
@@ -107,7 +114,7 @@ namespace Owl
 		return true;
 	}
 
-	bool Application::OnWindowResize(WindowResizeEvent& pEvent)
+	bool Application::OnWindowResize(const WindowResizeEvent& pEvent)
 	{
 		OWL_PROFILE_FUNCTION();
 

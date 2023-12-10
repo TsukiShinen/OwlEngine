@@ -14,7 +14,7 @@ namespace Owl
 
 		virtual void Resize(glm::vec2 pSize) = 0;
 
-		virtual void BeginFrame() = 0;
+		virtual bool BeginFrame() = 0;
 		virtual void EndFrame() = 0;
 	};
 }
