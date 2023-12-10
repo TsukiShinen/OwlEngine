@@ -44,7 +44,7 @@ namespace Owl
 		VulkanImage* m_DepthAttachment;
 
 		std::vector<VulkanFrameBuffer*> m_FrameBuffers;
-		uint8_t m_MaxFrameInFlight = 2;
+		uint8_t m_MaxFrameInFlight;
 		friend class VulkanContext;
 	};
 }

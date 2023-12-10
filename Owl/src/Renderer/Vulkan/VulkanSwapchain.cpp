@@ -119,17 +119,18 @@ namespace Owl
 		swapchainExtent.width = glm::clamp(swapchainExtent.width, min.width, max.width);
 		swapchainExtent.height = glm::clamp(swapchainExtent.height, min.height, max.height);
 
-		uint32_t image_count = m_Context->Device->GetSwapchainInfo().Capabilities.minImageCount + 1;
-		if (m_Context->Device->GetSwapchainInfo().Capabilities.maxImageCount > 0 && image_count > m_Context->Device->
+		uint32_t imageCount = m_Context->Device->GetSwapchainInfo().Capabilities.minImageCount + 1;
+		if (m_Context->Device->GetSwapchainInfo().Capabilities.maxImageCount > 0 && imageCount > m_Context->Device->
 			GetSwapchainInfo().Capabilities.maxImageCount)
 		{
-			image_count = m_Context->Device->GetSwapchainInfo().Capabilities.maxImageCount;
+			imageCount = m_Context->Device->GetSwapchainInfo().Capabilities.maxImageCount;
 		}
+		m_MaxFrameInFlight = imageCount - 1;
 
 		// Swapchain create info
 		VkSwapchainCreateInfoKHR swapchainCreateInfo = {VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR};
 		swapchainCreateInfo.surface = m_Context->Surface;
-		swapchainCreateInfo.minImageCount = image_count;
+		swapchainCreateInfo.minImageCount = imageCount;
 		swapchainCreateInfo.imageFormat = m_ImageFormat.format;
 		swapchainCreateInfo.imageColorSpace = m_ImageFormat.colorSpace;
 		swapchainCreateInfo.imageExtent = swapchainExtent;
