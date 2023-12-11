@@ -25,7 +25,7 @@ namespace Owl
 	class Memory
 	{
 	public:
-		static void Initialize();
+		static void Initialize(uint64_t* pMemoryRequirement, void* pBlock);
 		static void Shutdown();
 
 		static void* OwlAllocate(uint64_t pSize, MemoryTag pTag);
@@ -34,15 +34,17 @@ namespace Owl
 		static void* OwlCopyMemory(void* pDestination, const void* pSource, uint64_t pSize);
 		static void* OwlSetMemory(void* pDestination, int pValue, uint64_t pSize);
 		static char* OwlGetMemoryUsageString();
+		static uint64_t GetMemoryAllocationCount() { return s_Stats != nullptr ? s_Stats->AllocationCount : 0; }
 
 	private:
 		struct Stats
 		{
 			uint64_t TotalAllocated;
 			uint64_t TaggedAllocations[MEMORY_TAG_MAX_TAGS];
+			uint64_t AllocationCount;
 		};
 
-		static Stats s_Stats;
+		static Stats* s_Stats;
 		static constexpr uint64_t k_Gib = 1024 * 1024 * 1024;
 		static constexpr uint64_t k_Mib = 1024 * 1024;
 		static constexpr uint64_t k_Kib = 1024;

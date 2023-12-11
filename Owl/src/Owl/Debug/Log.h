@@ -16,14 +16,17 @@ namespace Owl
 	class Log
 	{
 	public:
-		static void Initialize();
+		static void Initialize(uint64_t* pMemoryRequirement, void* pBlock);
+		static void Shutdown();
 
-		static Ref<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
-		static Ref<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }
+		static Ref<spdlog::logger>& GetCoreLogger() { return s_Log->m_CoreLogger; }
+		static Ref<spdlog::logger>& GetClientLogger() { return s_Log->m_ClientLogger; }
 
 	private:
-		static Ref<spdlog::logger> s_CoreLogger;
-		static Ref<spdlog::logger> s_ClientLogger;
+		Ref<spdlog::logger> m_CoreLogger;
+		Ref<spdlog::logger> m_ClientLogger;
+
+		static Log* s_Log;
 	};
 }
 

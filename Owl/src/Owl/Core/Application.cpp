@@ -9,7 +9,7 @@ namespace Owl
 {
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application(const ApplicationSpecification pSpecification)
+	Application::Application(const ApplicationSpecification& pSpecification)
 		: m_Specification(pSpecification)
 	{
 		OWL_PROFILE_FUNCTION();
@@ -17,6 +17,16 @@ namespace Owl
 		OWL_ASSERT(!s_Instance, "Application already exist!")
 		s_Instance = this;
 
+		m_SystemAllocator = new LinearAllocator(64 * 1024 * 1024, nullptr);
+		// === Memory ===
+		uint64_t memorySize;
+		Memory::Initialize(&memorySize, nullptr);
+		Memory::Initialize(&memorySize, m_SystemAllocator->Allocate(memorySize));
+		// === Log ===
+		uint64_t logSize;
+		Log::Initialize(&logSize, nullptr);
+		Log::Initialize(&logSize, m_SystemAllocator->Allocate(logSize));
+		
 		if (!m_Specification.WorkingDirectory.empty())
 			std::filesystem::current_path(m_Specification.WorkingDirectory);
 
@@ -30,6 +40,11 @@ namespace Owl
 	{
 		OWL_PROFILE_FUNCTION();
 		Renderer::Shutdown();
+		OWL_INFO("Memory at the end of application");
+		OWL_INFO("Allocations remaining : {0}", Memory::GetMemoryAllocationCount());
+		OWL_INFO(Memory::OwlGetMemoryUsageString());
+		Log::Shutdown();
+		Memory::Shutdown();
 	}
 
 	void Application::Close()
@@ -68,7 +83,8 @@ namespace Owl
 	void Application::Run()
 	{
 		OWL_PROFILE_FUNCTION();
-		OWL_CORE_TRACE(Memory::OwlGetMemoryUsageString());
+		OWL_INFO("Allocations at start : {0}", Memory::GetMemoryAllocationCount());
+		OWL_INFO(Memory::OwlGetMemoryUsageString());
 
 		while (m_IsRunning)
 		{

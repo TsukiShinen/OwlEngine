@@ -11,8 +11,6 @@ extern Owl::Application* CreateApplication(Owl::ApplicationCommandLineArgs args)
 int main(int argc, char** argv)
 {
 	OWL_PROFILE_BEGIN_SESSION("Startup", "OwlProfile-Startup.json");
-	Owl::Log::Initialize();
-	Owl::Memory::Initialize();
 	auto app = Owl::CreateApplication({argc, argv});
 	app->InitializeEcs();
 	app->InitializeEntities();
@@ -24,7 +22,6 @@ int main(int argc, char** argv)
 
 	OWL_PROFILE_BEGIN_SESSION("Shutdown", "OwlProfile-Shutdown.json");
 	delete app;
-	Owl::Memory::Shutdown();
 	OWL_PROFILE_END_SESSION();
 }
 

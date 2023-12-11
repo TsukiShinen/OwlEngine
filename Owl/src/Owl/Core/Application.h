@@ -4,6 +4,7 @@
 #include "Owl/Core/Base.h"
 #include "Owl/ECS/World.h"
 #include "Owl/Events/ApplicationEvent.h"
+#include "Owl/Memory/LinearAllocator.h"
 #include "Owl/Memory/Memory.h"
 #include "Owl/Platform/Window.h"
 
@@ -38,13 +39,11 @@ namespace Owl
 	class Application
 	{
 	public:
-		Application(ApplicationSpecification pSpecification);
+		Application(const ApplicationSpecification& pSpecification);
 		virtual ~Application();
 
 		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, MemoryTagApplication); }
 		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(pBlock), MemoryTagApplication); }
-
-		void InitRenderer();
 
 		void Close();
 
@@ -53,9 +52,9 @@ namespace Owl
 		virtual void PlaySystem();
 
 		void Run();
-		glm::vec2 GetFrameBufferSize() const;
+		[[nodiscard]] glm::vec2 GetFrameBufferSize() const;
 
-		const ApplicationSpecification& GetSpecification() const { return m_Specification; }
+		[[nodiscard]] const ApplicationSpecification& GetSpecification() const { return m_Specification; }
 
 		const Scope<Window>& GetWindow() { return m_Window; }
 		void SetMinimized(const bool pValue) { m_IsMinimized = pValue; }
@@ -65,6 +64,11 @@ namespace Owl
 	protected:
 		virtual void OnEvent(Event& pEvent);
 
+		/*
+	protected:
+		Ecs::World m_World;*/
+
+	private:
 		bool OnWindowClose(WindowCloseEvent& pEvent);
 		bool OnWindowResize(const WindowResizeEvent& pEvent);
 
@@ -73,13 +77,10 @@ namespace Owl
 		bool m_IsRunning = true;
 		bool m_IsMinimized = false;
 		float m_LastFrameTime = 0.0f;
-
-		/*
-	protected:
-		Ecs::World m_World;*/
-
-	private:
+		
 		Scope<Window> m_Window;
+
+		LinearAllocator* m_SystemAllocator;
 
 		static Application* s_Instance;
 	};

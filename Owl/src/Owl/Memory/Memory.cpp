@@ -3,17 +3,24 @@
 
 namespace Owl
 {
-	Memory::Stats Memory::s_Stats;
+	Memory::Stats* Memory::s_Stats = nullptr;
 
-	void Memory::Initialize()
+	void Memory::Initialize(uint64_t* pMemoryRequirement, void* pBlock)
 	{
 		OWL_PROFILE_FUNCTION();
-		memset(&s_Stats, 0, sizeof(s_Stats));
+		*pMemoryRequirement = sizeof(Stats);
+		if (pBlock == nullptr)
+			return;
+
+		s_Stats = static_cast<Stats*>(pBlock);
+		s_Stats->AllocationCount = 0;
+		OwlZeroMemory(s_Stats, sizeof(Stats));
 	}
 
 	void Memory::Shutdown()
 	{
 		OWL_PROFILE_FUNCTION();
+		s_Stats = nullptr; 
 	}
 
 	void* Memory::OwlAllocate(const uint64_t pSize, const MemoryTag pTag)
@@ -22,13 +29,15 @@ namespace Owl
 		if (pTag == MemoryTagUnknown)
 			OWL_CORE_WARN("OWL_ALLOCATE called using MEMORY_TAG_UNKNOWN. Re-class this allocation");
 
-		s_Stats.TotalAllocated += pSize;
-		s_Stats.TaggedAllocations[pTag] += pSize;
+		if (s_Stats)
+		{
+			s_Stats->TotalAllocated += pSize;
+			s_Stats->TaggedAllocations[pTag] += pSize;
+			s_Stats->AllocationCount++;
+		}
 
 		// TODO: Memory alignment
-		void* block = malloc(pSize);
-		return memset(block, 0, pSize);
-		return block;
+		return memset(malloc(pSize), 0, pSize);
 	}
 
 	void Memory::OwlFree(void* pBlock, const uint64_t pSize, const MemoryTag pTag)
@@ -37,8 +46,12 @@ namespace Owl
 		if (pTag == MemoryTagUnknown)
 			OWL_CORE_WARN("OWL_FREE called using MEMORY_TAG_UNKNOWN. Re-class this allocation");
 
-		s_Stats.TotalAllocated -= pSize;
-		s_Stats.TaggedAllocations[pTag] -= pSize;
+		if (s_Stats)
+		{
+			s_Stats->TotalAllocated -= pSize;
+			s_Stats->TaggedAllocations[pTag] -= pSize;
+			s_Stats->AllocationCount--;
+		}
 
 		// TODO: Memory alignment
 		free(pBlock);
@@ -68,28 +81,29 @@ namespace Owl
 		uint64_t offset = strlen(buffer);
 		for (uint32_t i = 0; i < MEMORY_TAG_MAX_TAGS; i++)
 		{
-			char unit[4] = "XiB";
+			char unit[4] = "XB";
 			float amount = 1.f;
-			if (s_Stats.TaggedAllocations[i] >= k_Gib)
+			auto s = s_Stats;
+			if (s_Stats->TaggedAllocations[i] >= k_Gib)
 			{
 				unit[0] = 'G';
-				amount = s_Stats.TaggedAllocations[i] / static_cast<float>(k_Gib);
+				amount = s_Stats->TaggedAllocations[i] / static_cast<float>(k_Gib);
 			}
-			else if (s_Stats.TaggedAllocations[i] >= k_Mib)
+			else if (s_Stats->TaggedAllocations[i] >= k_Mib)
 			{
 				unit[0] = 'M';
-				amount = s_Stats.TaggedAllocations[i] / static_cast<float>(k_Mib);
+				amount = s_Stats->TaggedAllocations[i] / static_cast<float>(k_Mib);
 			}
-			else if (s_Stats.TaggedAllocations[i] >= k_Kib)
+			else if (s_Stats->TaggedAllocations[i] >= k_Kib)
 			{
 				unit[0] = 'K';
-				amount = s_Stats.TaggedAllocations[i] / static_cast<float>(k_Kib);
+				amount = s_Stats->TaggedAllocations[i] / static_cast<float>(k_Kib);
 			}
 			else
 			{
 				unit[0] = 'B';
 				unit[1] = 0;
-				amount = s_Stats.TaggedAllocations[i];
+				amount = s_Stats->TaggedAllocations[i];
 			}
 
 			offset += snprintf(buffer + offset, 8000, " %s: %.2f%s\n", k_MemoryTagStrings[i], amount, unit);
