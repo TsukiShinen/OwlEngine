@@ -215,6 +215,8 @@ namespace Owl
 		{
 			vkDestroyImageView(m_Context->Device->GetLogicalDevice(), m_Views[i], m_Context->Allocator);
 		}
+		OWL_FREE(m_Images, sizeof(VkImage) * m_ImageCount, MemoryTagRenderer);
+		OWL_FREE(m_Views, sizeof(VkImageView) * m_ImageCount, MemoryTagRenderer);
 
 		vkDestroySwapchainKHR(m_Context->Device->GetLogicalDevice(), m_Handle, m_Context->Allocator);
 	}

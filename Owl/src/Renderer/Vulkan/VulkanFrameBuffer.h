@@ -13,7 +13,7 @@ namespace Owl
 		~VulkanFrameBuffer();
 
 		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, MemoryTagRenderer); }
-		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(pBlock), MemoryTagRenderer); }
+		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(VulkanFrameBuffer), MemoryTagRenderer); }
 
 		VkFramebuffer& GetHandle() { return m_Handle; }
 

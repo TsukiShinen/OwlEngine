@@ -22,7 +22,7 @@ namespace Owl
 		~VulkanRenderPass();
 
 		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, MemoryTagRenderer); }
-		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(pBlock), MemoryTagRenderer); }
+		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(VulkanRenderPass), MemoryTagRenderer); }
 
 		void SetClearColor(glm::vec4 pColor, float pDepth = 1, uint32_t pStencil = 0);
 

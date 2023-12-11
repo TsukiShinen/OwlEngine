@@ -21,7 +21,7 @@ namespace Owl
 		~VulkanCommandBuffer();
 
 		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, MemoryTagRenderer); }
-		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(pBlock), MemoryTagRenderer); }
+		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(VulkanCommandBuffer), MemoryTagRenderer); }
 
 		void Begin(bool pIsRenderPassContinue, bool pIsSimultaneousUse, bool pIsSingUse = false);
 		void End();

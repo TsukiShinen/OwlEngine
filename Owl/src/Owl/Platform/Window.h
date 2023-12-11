@@ -33,6 +33,6 @@ namespace Owl
 
 		virtual const char* GetVulkanRequiredExtension() = 0;
 
-		static Scope<Window> Create(const WindowProps& pWindowProps = WindowProps());
+		static Window* Create(const WindowProps& pWindowProps = WindowProps());
 	};
 }

@@ -43,7 +43,7 @@ namespace Owl
 		virtual ~Application();
 
 		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, MemoryTagApplication); }
-		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(pBlock), MemoryTagApplication); }
+		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(Application), MemoryTagApplication); }
 
 		void Close();
 
@@ -56,7 +56,7 @@ namespace Owl
 
 		[[nodiscard]] const ApplicationSpecification& GetSpecification() const { return m_Specification; }
 
-		const Scope<Window>& GetWindow() { return m_Window; }
+		Window* GetWindow() const { return m_Window; }
 		void SetMinimized(const bool pValue) { m_IsMinimized = pValue; }
 
 		static Application* Get() { return s_Instance; }
@@ -78,7 +78,7 @@ namespace Owl
 		bool m_IsMinimized = false;
 		float m_LastFrameTime = 0.0f;
 		
-		Scope<Window> m_Window;
+		Window* m_Window;
 
 		LinearAllocator* m_SystemAllocator;
 

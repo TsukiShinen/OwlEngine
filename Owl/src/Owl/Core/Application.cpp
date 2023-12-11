@@ -39,6 +39,7 @@ namespace Owl
 	Application::~Application()
 	{
 		OWL_PROFILE_FUNCTION();
+		delete m_Window;
 		Renderer::Shutdown();
 		OWL_INFO("Memory at the end of application");
 		OWL_INFO("Allocations remaining : {0}", Memory::GetMemoryAllocationCount());
