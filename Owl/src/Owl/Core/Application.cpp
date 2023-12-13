@@ -3,6 +3,7 @@
 
 #include "Owl/ECS/Components/TransformComponent.h"
 #include "Owl/Events/KeyEvent.h"
+#include "Owl/Math/Vector2.h"
 #include "Owl/Renderer/Renderer.h"
 
 namespace Owl
@@ -14,6 +15,9 @@ namespace Owl
 	{
 		OWL_PROFILE_FUNCTION();
 
+		Vector2 test{0, 0};
+		
+		
 		OWL_ASSERT(!s_Instance, "Application already exist!")
 		s_Instance = this;
 
@@ -103,9 +107,9 @@ namespace Owl
 		}
 	}
 
-	glm::vec2 Application::GetFrameBufferSize() const
+	Vector2 Application::GetFrameBufferSize() const
 	{
-		return glm::vec2(m_Window->GetWidth(), m_Window->GetHeight());
+		return Vector2(m_Window->GetWidth(), m_Window->GetHeight());
 	}
 
 	void Application::OnEvent(Event& pEvent)
@@ -140,7 +144,7 @@ namespace Owl
 		}
 
 		m_IsMinimized = false;
-		Renderer::Resize({pEvent.GetWidth(), pEvent.GetHeight()});
+		Renderer::Resize({static_cast<float>(pEvent.GetWidth()), static_cast<float>(pEvent.GetHeight())});
 
 		return false;
 	}

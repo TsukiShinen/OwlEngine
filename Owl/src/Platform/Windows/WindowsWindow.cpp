@@ -289,7 +289,7 @@ namespace Owl
 				MouseMovedEvent event(static_cast<float>(GET_X_LPARAM(pLParam)),
 				                      static_cast<float>(GET_X_LPARAM(pLParam)));
 				m_Data.EventCallback(event);
-				Input::s_MousePosition = glm::vec2(event.GetX(), event.GetY());
+				Input::s_MousePosition = Vector2(event.GetX(), event.GetY());
 			}
 			break;
 		}

@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "VulkanContext.h"
-#include "glm/vec2.hpp"
 
 namespace Owl
 {

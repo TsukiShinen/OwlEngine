@@ -37,7 +37,7 @@ namespace Owl
 		delete m_Context;
 	}
 
-	void VulkanRendererApi::Resize(const glm::vec2 pSize)
+	void VulkanRendererApi::Resize(const Vector2 pSize)
 	{
 		OWL_PROFILE_FUNCTION();
 		m_Context->FramebufferWidth = static_cast<float>(pSize.x);

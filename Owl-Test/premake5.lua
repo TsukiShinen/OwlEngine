@@ -17,7 +17,6 @@ project "Owl-Test"
 	{
 		"%{wks.location}/Owl/src",
 		"%{wks.location}/Owl/vendor",
-		"%{IncludeDir.glm}",
 		"%{IncludeDir.VulkanSDK}"
 	}
 

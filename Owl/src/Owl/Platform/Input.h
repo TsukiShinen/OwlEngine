@@ -2,8 +2,7 @@
 
 #include "Owl/Core/KeyCodes.h"
 #include "Owl/Core/MouseCodes.h"
-
-#include <glm/glm.hpp>
+#include "Owl/Math/Vector2.h"
 
 namespace Owl
 {
@@ -13,7 +12,7 @@ namespace Owl
 		static bool IsKeyPressed(const KeyCode pKey) { return s_Keys[pKey]; }
 
 		static bool IsMouseButtonPressed(const MouseCode pButton) { return s_MouseButtons[pButton]; }
-		static glm::vec2 GetMousePosition() { return s_MousePosition; }
+		static Vector2 GetMousePosition() { return s_MousePosition; }
 		static float GetMouseX() { return s_MousePosition.x; }
 		static float GetMouseY() { return s_MousePosition.y; }
 
@@ -21,7 +20,7 @@ namespace Owl
 		static bool s_Keys[512];
 
 		static bool s_MouseButtons[16];
-		static glm::vec2 s_MousePosition;
+		static Vector2 s_MousePosition;
 
 		friend class WindowsWindow;
 	};

@@ -1,7 +1,6 @@
 ﻿#include "VulkanSwapchain.h"
 
 #include "VulkanDevice.h"
-#include "glm/common.hpp"
 #include "Owl/Debug/Assert.h"
 #include "Owl/Debug/Instrumentor.h"
 #include "Owl/Debug/Log.h"
@@ -118,8 +117,8 @@ namespace Owl
 		// Clamp to the value allowed by the GPU.
 		const VkExtent2D min = m_Context->Device->GetSwapchainInfo().Capabilities.minImageExtent;
 		const VkExtent2D max = m_Context->Device->GetSwapchainInfo().Capabilities.maxImageExtent;
-		swapchainExtent.width = glm::clamp(swapchainExtent.width, min.width, max.width);
-		swapchainExtent.height = glm::clamp(swapchainExtent.height, min.height, max.height);
+		swapchainExtent.width = Math::Clamp(swapchainExtent.width, min.width, max.width);
+		swapchainExtent.height = Math::Clamp(swapchainExtent.height, min.height, max.height);
 
 		uint32_t imageCount = m_Context->Device->GetSwapchainInfo().Capabilities.minImageCount + 1;
 		if (m_Context->Device->GetSwapchainInfo().Capabilities.maxImageCount > 0 && imageCount > m_Context->Device->

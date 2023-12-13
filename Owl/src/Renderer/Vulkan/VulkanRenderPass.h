@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "VulkanCommandBuffer.h"
 #include "VulkanContext.h"
-#include "glm/vec4.hpp"
+#include "Owl/Math/Vector4.h"
 
 namespace Owl
 {
@@ -18,13 +18,13 @@ namespace Owl
 	class VulkanRenderPass
 	{
 	public:
-		VulkanRenderPass(VulkanContext* pContext, glm::vec4 pRect);
+		VulkanRenderPass(VulkanContext* pContext, Vector4 pRect);
 		~VulkanRenderPass();
 
 		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, MemoryTagRenderer); }
 		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(VulkanRenderPass), MemoryTagRenderer); }
 
-		void SetClearColor(glm::vec4 pColor, float pDepth = 1, uint32_t pStencil = 0);
+		void SetClearColor(Vector4 pColor, float pDepth = 1, uint32_t pStencil = 0);
 
 		void Begin(VulkanCommandBuffer* pCommandBuffer, VkFramebuffer pFramebuffer);
 		void End(VulkanCommandBuffer* pCommandBuffer);

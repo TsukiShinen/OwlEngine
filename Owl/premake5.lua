@@ -16,8 +16,6 @@ project "Owl"
 		"src/**.cpp",
 		"vendor/stb_image/**.h",
 		"vendor/stb_image/**.cpp",
-		"vendor/glm/glm/**.hpp",
-		"vendor/glm/glm/**.inl",
     }
 
     defines
@@ -28,7 +26,6 @@ project "Owl"
     includedirs
     {
         "src",
-		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.VulkanSDK}"
     }

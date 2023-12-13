@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Owl/Debug/Log.h"
+#include "Owl/Math/Math.h"
 
 #define ExpectShouldBe(expected, actual)                                                                \
 	if (actual != expected) {																			\
@@ -14,7 +15,7 @@
 	}																													\
 
 #define ExpectFloatShouldBe(expected, actual)                                                           \
-	if (glm::abs(expected - actual) > 0.001f) {															\
+	if (Math::Abs(expected - actual) > 0.001f) {															\
 		OWL_ERROR("--> Expected %lld, but got %lld. File %s, ligne %d", expected, actual, __FILE__, __LINE__); \
 		return false;																					\
 	}																									\

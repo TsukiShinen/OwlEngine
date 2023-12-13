@@ -52,7 +52,7 @@ namespace Owl
 		virtual void PlaySystem();
 
 		void Run();
-		[[nodiscard]] glm::vec2 GetFrameBufferSize() const;
+		[[nodiscard]] Vector2 GetFrameBufferSize() const;
 
 		[[nodiscard]] const ApplicationSpecification& GetSpecification() const { return m_Specification; }
 

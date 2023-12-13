@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "glm/vec2.hpp"
+#include "Owl/Math/Vector2.h"
 #include "Owl/Memory/Memory.h"
 
 namespace Owl
@@ -9,7 +9,7 @@ namespace Owl
 	public:
 		virtual ~RendererApi() = default;
 
-		virtual void Resize(glm::vec2 pSize) = 0;
+		virtual void Resize(Vector2 pSize) = 0;
 
 		virtual bool BeginFrame() = 0;
 		virtual void EndFrame() = 0;

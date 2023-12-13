@@ -1,6 +1,8 @@
 #include "opch.h"
 #include "Owl/Platform/Window.h"
 
+#include <ctime>
+
 namespace Owl
 {
 	Log* Log::s_Log = nullptr;

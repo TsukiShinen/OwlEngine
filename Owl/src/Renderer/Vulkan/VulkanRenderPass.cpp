@@ -5,10 +5,11 @@
 #include "VulkanDevice.h"
 #include "VulkanSwapchain.h"
 #include "Owl/Debug/Log.h"
+#include "Owl/Math/Vector4.h"
 
 namespace Owl
 {
-	VulkanRenderPass::VulkanRenderPass(VulkanContext* pContext, const glm::vec4 pRect)
+	VulkanRenderPass::VulkanRenderPass(VulkanContext* pContext, const Vector4 pRect)
 		: m_Context(pContext)
 	{
 		// Main subpass
@@ -116,7 +117,7 @@ namespace Owl
 			vkDestroyRenderPass(m_Context->Device->GetLogicalDevice(), m_Handle, m_Context->Allocator);
 	}
 
-	void VulkanRenderPass::SetClearColor(const glm::vec4 pColor, const float pDepth, const uint32_t pStencil)
+	void VulkanRenderPass::SetClearColor(const Vector4 pColor, const float pDepth, const uint32_t pStencil)
 	{
 		m_ClearValues[0].color.float32[0] = pColor.r;
 		m_ClearValues[0].color.float32[1] = pColor.g;

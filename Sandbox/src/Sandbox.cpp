@@ -46,8 +46,8 @@ public:
 				m_World.AddComponent(sprite, Owl::TransformComponent{});
 				m_World.AddComponent(sprite, Owl::SpriteComponent{
 					                     .Sprite = Owl::CreateRef<Owl::Renderer::Vulkan::Sprite>(m_VulkanApi->GetDevice(),
-						                     glm::vec2{1, 1},
-						                     glm::vec2{0.5f, 0.5f},
+						                     Vector2{1, 1},
+						                     Vector2{0.5f, 0.5f},
 						                     "Assets/Textures/texture.jpg")
 				                     });*/
 	}

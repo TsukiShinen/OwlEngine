@@ -19,8 +19,6 @@ project "Sandbox"
 	{
 		"%{wks.location}/Owl/src",
 		"%{wks.location}/Owl/vendor",
-		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.glm}",
 		"%{IncludeDir.VulkanSDK}"
 	}
 

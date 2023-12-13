@@ -21,7 +21,7 @@ namespace Owl
 		Surface = Application::Get()->GetWindow()->CreateVulkanSurface(this);
 		Device = new VulkanDevice(this);
 		Swapchain = new VulkanSwapchain(this, FramebufferWidth, FramebufferHeight);
-		MainRenderPass = new VulkanRenderPass(this, {0, 0, FramebufferWidth, FramebufferHeight});
+		MainRenderPass = new VulkanRenderPass(this, {0, 0, static_cast<float>(FramebufferWidth), static_cast<float>(FramebufferHeight)});
 		RegenerateFrameBuffers();
 		CreateCommandBuffers();
 		CreateSemaphoresAndFences();

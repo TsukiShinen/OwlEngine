@@ -17,7 +17,6 @@ project "OwlEngine"
 	{
 		"%{wks.location}/Owl/src",
 		"%{wks.location}/Owl/vendor",
-		"%{IncludeDir.glm}"
 	}
 
 	links

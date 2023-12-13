@@ -15,7 +15,7 @@ public:/*
 			auto& movement = m_World->GetComponent<MovementComponent>(entity);
 			auto& transform = m_World->GetComponent<Owl::TransformComponent>(entity);
 
-			glm::vec3 rotate{0};
+			Vector3 rotate{0};
 			if (glfwGetKey(pWindow, keyboardInputs.LookRight) == GLFW_PRESS) rotate.y += 1.0f;
 			if (glfwGetKey(pWindow, keyboardInputs.LookLeft) == GLFW_PRESS) rotate.y -= 1.0f;
 			if (glfwGetKey(pWindow, keyboardInputs.LookUp) == GLFW_PRESS) rotate.x += 1.0f;
