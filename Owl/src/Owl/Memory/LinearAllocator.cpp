@@ -24,7 +24,7 @@ namespace Owl
 	{
 		if (Allocated + pSize > TotalSize)
 		{
-			OWL_CORE_ERROR("[LinearAllocator] Tried to allocate {0}B, only {1}B remaining.", pSize, TotalSize - Allocated);
+			OWL_CORE_ERROR("[LinearAllocator] Tried to allocate %dB, only %dB remaining.", pSize, TotalSize - Allocated);
 			return nullptr;
 		}
 

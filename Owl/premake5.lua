@@ -28,7 +28,6 @@ project "Owl"
     includedirs
     {
         "src",
-		"vendor/spdlog/include",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.VulkanSDK}"

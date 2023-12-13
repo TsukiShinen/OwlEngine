@@ -4,6 +4,7 @@
 #include <windowsx.h>
 #include <vulkan/vulkan_win32.h>
 
+#include "Owl/Core/Application.h"
 #include "Owl/Debug/Instrumentor.h"
 #include "Owl/Events/ApplicationEvent.h"
 #include "Owl/Events/KeyEvent.h"
@@ -42,7 +43,9 @@ namespace Owl
 		m_Data.Height = pWindowProps.Height;
 
 		m_Instance = GetModuleHandle(nullptr);
-		OWL_CORE_ASSERT(m_Instance, "[WindowsWindow] Failed to create window instance!")
+
+		GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &m_StdOutputCsbi);
+		GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &m_ErrOutputCsbi);
 
 		WNDCLASS windowClass = {};
 		windowClass.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
@@ -83,7 +86,7 @@ namespace Owl
 		ShowWindow(m_Window, SW_SHOW);
 		s_WindowCount++;
 
-		OWL_CORE_INFO("Window initialized successfully : {0} ({1}, {2})", m_Data.Title, m_Data.Width, m_Data.Height);
+		OWL_CORE_INFO("Window initialized successfully : %s (%d, %d)", m_Data.Title.c_str(), m_Data.Width, m_Data.Height);
 	}
 
 	VkSurfaceKHR WindowsWindow::CreateVulkanSurface(const VulkanContext* pRenderer)
@@ -113,6 +116,50 @@ namespace Owl
 			TranslateMessage(&message);
 			DispatchMessage(&message);
 		}
+	}
+
+	void Window::ConsoleWrite(const char* pMessage, const uint8_t pColour)
+	{
+		const HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+		
+		CONSOLE_SCREEN_BUFFER_INFO csbi;
+		if (Application::Get() && Application::Get()->GetWindow()) {
+			csbi = static_cast<WindowsWindow*>(Application::Get()->GetWindow())->m_StdOutputCsbi;
+		} else {
+			GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+		}
+
+		// FATAL,ERROR,WARN,INFO,DEBUG,TRACE
+		static uint8_t levels[6] = {64, 4, 6, 2, 1, 8};
+		SetConsoleTextAttribute(consoleHandle, levels[pColour]);
+		OutputDebugStringA(pMessage);
+		const uint64_t length = strlen(pMessage);
+		DWORD numberWritten = 0;
+		WriteConsoleA(GetStdHandle(STD_OUTPUT_HANDLE), pMessage, static_cast<DWORD>(length), &numberWritten, 0);
+
+		SetConsoleTextAttribute(consoleHandle, csbi.wAttributes);
+	}
+
+	void Window::ConsoleWriteError(const char* pMessage, const uint8_t pColour)
+	{
+		const HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+
+		CONSOLE_SCREEN_BUFFER_INFO csbi;
+		if (Application::Get() && Application::Get()->GetWindow()) {
+			csbi = static_cast<WindowsWindow*>(Application::Get()->GetWindow())->m_ErrOutputCsbi;
+		} else {
+			GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &csbi);
+		}
+
+		// FATAL,ERROR,WARN,INFO,DEBUG,TRACE
+		static uint8_t levels[6] = {64, 4, 6, 2, 1, 8};
+		SetConsoleTextAttribute(consoleHandle, levels[pColour]);
+		OutputDebugStringA(pMessage);
+		const uint64_t length = strlen(pMessage);
+		DWORD numberWritten = 0;
+		WriteConsoleA(GetStdHandle(STD_OUTPUT_HANDLE), pMessage, static_cast<DWORD>(length), &numberWritten, 0);
+
+		SetConsoleTextAttribute(consoleHandle, csbi.wAttributes);
 	}
 
 	LRESULT WindowsWindow::ProcessMessages(const uint32_t pMessage, WPARAM pWParam, LPARAM pLParam)

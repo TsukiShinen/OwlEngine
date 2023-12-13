@@ -36,6 +36,9 @@ namespace Owl
 		HINSTANCE m_Instance;
 		HWND m_Window;
 
+		CONSOLE_SCREEN_BUFFER_INFO m_StdOutputCsbi;
+		CONSOLE_SCREEN_BUFFER_INFO m_ErrOutputCsbi;
+
 		struct WindowData
 		{
 			std::string Title;
@@ -45,5 +48,6 @@ namespace Owl
 		};
 
 		WindowData m_Data;
+		friend class Window;
 	};
 }

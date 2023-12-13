@@ -15,7 +15,6 @@ project "Owl-Test"
 
 	includedirs
 	{
-		"%{wks.location}/Owl/vendor/spdlog/include",
 		"%{wks.location}/Owl/src",
 		"%{wks.location}/Owl/vendor",
 		"%{IncludeDir.glm}",

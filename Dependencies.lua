@@ -2,7 +2,6 @@ VULKAN_SDK = os.getenv("Vulkan_SDK")
 
 IncludeDir = {}
 IncludeDir["stb_image"] = "%{wks.location}/Owl/vendor/stb_image"
-IncludeDir["Glad"] = "%{wks.location}/Owl/vendor/Glad/include"
 IncludeDir["glm"] = "%{wks.location}/Owl/vendor/glm"
 IncludeDir["VulkanSDK"] = "%{VULKAN_SDK}/Include"
 

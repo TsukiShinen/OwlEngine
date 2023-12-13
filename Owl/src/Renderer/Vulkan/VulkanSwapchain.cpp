@@ -1,6 +1,8 @@
 ﻿#include "VulkanSwapchain.h"
 
 #include "VulkanDevice.h"
+#include "glm/common.hpp"
+#include "Owl/Debug/Assert.h"
 #include "Owl/Debug/Instrumentor.h"
 #include "Owl/Debug/Log.h"
 

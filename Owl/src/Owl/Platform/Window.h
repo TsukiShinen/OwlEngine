@@ -31,6 +31,9 @@ namespace Owl
 
 		virtual void Sleep(unsigned long pMilliseconds) = 0;
 
+		static void ConsoleWrite(const char* pMessage, uint8_t pColour);
+		static void ConsoleWriteError(const char* pMessage, uint8_t pColour);
+
 		virtual const char* GetVulkanRequiredExtension() = 0;
 
 		static Window* Create(const WindowProps& pWindowProps = WindowProps());

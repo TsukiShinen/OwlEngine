@@ -44,9 +44,9 @@ namespace Owl
 				// Subsequent profiling output meant for the original session will end up in the
 				// newly opened session instead.  That's better than having badly formatted
 				// profiling output.
-				if (Log::GetCoreLogger()) // Edge case: BeginSession() might be before Log::Init()
+				if (Log::Get()) // Edge case: BeginSession() might be before Log::Init()
 				{
-					OWL_CORE_ERROR("Instrumentor::BeginSession('{0}') when session '{1}' already open.", name,
+					OWL_CORE_ERROR("Instrumentor::BeginSession('%s') when session '%s' already open.", name,
 					               m_CurrentSession->Name);
 				}
 				InternalEndSession();
@@ -60,9 +60,9 @@ namespace Owl
 			}
 			else
 			{
-				if (Log::GetCoreLogger()) // Edge case: BeginSession() might be before Log::Init()
+				if (Log::Get()) // Edge case: BeginSession() might be before Log::Init()
 				{
-					OWL_CORE_ERROR("Instrumentor could not open results file '{0}'.", filepath);
+					OWL_CORE_ERROR("Instrumentor could not open results file '%s'.", filepath);
 				}
 			}
 		}

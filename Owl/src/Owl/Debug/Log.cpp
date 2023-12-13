@@ -1,7 +1,5 @@
 #include "opch.h"
-
-#include <spdlog/sinks/stdout_color_sinks.h>
-#include <spdlog/sinks/basic_file_sink.h>
+#include "Owl/Platform/Window.h"
 
 namespace Owl
 {
@@ -14,28 +12,62 @@ namespace Owl
 		if (pBlock == nullptr)
 			return;
 		s_Log = static_cast<Log*>(pBlock);
-		
-		std::vector<spdlog::sink_ptr> logSinks;
-		logSinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
-		logSinks.emplace_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>("OWL.log", true));
-
-		logSinks[0]->set_pattern("%^[%T] [%l] %n: %v%$");
-		logSinks[1]->set_pattern("[%T] [%l] %n: %v");
-
-		s_Log->m_CoreLogger = std::make_shared<spdlog::logger>("OWL", begin(logSinks), end(logSinks));
-		register_logger(s_Log->m_CoreLogger);
-		s_Log->m_CoreLogger->set_level(spdlog::level::trace);
-		s_Log->m_CoreLogger->flush_on(spdlog::level::trace);
-
-		s_Log->m_ClientLogger = std::make_shared<spdlog::logger>("APP", begin(logSinks), end(logSinks));
-		register_logger(s_Log->m_ClientLogger);
-		s_Log->m_ClientLogger->set_level(spdlog::level::trace);
-		s_Log->m_ClientLogger->flush_on(spdlog::level::trace);
 	}
 
 	void Log::Shutdown()
 	{
 		OWL_PROFILE_FUNCTION();
 		s_Log = nullptr;
+	}
+
+	void Log::Print(const LogLevel pLevel, const char* pSender, const char* pMessage, ...)
+	{
+		const char* levelStrings[6] = {"FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE"};
+		const std::time_t now = std::time(nullptr);
+		const std::tm* timeInfo = std::localtime(&now);
+		char timestamp[9];
+		std::strftime(timestamp, sizeof(timestamp), "%H:%M:%S", timeInfo);
+
+		const bool isError = pLevel < Warn;
+		
+		va_list args;
+		va_start(args, pMessage);
+		auto message = FormatMessageV(pMessage, args);
+		va_end(args);
+
+		message = FormatMessage("[%s] [%s] %s: %s\n", timestamp, levelStrings[pLevel], pSender, message);
+
+		if (isError)
+			Window::ConsoleWriteError(message, pLevel);
+		else
+			Window::ConsoleWrite(message, pLevel);
+
+		delete[] message;
+	}
+
+	char* Log::FormatMessage(const char* pFormat, ...)
+	{
+		va_list args;
+		va_start(args, pFormat);
+		const auto buffer = FormatMessageV(pFormat, args);
+		va_end(args);
+
+		return buffer;
+	}
+
+	char* Log::FormatMessageV(const char* pFormat, va_list pVaList)
+	{
+		// Calculate the size needed for the formatted string
+		const int size = std::vsnprintf(nullptr, 0, pFormat, pVaList);
+		if (size <= 0)
+		{
+			va_end(pVaList);
+			return nullptr;
+		}
+
+		// Allocate a buffer and format the string
+		const auto buffer = new char[size + 1];
+		std::vsnprintf(buffer, size + 1, pFormat, pVaList);
+		return buffer;
 	}
 }

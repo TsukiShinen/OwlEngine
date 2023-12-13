@@ -51,7 +51,7 @@ namespace Owl
 		if (m_Context->IsRecreatingSwapchain)
 		{
 			if (auto result = vkDeviceWaitIdle(m_Context->Device->GetLogicalDevice()); result != VK_SUCCESS)
-				OWL_CORE_ERROR("[VulkanRendererApi] Failed to vkDeviceWaitIdle in BeginFrame : {0}", result);
+				OWL_CORE_ERROR("[VulkanRendererApi] Failed to vkDeviceWaitIdle in BeginFrame : %s", result);
 			return false;
 		}
 
@@ -59,7 +59,7 @@ namespace Owl
 		{
 			if (auto result = vkDeviceWaitIdle(m_Context->Device->GetLogicalDevice()); result != VK_SUCCESS)
 			{
-				OWL_CORE_ERROR("[VulkanRendererApi] Failed to vkDeviceWaitIdle in BeginFrame : {0}", result);
+				OWL_CORE_ERROR("[VulkanRendererApi] Failed to vkDeviceWaitIdle in BeginFrame : %s", result);
 				return false;
 			}
 
@@ -136,7 +136,7 @@ namespace Owl
 			&submitInfo,
 			m_Context->InFlightFences[m_Context->CurrentFrame]->GetHandle()); result != VK_SUCCESS)
 		{
-			OWL_CORE_ERROR("vkQueueSubmit failed with result: {0}", result);
+			OWL_CORE_ERROR("vkQueueSubmit failed with result: %s", result);
 			return;
 		}
 
@@ -214,21 +214,19 @@ namespace Owl
 	                                          const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 	                                          void* pUserData)
 	{
-		std::string error = "[Vulkan Debug] ";
-		error += pCallbackData->pMessage;
 		switch (pMessageSeverity)
 		{
 		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-			OWL_CORE_ERROR(error);
+			Log::Get()->Print(Error, "Vulkan", pCallbackData->pMessage);
 			break;
 		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-			OWL_CORE_WARN(error);
+			Log::Get()->Print(Warn, "Vulkan", pCallbackData->pMessage);
 			break;
 		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-			OWL_CORE_INFO(error);
+			Log::Get()->Print(Info, "Vulkan", pCallbackData->pMessage);
 			break;
 		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-			OWL_CORE_TRACE(error);
+			Log::Get()->Print(Trace, "Vulkan", pCallbackData->pMessage);
 			break;
 		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_FLAG_BITS_MAX_ENUM_EXT:
 			break;

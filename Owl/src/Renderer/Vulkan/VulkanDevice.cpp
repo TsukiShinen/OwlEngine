@@ -211,7 +211,7 @@ namespace Owl
 
 					if (!found)
 					{
-						OWL_CORE_ERROR("Required extension not found: {}!",
+						OWL_CORE_ERROR("Required extension not found: %s!",
 						               m_PhysicalDeviceRequirement.ExtensionNames[i]);
 						return false;
 					}
@@ -222,7 +222,7 @@ namespace Owl
 		if (m_PhysicalDeviceRequirement.SamplerAnisotropy && !pFeatures->samplerAnisotropy)
 		{
 			OWL_CORE_ERROR("Device does not support samplerAnisotropy!");
-			return FALSE;
+			return false;
 		}
 
 		return true;
@@ -266,7 +266,7 @@ namespace Owl
 		deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
 		deviceCreateInfo.pEnabledFeatures = &deviceFeatures;
 		auto extensionNames = m_PhysicalDeviceRequirement.ExtensionNames;
-		deviceCreateInfo.enabledExtensionCount = static_cast<glm::uint32_t>(extensionNames.size());
+		deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(extensionNames.size());
 		deviceCreateInfo.ppEnabledExtensionNames = extensionNames.data();
 
 		deviceCreateInfo.enabledLayerCount = 0;

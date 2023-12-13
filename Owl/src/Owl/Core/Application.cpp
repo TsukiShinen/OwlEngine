@@ -42,7 +42,7 @@ namespace Owl
 		delete m_Window;
 		Renderer::Shutdown();
 		OWL_INFO("Memory at the end of application");
-		OWL_INFO("Allocations remaining : {0}", Memory::GetMemoryAllocationCount());
+		OWL_INFO("Allocations remaining : %d", Memory::GetMemoryAllocationCount());
 		OWL_INFO(Memory::OwlGetMemoryUsageString());
 		Log::Shutdown();
 		Memory::Shutdown();
@@ -84,7 +84,7 @@ namespace Owl
 	void Application::Run()
 	{
 		OWL_PROFILE_FUNCTION();
-		OWL_INFO("Allocations at start : {0}", Memory::GetMemoryAllocationCount());
+		OWL_INFO("Allocations at start : %d", Memory::GetMemoryAllocationCount());
 		OWL_INFO(Memory::OwlGetMemoryUsageString());
 
 		while (m_IsRunning)
@@ -118,7 +118,7 @@ namespace Owl
 
 		dispatcher.Dispatch<KeyPressedEvent>([](const KeyPressedEvent& pEvent1)
 		{
-			OWL_CORE_TRACE("Key pressed : " + std::to_string(pEvent1.GetKeyCode()));
+			OWL_CORE_TRACE("Key pressed : %s", std::to_string(pEvent1.GetKeyCode()));
 			return true;
 		});
 	}
