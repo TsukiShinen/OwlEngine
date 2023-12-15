@@ -11,45 +11,28 @@ namespace Owl
 	Application* Application::s_Instance = nullptr;
 
 	Application::Application(const ApplicationSpecification& pSpecification)
-		: m_Specification(pSpecification)
+		: m_Specification(pSpecification), m_Window(nullptr)
 	{
 		OWL_PROFILE_FUNCTION();
-
-		Vector2 test{0, 0};
-		
-		
 		OWL_ASSERT(!s_Instance, "Application already exist!")
 		s_Instance = this;
-
-		m_SystemAllocator = new LinearAllocator(64 * 1024 * 1024, nullptr);
-		// === Memory ===
-		uint64_t memorySize;
-		Memory::Initialize(&memorySize, nullptr);
-		Memory::Initialize(&memorySize, m_SystemAllocator->Allocate(memorySize));
-		// === Log ===
-		uint64_t logSize;
-		Log::Initialize(&logSize, nullptr);
-		Log::Initialize(&logSize, m_SystemAllocator->Allocate(logSize));
 		
 		if (!m_Specification.WorkingDirectory.empty())
 			std::filesystem::current_path(m_Specification.WorkingDirectory);
 
+		// === Window ===
 		m_Window = Window::Create(WindowProps(pSpecification.Name, 1280, 700));
 		m_Window->SetEventCallback(OWL_BIND_EVENT_FN(Application::OnEvent));
 
+		// === Renderer ===
 		Renderer::Initialize(pSpecification.Name);
 	}
 
 	Application::~Application()
 	{
 		OWL_PROFILE_FUNCTION();
-		delete m_Window;
 		Renderer::Shutdown();
-		OWL_INFO("Memory at the end of application");
-		OWL_INFO("Allocations remaining : %d", Memory::GetMemoryAllocationCount());
-		OWL_INFO(Memory::OwlGetMemoryUsageString());
-		Log::Shutdown();
-		Memory::Shutdown();
+		delete m_Window;
 	}
 
 	void Application::Close()
@@ -88,8 +71,6 @@ namespace Owl
 	void Application::Run()
 	{
 		OWL_PROFILE_FUNCTION();
-		OWL_INFO("Allocations at start : %d", Memory::GetMemoryAllocationCount());
-		OWL_INFO(Memory::OwlGetMemoryUsageString());
 
 		while (m_IsRunning)
 		{

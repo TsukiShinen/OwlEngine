@@ -12,9 +12,9 @@ namespace Owl
 	public:
 		WindowsWindow(const WindowProps& pWindowProps);
 		~WindowsWindow() override;
-
-		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, MemoryTagWindow); }
-		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(WindowsWindow), MemoryTagWindow); }
+		
+		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, Owl::MemoryTagPlatform); }
+		void operator delete(void* pBlock, const size_t pSize) { return OWL_FREE(pBlock, pSize, Owl::MemoryTagPlatform); }
 
 		void Initialize(const WindowProps& pWindowProps);
 		VkSurfaceKHR CreateVulkanSurface(const VulkanContext* pRenderer) override;

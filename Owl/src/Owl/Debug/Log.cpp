@@ -5,23 +5,6 @@
 
 namespace Owl
 {
-	Log* Log::s_Log = nullptr;
-
-	void Log::Initialize(uint64_t* pMemoryRequirement, void* pBlock)
-	{
-		OWL_PROFILE_FUNCTION();
-		*pMemoryRequirement = sizeof(Log);
-		if (pBlock == nullptr)
-			return;
-		s_Log = static_cast<Log*>(pBlock);
-	}
-
-	void Log::Shutdown()
-	{
-		OWL_PROFILE_FUNCTION();
-		s_Log = nullptr;
-	}
-
 	void Log::Print(const LogLevel pLevel, const char* pSender, const char* pMessage, ...)
 	{
 		const char* levelStrings[6] = {"FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE"};

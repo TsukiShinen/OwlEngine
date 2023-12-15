@@ -11,9 +11,9 @@ namespace Owl
 	public:
 		VulkanSwapchain(VulkanContext* pContext, uint32_t pWidth, uint32_t pHeight);
 		~VulkanSwapchain();
-
-		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, MemoryTagRenderer); }
-		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(VulkanSwapchain), MemoryTagRenderer); }
+		
+		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, Owl::MemoryTagRenderer); }
+		void operator delete(void* pBlock, const size_t pSize) { return OWL_FREE(pBlock, pSize, Owl::MemoryTagRenderer); }
 
 		void ReCreate(uint32_t pWidth, uint32_t pHeight);
 		bool AcquireNextImage(uint64_t pTimeoutNanoSecond, VkSemaphore pImageSemaphore, VkFence pFence,
@@ -31,15 +31,15 @@ namespace Owl
 
 	private:
 		void Create(uint32_t pWidth, uint32_t pHeight);
-		void Destroy() const;
+		void Destroy();
 		VulkanContext* m_Context;
 
 		VkSurfaceFormatKHR m_ImageFormat;
 		uint8_t m_MaxFramesInFlight;
 		VkSwapchainKHR m_Handle;
 		uint32_t m_ImageCount;
-		VkImage* m_Images;
-		VkImageView* m_Views;
+		std::vector<VkImage> m_Images;
+		std::vector<VkImageView> m_Views;
 
 		VulkanImage* m_DepthAttachment;
 

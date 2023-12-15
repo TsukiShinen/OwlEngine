@@ -2,7 +2,6 @@
 
 #include <vulkan/vulkan.h>
 #include <vector>
-
 #include "Owl/Memory/Memory.h"
 
 namespace Owl
@@ -17,9 +16,9 @@ namespace Owl
 	{
 		void Initialize();
 		~VulkanContext();
-
-		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, MemoryTagRenderer); }
-		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(VulkanContext), MemoryTagRenderer); }
+		
+		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, Owl::MemoryTagRenderer); }
+		void operator delete(void* pBlock, const size_t pSize) { return OWL_FREE(pBlock, pSize, Owl::MemoryTagRenderer); }
 
 		bool RecreateSwapChain();
 

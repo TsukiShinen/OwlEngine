@@ -123,6 +123,7 @@ namespace Owl
 		const HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 		
 		CONSOLE_SCREEN_BUFFER_INFO csbi;
+		auto t = Application::Get();
 		if (Application::Get() && Application::Get()->GetWindow()) {
 			csbi = static_cast<WindowsWindow*>(Application::Get()->GetWindow())->m_StdOutputCsbi;
 		} else {

@@ -4,8 +4,6 @@
 #include "Owl/Core/Base.h"
 #include "Owl/ECS/World.h"
 #include "Owl/Events/ApplicationEvent.h"
-#include "Owl/Memory/LinearAllocator.h"
-#include "Owl/Memory/Memory.h"
 #include "Owl/Platform/Window.h"
 
 namespace Owl
@@ -41,9 +39,9 @@ namespace Owl
 	public:
 		Application(const ApplicationSpecification& pSpecification);
 		virtual ~Application();
-
-		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, MemoryTagApplication); }
-		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(Application), MemoryTagApplication); }
+		
+		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, Owl::MemoryTagApplication); }
+		void operator delete(void* pBlock, const size_t pSize) { return OWL_FREE(pBlock, pSize, Owl::MemoryTagApplication); }
 
 		void Close();
 
@@ -79,8 +77,6 @@ namespace Owl
 		float m_LastFrameTime = 0.0f;
 		
 		Window* m_Window;
-
-		LinearAllocator* m_SystemAllocator;
 
 		static Application* s_Instance;
 	};

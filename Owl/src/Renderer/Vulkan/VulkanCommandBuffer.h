@@ -1,7 +1,5 @@
 ﻿#pragma once
 #include "VulkanContext.h"
-#include "VulkanContext.h"
-#include "Owl/Memory/Memory.h"
 
 namespace Owl
 {
@@ -19,9 +17,9 @@ namespace Owl
 	public:
 		VulkanCommandBuffer(VulkanContext* pVulkanContext, VkCommandPool& pPool, bool pIsPrimary);
 		~VulkanCommandBuffer();
-
-		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, MemoryTagRenderer); }
-		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(VulkanCommandBuffer), MemoryTagRenderer); }
+		
+		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, Owl::MemoryTagRenderer); }
+		void operator delete(void* pBlock, const size_t pSize) { return OWL_FREE(pBlock, pSize, Owl::MemoryTagRenderer); }
 
 		void Begin(bool pIsRenderPassContinue, bool pIsSimultaneousUse, bool pIsSingUse = false);
 		void End();

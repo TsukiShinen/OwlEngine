@@ -4,7 +4,6 @@
 #include <vulkan/vulkan.h>
 
 #include "VulkanContext.h"
-#include "Owl/Memory/Memory.h"
 
 namespace Owl
 {
@@ -51,9 +50,9 @@ namespace Owl
 	public:
 		VulkanDevice(VulkanContext* pContext);
 		~VulkanDevice();
-
-		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, MemoryTagRenderer); }
-		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(VulkanDevice), MemoryTagRenderer); }
+		
+		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, Owl::MemoryTagRenderer); }
+		void operator delete(void* pBlock, const size_t pSize) { return OWL_FREE(pBlock, pSize, Owl::MemoryTagRenderer); }
 
 		void QuerySwapchainSupport(VkPhysicalDevice pDevice,
 		                           SwapchainInfo& pSwapchainInfo) const;

@@ -11,9 +11,9 @@ namespace Owl
 		VulkanFrameBuffer(VulkanContext* pContext, VulkanRenderPass* pRenderPass, uint32_t pWidth, uint32_t pHeight,
 		                  std::vector<VkImageView>& pAttachments);
 		~VulkanFrameBuffer();
-
-		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, MemoryTagRenderer); }
-		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(VulkanFrameBuffer), MemoryTagRenderer); }
+		
+		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, Owl::MemoryTagRenderer); }
+		void operator delete(void* pBlock, const size_t pSize) { return OWL_FREE(pBlock, pSize, Owl::MemoryTagRenderer); }
 
 		VkFramebuffer& GetHandle() { return m_Handle; }
 

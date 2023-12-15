@@ -3,110 +3,90 @@
 
 namespace Owl
 {
-	Memory::Stats* Memory::s_Stats = nullptr;
-
-	void Memory::Initialize(uint64_t* pMemoryRequirement, void* pBlock)
-	{
-		OWL_PROFILE_FUNCTION();
-		*pMemoryRequirement = sizeof(Stats);
-		if (pBlock == nullptr)
-			return;
-
-		s_Stats = static_cast<Stats*>(pBlock);
-		s_Stats->AllocationCount = 0;
-		OwlZeroMemory(s_Stats, sizeof(Stats));
-	}
-
-	void Memory::Shutdown()
-	{
-		OWL_PROFILE_FUNCTION();
-		s_Stats = nullptr; 
-	}
+	uint64_t Memory::TotalAllocated = 0;
+	uint64_t Memory::TaggedAllocations[MEMORY_TAG_MAX_TAGS];
+	uint64_t Memory::AllocationCount = 0;
 
 	void* Memory::OwlAllocate(const uint64_t pSize, const MemoryTag pTag)
 	{
-		OWL_PROFILE_FUNCTION();
-		if (pTag == MemoryTagUnknown)
-			OWL_CORE_WARN("OWL_ALLOCATE called using MEMORY_TAG_UNKNOWN. Re-class this allocation");
+		TotalAllocated += pSize;
+		TaggedAllocations[pTag] += pSize;
+		AllocationCount++;
 
-		if (s_Stats)
-		{
-			s_Stats->TotalAllocated += pSize;
-			s_Stats->TaggedAllocations[pTag] += pSize;
-			s_Stats->AllocationCount++;
-		}
-
-		// TODO: Memory alignment
-		return memset(malloc(pSize), 0, pSize);
+		return malloc(pSize);
 	}
 
 	void Memory::OwlFree(void* pBlock, const uint64_t pSize, const MemoryTag pTag)
 	{
-		OWL_PROFILE_FUNCTION();
-		if (pTag == MemoryTagUnknown)
-			OWL_CORE_WARN("OWL_FREE called using MEMORY_TAG_UNKNOWN. Re-class this allocation");
+		TotalAllocated -= pSize;
+		TaggedAllocations[pTag] -= pSize;
+		AllocationCount--;
 
-		if (s_Stats)
-		{
-			s_Stats->TotalAllocated -= pSize;
-			s_Stats->TaggedAllocations[pTag] -= pSize;
-			s_Stats->AllocationCount--;
-		}
-
-		// TODO: Memory alignment
 		free(pBlock);
-	}
-
-	void* Memory::OwlZeroMemory(void* pBlock, const uint64_t pSize)
-	{
-		OWL_PROFILE_FUNCTION();
-		return memset(pBlock, 0, pSize);
 	}
 
 	void* Memory::OwlCopyMemory(void* pDestination, const void* pSource, const uint64_t pSize)
 	{
-		OWL_PROFILE_FUNCTION();
 		return memcpy(pDestination, pSource, pSize);
-	}
-
-	void* Memory::OwlSetMemory(void* pDestination, const int pValue, const uint64_t pSize)
-	{
-		OWL_PROFILE_FUNCTION();
-		return memset(pDestination, pValue, pSize);
 	}
 
 	char* Memory::OwlGetMemoryUsageString()
 	{
-		char buffer[8000] = "System memory use (tagged):\n";
+		char buffer[8000] = "";
 		uint64_t offset = strlen(buffer);
+		
+		char unit1[4] = "XB";
+		float amount1 = 1.f;
+		if (TotalAllocated >= k_Gib)
+		{
+			unit1[0] = 'G';
+			amount1 = TotalAllocated / static_cast<float>(k_Gib);
+		}
+		else if (TotalAllocated >= k_Mib)
+		{
+			unit1[0] = 'M';
+			amount1 = TotalAllocated / static_cast<float>(k_Mib);
+		}
+		else if (TotalAllocated >= k_Kib)
+		{
+			unit1[0] = 'K';
+			amount1 = TotalAllocated / static_cast<float>(k_Kib);
+		}
+		else
+		{
+			unit1[0] = 'B';
+			unit1[1] = 0;
+			amount1 = TotalAllocated;
+		}
+		
+		offset += snprintf(buffer + offset, 8000, "Memory Usage : %.2f%s // Number of allocations : %llu\n%s", amount1, unit1, AllocationCount, "System memory use (tagged):\n");
 		for (uint32_t i = 0; i < MEMORY_TAG_MAX_TAGS; i++)
 		{
 			char unit[4] = "XB";
 			float amount = 1.f;
-			auto s = s_Stats;
-			if (s_Stats->TaggedAllocations[i] >= k_Gib)
+			if (TaggedAllocations[i] >= k_Gib)
 			{
 				unit[0] = 'G';
-				amount = s_Stats->TaggedAllocations[i] / static_cast<float>(k_Gib);
+				amount = TaggedAllocations[i] / static_cast<float>(k_Gib);
 			}
-			else if (s_Stats->TaggedAllocations[i] >= k_Mib)
+			else if (TaggedAllocations[i] >= k_Mib)
 			{
 				unit[0] = 'M';
-				amount = s_Stats->TaggedAllocations[i] / static_cast<float>(k_Mib);
+				amount = TaggedAllocations[i] / static_cast<float>(k_Mib);
 			}
-			else if (s_Stats->TaggedAllocations[i] >= k_Kib)
+			else if (TaggedAllocations[i] >= k_Kib)
 			{
 				unit[0] = 'K';
-				amount = s_Stats->TaggedAllocations[i] / static_cast<float>(k_Kib);
+				amount = TaggedAllocations[i] / static_cast<float>(k_Kib);
 			}
 			else
 			{
 				unit[0] = 'B';
 				unit[1] = 0;
-				amount = s_Stats->TaggedAllocations[i];
+				amount = TaggedAllocations[i];
 			}
 
-			offset += snprintf(buffer + offset, 8000, " %s: %.2f%s\n", k_MemoryTagStrings[i], amount, unit);
+			offset += snprintf(buffer + offset, 8000, "    %s: %.2f%s\n", k_MemoryTagStrings[i], amount, unit);
 		}
 
 		char* outString = _strdup(buffer);

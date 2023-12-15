@@ -170,15 +170,9 @@ namespace Owl
 		m_ImageCount = 0;
 		result = vkGetSwapchainImagesKHR(m_Context->Device->GetLogicalDevice(), m_Handle, &m_ImageCount, nullptr);
 		OWL_CORE_ASSERT(result == VK_SUCCESS, "[VulkanSwapchain] Failed to get image count!")
-		if (!m_Images)
-		{
-			m_Images = static_cast<VkImage*>(OWL_ALLOCATE(sizeof(VkImage) * m_ImageCount, MemoryTagRenderer));
-		}
-		if (!m_Views)
-		{
-			m_Views = static_cast<VkImageView*>(OWL_ALLOCATE(sizeof(VkImageView) * m_ImageCount, MemoryTagRenderer));
-		}
-		result = vkGetSwapchainImagesKHR(m_Context->Device->GetLogicalDevice(), m_Handle, &m_ImageCount, m_Images);
+		m_Images.resize(m_ImageCount);
+		m_Views.resize(m_ImageCount);
+		result = vkGetSwapchainImagesKHR(m_Context->Device->GetLogicalDevice(), m_Handle, &m_ImageCount, m_Images.data());
 		OWL_CORE_ASSERT(result == VK_SUCCESS, "[VulkanSwapchain] Failed to create images!")
 
 		for (uint32_t i = 0; i < m_ImageCount; ++i)
@@ -206,18 +200,17 @@ namespace Owl
 		                                    true, VK_IMAGE_ASPECT_DEPTH_BIT);
 	}
 
-	void VulkanSwapchain::Destroy() const
+	void VulkanSwapchain::Destroy()
 	{
 		OWL_PROFILE_FUNCTION();
 		vkDeviceWaitIdle(m_Context->Device->GetLogicalDevice());
 		delete m_DepthAttachment;
-
+		
 		for (uint32_t i = 0; i < m_ImageCount; ++i)
-		{
 			vkDestroyImageView(m_Context->Device->GetLogicalDevice(), m_Views[i], m_Context->Allocator);
-		}
-		OWL_FREE(m_Images, sizeof(VkImage) * m_ImageCount, MemoryTagRenderer);
-		OWL_FREE(m_Views, sizeof(VkImageView) * m_ImageCount, MemoryTagRenderer);
+
+		m_Images.clear();
+		m_Views.clear();
 
 		vkDestroySwapchainKHR(m_Context->Device->GetLogicalDevice(), m_Handle, m_Context->Allocator);
 	}

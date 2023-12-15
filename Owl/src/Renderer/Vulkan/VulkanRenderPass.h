@@ -20,9 +20,9 @@ namespace Owl
 	public:
 		VulkanRenderPass(VulkanContext* pContext, Vector4 pRect);
 		~VulkanRenderPass();
-
-		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, MemoryTagRenderer); }
-		void operator delete(void* pBlock) { OWL_FREE(pBlock, sizeof(VulkanRenderPass), MemoryTagRenderer); }
+		
+		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, Owl::MemoryTagRenderer); }
+		void operator delete(void* pBlock, const size_t pSize) { return OWL_FREE(pBlock, pSize, Owl::MemoryTagRenderer); }
 
 		void SetClearColor(Vector4 pColor, float pDepth = 1, uint32_t pStencil = 0);
 

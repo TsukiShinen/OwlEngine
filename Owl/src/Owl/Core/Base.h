@@ -3,6 +3,7 @@
 #include "Owl/Core/PlatformDetection.h"
 
 #include <memory>
+#include "Owl/Memory/Memory.h"
 
 #ifdef OWL_DEBUG
 #if defined(OWL_PLATFORM_WINDOWS)
