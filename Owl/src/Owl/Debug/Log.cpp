@@ -3,8 +3,32 @@
 
 #include <ctime>
 
+#include "Owl/Platform/FilesSystem.h"
+#include "Platform/Windows/WindowsWindow.h"
+
 namespace Owl
 {
+	Log* Log::s_Instance;
+	
+	void Log::Initialize()
+	{
+		OWL_CORE_ASSERT(!s_Instance, "Can only have one instance of Log")
+
+		s_Instance = new Log();
+		s_Instance->m_LogFile = new File();
+
+		if (!FilesSystem::TryOpen("console.log", FileModeWrite | FileModeNew, false, s_Instance->m_LogFile))
+			Window::ConsoleWriteError("[Log] Unable to open console.log for writing.\n", Error);
+	}
+
+	void Log::Shutdown()
+	{
+		if (s_Instance->m_LogFile)
+			FilesSystem::Close(s_Instance->m_LogFile);
+		delete s_Instance->m_LogFile;
+		delete s_Instance;
+	}
+
 	void Log::Print(const LogLevel pLevel, const char* pSender, const char* pMessage, ...)
 	{
 		const char* levelStrings[6] = {"FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE"};
@@ -20,17 +44,19 @@ namespace Owl
 		auto message = FormatMessageV(pMessage, args);
 		va_end(args);
 
-		message = FormatMessage("[%s] [%s] %s: %s\n", timestamp, levelStrings[pLevel], pSender, message);
+		message = LogFormatMessage("[%s] [%s] %s: %s\n", timestamp, levelStrings[pLevel], pSender, message);
 
 		if (isError)
 			Window::ConsoleWriteError(message, pLevel);
 		else
 			Window::ConsoleWrite(message, pLevel);
 
+		AppendToLogFile(message);
+
 		delete[] message;
 	}
 
-	char* Log::FormatMessage(const char* pFormat, ...)
+	char* Log::LogFormatMessage(const char* pFormat, ...)
 	{
 		va_list args;
 		va_start(args, pFormat);
@@ -54,5 +80,16 @@ namespace Owl
 		const auto buffer = new char[size + 1];
 		std::vsnprintf(buffer, size + 1, pFormat, pVaList);
 		return buffer;
+	}
+
+	void Log::AppendToLogFile(const char* pMessage)
+	{
+		if (!m_LogFile->IsValid)
+			return;
+
+		uint64_t length = strlen(pMessage);
+		uint64_t written = 0;
+		if (!FilesSystem::TryWrite(m_LogFile, length, pMessage, &written))
+			Window::ConsoleWriteError("[Log] Error writing to console.log.", Error);
 	}
 }

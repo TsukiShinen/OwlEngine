@@ -11,11 +11,16 @@ namespace Owl
 		bool IsValid;
 	};
 
-	enum FileModes
+	enum  FileModes
 	{
 		FileModeRead = 0x1,
-		FileModeWrite = 0x2
+		FileModeWrite = 0x2,
+		FileModeNew = 0x3
 	};
+	inline FileModes operator|(FileModes a, FileModes b)
+	{
+		return static_cast<FileModes>(static_cast<int>(a) | static_cast<int>(b));
+	}
 	
 	class FilesSystem
 	{

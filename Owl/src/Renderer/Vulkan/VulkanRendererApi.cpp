@@ -217,16 +217,16 @@ namespace Owl
 		switch (pMessageSeverity)
 		{
 		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-			Log::Print(Error, "Vulkan", pCallbackData->pMessage);
+			Log::Get()->Print(Error, "Vulkan", pCallbackData->pMessage);
 			break;
 		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-			Log::Print(Warn, "Vulkan", pCallbackData->pMessage);
+			Log::Get()->Print(Warn, "Vulkan", pCallbackData->pMessage);
 			break;
 		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-			Log::Print(Info, "Vulkan", pCallbackData->pMessage);
+			Log::Get()->Print(Info, "Vulkan", pCallbackData->pMessage);
 			break;
 		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-			Log::Print(Trace, "Vulkan", pCallbackData->pMessage);
+			Log::Get()->Print(Trace, "Vulkan", pCallbackData->pMessage);
 			break;
 		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_FLAG_BITS_MAX_ENUM_EXT:
 			break;
