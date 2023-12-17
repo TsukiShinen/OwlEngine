@@ -36,6 +36,7 @@ namespace Owl
 
 		static void ConsoleWrite(const char* pMessage, uint8_t pColour);
 		static void ConsoleWriteError(const char* pMessage, uint8_t pColour);
+		static std::string GetExecutablePath();
 
 		virtual const char* GetVulkanRequiredExtension() = 0;
 

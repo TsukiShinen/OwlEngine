@@ -11,6 +11,7 @@ namespace Owl
 	class VulkanRenderPass;
 	class VulkanCommandBuffer;
 	class VulkanFence;
+	class VulkanSpriteShader;
 
 	struct VulkanContext
 	{
@@ -41,6 +42,8 @@ namespace Owl
 		std::vector<VulkanFence*> InFlightFences;
 
 		std::vector<VulkanFence*> ImagesInFlight;
+
+		VulkanSpriteShader* SpriteShader;
 
 		uint32_t FramebufferWidth;
 		uint32_t FramebufferHeight;

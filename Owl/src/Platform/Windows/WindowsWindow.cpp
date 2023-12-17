@@ -162,6 +162,15 @@ namespace Owl
 
 		SetConsoleTextAttribute(consoleHandle, csbi.wAttributes);
 	}
+	
+	std::string Window::GetExecutablePath()
+	{
+		char buffer[MAX_PATH];
+		GetModuleFileNameA(nullptr, buffer, MAX_PATH);
+		const std::string::size_type pos = std::string(buffer).find_last_of("\\/");
+		
+		return std::string(buffer).substr(0, pos);
+	}
 
 	LRESULT WindowsWindow::ProcessMessages(const uint32_t pMessage, WPARAM pWParam, LPARAM pLParam)
 	{

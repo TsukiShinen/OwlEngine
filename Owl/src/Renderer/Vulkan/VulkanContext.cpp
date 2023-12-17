@@ -7,6 +7,7 @@
 #include "VulkanFence.h"
 #include "VulkanSwapchain.h"
 #include "Owl/Core/Application.h"
+#include "Shaders/VulkanSpriteShader.h"
 
 namespace Owl
 {
@@ -26,6 +27,9 @@ namespace Owl
 		CreateCommandBuffers();
 		CreateSemaphoresAndFences();
 		ImageIndex = 0;
+
+		// Create BuiltinShaders
+		SpriteShader = new VulkanSpriteShader(this);
 	}
 
 	VulkanContext::~VulkanContext()
@@ -33,6 +37,8 @@ namespace Owl
 		OWL_PROFILE_FUNCTION();
 		vkDeviceWaitIdle(Device->GetLogicalDevice());
 
+		delete SpriteShader;
+		
 		for (const auto& semaphore : ImageAvailableSemaphore)
 			vkDestroySemaphore(Device->GetLogicalDevice(), semaphore, Allocator);
 		for (const auto& semaphore : QueueCompleteSemaphore)
