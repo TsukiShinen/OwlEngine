@@ -39,9 +39,13 @@ namespace Owl
 	public:
 		Application(const ApplicationSpecification& pSpecification);
 		virtual ~Application();
-		
+
 		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, Owl::MemoryTagApplication); }
-		void operator delete(void* pBlock, const size_t pSize) { return OWL_FREE(pBlock, pSize, Owl::MemoryTagApplication); }
+
+		void operator delete(void* pBlock, const size_t pSize)
+		{
+			return OWL_FREE(pBlock, pSize, Owl::MemoryTagApplication);
+		}
 
 		void Close();
 
@@ -75,7 +79,7 @@ namespace Owl
 		bool m_IsRunning = true;
 		bool m_IsMinimized = false;
 		float m_LastFrameTime = 0.0f;
-		
+
 		Window* m_Window;
 
 		static Application* s_Instance;

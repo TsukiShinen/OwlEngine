@@ -44,27 +44,28 @@ namespace Owl
 		 * @param pValue The value to be interpreted.
 		 * @returns True if a power of 2, otherwise false.
 		 */
-		static bool IsPowerOf2(const int pValue) {
+		static bool IsPowerOf2(const int pValue)
+		{
 			return pValue != 0 && (pValue & pValue - 1) == 0;
 		}
 
 		static int Random();
 		static int RandomRange(int pMin, int pMax);
-		
+
 		static float RandomFloat();
 		static float RandomRangeFloat(float pMin, float pMax);
 
-	    static float DegreesToRadians(const float pDegrees)
-	    {
-		    return pDegrees * DEGREES_TO_RADIANS_MULTIPLIER;
-	    }
+		static float DegreesToRadians(const float pDegrees)
+		{
+			return pDegrees * DEGREES_TO_RADIANS_MULTIPLIER;
+		}
 
 		static float RadiansToDegrees(const float pRadians)
-	    {
-	    	return pRadians * RADIANS_TO_DEGREES_MULTIPLIER;
-	    }
+		{
+			return pRadians * RADIANS_TO_DEGREES_MULTIPLIER;
+		}
+
 	private:
 		static bool s_RandSeeded;
 	};
-	
 }

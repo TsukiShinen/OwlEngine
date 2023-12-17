@@ -17,9 +17,13 @@ namespace Owl
 	{
 		void Initialize();
 		~VulkanContext();
-		
+
 		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, Owl::MemoryTagRenderer); }
-		void operator delete(void* pBlock, const size_t pSize) { return OWL_FREE(pBlock, pSize, Owl::MemoryTagRenderer); }
+
+		void operator delete(void* pBlock, const size_t pSize)
+		{
+			return OWL_FREE(pBlock, pSize, Owl::MemoryTagRenderer);
+		}
 
 		bool RecreateSwapChain();
 

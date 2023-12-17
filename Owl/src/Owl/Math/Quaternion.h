@@ -12,7 +12,7 @@ namespace Owl
 			z = pZ;
 			w = pW;
 		}
-		
+
 		Quaternion(const Vector3 pAxis, const float pAngle, const bool pNormalize)
 		{
 			const float halfAngle = 0.5f * pAngle;
@@ -23,10 +23,10 @@ namespace Owl
 			y = sin * pAxis.y;
 			z = sin * pAxis.z;
 			w = cos;
-			if (pNormalize) 
+			if (pNormalize)
 				Normalize();
 		}
-		
+
 		static Quaternion Identity()
 		{
 			return {0.f, 0.f, 0.f, 1.f};
@@ -139,7 +139,8 @@ namespace Owl
 
 			float dot = v0.Dot(v1);
 
-			if (dot < 0.0f) {
+			if (dot < 0.0f)
+			{
 				v1.x = -v1.x;
 				v1.y = -v1.y;
 				v1.z = -v1.z;
@@ -148,12 +149,14 @@ namespace Owl
 			}
 
 			constexpr float dotThreshold = 0.9995f;
-			if (dot > dotThreshold) {
+			if (dot > dotThreshold)
+			{
 				const Quaternion quaternion{
 					v0.x + ((v1.x - v0.x) * pPercentage),
 					v0.y + ((v1.y - v0.y) * pPercentage),
 					v0.z + ((v1.z - v0.z) * pPercentage),
-					v0.w + ((v1.w - v0.w) * pPercentage)};
+					v0.w + ((v1.w - v0.w) * pPercentage)
+				};
 
 				return quaternion.Normalized();
 			}
@@ -170,31 +173,34 @@ namespace Owl
 				(v0.x * s0) + (v1.x * s1),
 				(v0.y * s0) + (v1.y * s1),
 				(v0.z * s0) + (v1.z * s1),
-				(v0.w * s0) + (v1.w * s1)};
+				(v0.w * s0) + (v1.w * s1)
+			};
 		}
 
 		// ========== Multiplication ==========
 		Quaternion& operator*=(const Quaternion& pValue)
 		{
-			const Quaternion quaternion{ x * pValue.w +
-							   y * pValue.z -
-							   z * pValue.y +
-							   w * pValue.x,
+			const Quaternion quaternion{
+				x * pValue.w +
+				y * pValue.z -
+				z * pValue.y +
+				w * pValue.x,
 
-							 -x * pValue.z +
-							   y * pValue.w +
-							   z * pValue.x +
-							   w * pValue.y,
+				-x * pValue.z +
+				y * pValue.w +
+				z * pValue.x +
+				w * pValue.y,
 
-							 x * pValue.y -
-							   y * pValue.x +
-							   z * pValue.w +
-							   w * pValue.z,
+				x * pValue.y -
+				y * pValue.x +
+				z * pValue.w +
+				w * pValue.z,
 
-							-x * pValue.x -
-							   y * pValue.y -
-							   z * pValue.z +
-							   w * pValue.w };
+				-x * pValue.x -
+				y * pValue.y -
+				z * pValue.z +
+				w * pValue.w
+			};
 
 			*this = quaternion;
 			return *this;
@@ -206,24 +212,31 @@ namespace Owl
 			return pValue;
 		}
 
-		struct {
-			union {
+		struct
+		{
+			union
+			{
 				// The first element.
 				float x, r, s;
 			};
-			union {
+
+			union
+			{
 				// The second element.
 				float y, g, t;
 			};
-			union {
+
+			union
+			{
 				// The third element.
 				float z, b, p;
 			};
-			union {
+
+			union
+			{
 				// The third element.
 				float w, a, q;
 			};
 		};
 	};
-	
 }

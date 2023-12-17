@@ -11,9 +11,13 @@ namespace Owl
 	public:
 		VulkanSwapchain(VulkanContext* pContext, uint32_t pWidth, uint32_t pHeight);
 		~VulkanSwapchain();
-		
+
 		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, Owl::MemoryTagRenderer); }
-		void operator delete(void* pBlock, const size_t pSize) { return OWL_FREE(pBlock, pSize, Owl::MemoryTagRenderer); }
+
+		void operator delete(void* pBlock, const size_t pSize)
+		{
+			return OWL_FREE(pBlock, pSize, Owl::MemoryTagRenderer);
+		}
 
 		void ReCreate(uint32_t pWidth, uint32_t pHeight);
 		bool AcquireNextImage(uint64_t pTimeoutNanoSecond, VkSemaphore pImageSemaphore, VkFence pFence,

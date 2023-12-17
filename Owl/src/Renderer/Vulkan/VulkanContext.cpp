@@ -22,7 +22,10 @@ namespace Owl
 		Surface = Application::Get()->GetWindow()->CreateVulkanSurface(this);
 		Device = new VulkanDevice(this);
 		Swapchain = new VulkanSwapchain(this, FramebufferWidth, FramebufferHeight);
-		MainRenderPass = new VulkanRenderPass(this, {0, 0, static_cast<float>(FramebufferWidth), static_cast<float>(FramebufferHeight)});
+		MainRenderPass = new VulkanRenderPass(this, {
+			                                      0, 0, static_cast<float>(FramebufferWidth),
+			                                      static_cast<float>(FramebufferHeight)
+		                                      });
 		RegenerateFrameBuffers();
 		CreateCommandBuffers();
 		CreateSemaphoresAndFences();
@@ -38,7 +41,7 @@ namespace Owl
 		vkDeviceWaitIdle(Device->GetLogicalDevice());
 
 		delete SpriteShader;
-		
+
 		for (const auto& semaphore : ImageAvailableSemaphore)
 			vkDestroySemaphore(Device->GetLogicalDevice(), semaphore, Allocator);
 		for (const auto& semaphore : QueueCompleteSemaphore)

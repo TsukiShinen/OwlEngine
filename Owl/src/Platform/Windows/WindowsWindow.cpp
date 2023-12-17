@@ -86,7 +86,8 @@ namespace Owl
 		ShowWindow(m_Window, SW_SHOW);
 		s_WindowCount++;
 
-		OWL_CORE_INFO("Window initialized successfully : %s (%d, %d)", m_Data.Title.c_str(), m_Data.Width, m_Data.Height);
+		OWL_CORE_INFO("Window initialized successfully : %s (%d, %d)", m_Data.Title.c_str(), m_Data.Width,
+		              m_Data.Height);
 	}
 
 	VkSurfaceKHR WindowsWindow::CreateVulkanSurface(const VulkanContext* pRenderer)
@@ -121,12 +122,15 @@ namespace Owl
 	void Window::ConsoleWrite(const char* pMessage, const uint8_t pColour)
 	{
 		const HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-		
+
 		CONSOLE_SCREEN_BUFFER_INFO csbi;
 		auto t = Application::Get();
-		if (Application::Get() && Application::Get()->GetWindow()) {
+		if (Application::Get() && Application::Get()->GetWindow())
+		{
 			csbi = static_cast<WindowsWindow*>(Application::Get()->GetWindow())->m_StdOutputCsbi;
-		} else {
+		}
+		else
+		{
 			GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
 		}
 
@@ -146,9 +150,12 @@ namespace Owl
 		const HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 
 		CONSOLE_SCREEN_BUFFER_INFO csbi;
-		if (Application::Get() && Application::Get()->GetWindow()) {
+		if (Application::Get() && Application::Get()->GetWindow())
+		{
 			csbi = static_cast<WindowsWindow*>(Application::Get()->GetWindow())->m_ErrOutputCsbi;
-		} else {
+		}
+		else
+		{
 			GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &csbi);
 		}
 
@@ -162,13 +169,13 @@ namespace Owl
 
 		SetConsoleTextAttribute(consoleHandle, csbi.wAttributes);
 	}
-	
+
 	std::string Window::GetExecutablePath()
 	{
 		char buffer[MAX_PATH];
 		GetModuleFileNameA(nullptr, buffer, MAX_PATH);
 		const std::string::size_type pos = std::string(buffer).find_last_of("\\/");
-		
+
 		return std::string(buffer).substr(0, pos);
 	}
 
@@ -204,26 +211,40 @@ namespace Owl
 		case WM_SYSKEYDOWN:
 			{
 				auto key = static_cast<KeyCode>(pWParam);
-				if (pWParam == VK_MENU) {
-					if (GetKeyState(VK_RMENU) & 0x8000) {
+				if (pWParam == VK_MENU)
+				{
+					if (GetKeyState(VK_RMENU) & 0x8000)
+					{
 						key = Key::RightAlt;
-					} else if (GetKeyState(VK_LMENU) & 0x8000) {
+					}
+					else if (GetKeyState(VK_LMENU) & 0x8000)
+					{
 						key = Key::LeftAlt;
 					}
-				} else if (pWParam == VK_SHIFT) {
-					if (GetKeyState(VK_RSHIFT) & 0x8000) {
+				}
+				else if (pWParam == VK_SHIFT)
+				{
+					if (GetKeyState(VK_RSHIFT) & 0x8000)
+					{
 						key = Key::RightShift;
-					} else if (GetKeyState(VK_LSHIFT) & 0x8000) {
+					}
+					else if (GetKeyState(VK_LSHIFT) & 0x8000)
+					{
 						key = Key::LeftShift;
 					}
-				} else if (pWParam == VK_CONTROL) {
-					if (GetKeyState(VK_RCONTROL) & 0x8000) {
+				}
+				else if (pWParam == VK_CONTROL)
+				{
+					if (GetKeyState(VK_RCONTROL) & 0x8000)
+					{
 						key = Key::RightControl;
-					} else if (GetKeyState(VK_LCONTROL) & 0x8000) {
+					}
+					else if (GetKeyState(VK_LCONTROL) & 0x8000)
+					{
 						key = Key::LeftControl;
 					}
 				}
-				
+
 				if ((pLParam & (1 << 30)) != 0)
 					KeyPressedEvent event(key, true);
 				else
@@ -236,28 +257,42 @@ namespace Owl
 			break;
 		case WM_KEYUP:
 		case WM_SYSKEYUP:
+			{
+				auto key = static_cast<KeyCode>(pWParam);
+				if (pWParam == VK_MENU)
 				{
-					auto key = static_cast<KeyCode>(pWParam);
-					if (pWParam == VK_MENU) {
-						if (GetKeyState(VK_RMENU) & 0x8000) {
-							key = Key::RightAlt;
-						} else if (GetKeyState(VK_LMENU) & 0x8000) {
-							key = Key::LeftAlt;
-						}
-					} else if (pWParam == VK_SHIFT) {
-						if (GetKeyState(VK_RSHIFT) & 0x8000) {
-							key = Key::RightShift;
-						} else if (GetKeyState(VK_LSHIFT) & 0x8000) {
-							key = Key::LeftShift;
-						}
-					} else if (pWParam == VK_CONTROL) {
-						if (GetKeyState(VK_RCONTROL) & 0x8000) {
-							key = Key::RightControl;
-						} else if (GetKeyState(VK_LCONTROL) & 0x8000) {
-							key = Key::LeftControl;
-						}
+					if (GetKeyState(VK_RMENU) & 0x8000)
+					{
+						key = Key::RightAlt;
 					}
-					
+					else if (GetKeyState(VK_LMENU) & 0x8000)
+					{
+						key = Key::LeftAlt;
+					}
+				}
+				else if (pWParam == VK_SHIFT)
+				{
+					if (GetKeyState(VK_RSHIFT) & 0x8000)
+					{
+						key = Key::RightShift;
+					}
+					else if (GetKeyState(VK_LSHIFT) & 0x8000)
+					{
+						key = Key::LeftShift;
+					}
+				}
+				else if (pWParam == VK_CONTROL)
+				{
+					if (GetKeyState(VK_RCONTROL) & 0x8000)
+					{
+						key = Key::RightControl;
+					}
+					else if (GetKeyState(VK_LCONTROL) & 0x8000)
+					{
+						key = Key::LeftControl;
+					}
+				}
+
 				KeyReleasedEvent event(key);
 				m_Data.EventCallback(event);
 				Input::s_Keys[key] = false;

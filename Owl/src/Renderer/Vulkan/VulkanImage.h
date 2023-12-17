@@ -10,9 +10,13 @@ namespace Owl
 		            VkImageUsageFlags pUsage, VkMemoryPropertyFlags pMemoryFlags, bool pCreateView,
 		            VkImageAspectFlags pAspectFlags);
 		~VulkanImage();
-		
+
 		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, Owl::MemoryTagRenderer); }
-		void operator delete(void* pBlock, const size_t pSize) { return OWL_FREE(pBlock, pSize, Owl::MemoryTagRenderer); }
+
+		void operator delete(void* pBlock, const size_t pSize)
+		{
+			return OWL_FREE(pBlock, pSize, Owl::MemoryTagRenderer);
+		}
 
 	private:
 		void CreateView(VkFormat pFormat, VkImageAspectFlags pAspectFlags);

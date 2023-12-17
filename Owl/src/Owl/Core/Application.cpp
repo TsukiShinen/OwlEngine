@@ -16,7 +16,7 @@ namespace Owl
 		OWL_PROFILE_FUNCTION();
 		OWL_ASSERT(!s_Instance, "Application already exist!")
 		s_Instance = this;
-		
+
 		if (!m_Specification.WorkingDirectory.empty())
 			std::filesystem::current_path(m_Specification.WorkingDirectory);
 

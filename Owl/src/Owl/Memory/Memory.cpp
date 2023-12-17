@@ -34,7 +34,7 @@ namespace Owl
 	{
 		char buffer[8000] = "";
 		uint64_t offset = strlen(buffer);
-		
+
 		char unit1[4] = "XB";
 		float amount1 = 1.f;
 		if (TotalAllocated >= k_Gib)
@@ -58,8 +58,9 @@ namespace Owl
 			unit1[1] = 0;
 			amount1 = TotalAllocated;
 		}
-		
-		offset += snprintf(buffer + offset, 8000, "Memory Usage : %.2f%s // Number of allocations : %llu\n%s", amount1, unit1, AllocationCount, "System memory use (tagged):\n");
+
+		offset += snprintf(buffer + offset, 8000, "Memory Usage : %.2f%s // Number of allocations : %llu\n%s", amount1,
+		                   unit1, AllocationCount, "System memory use (tagged):\n");
 		for (uint32_t i = 0; i < MEMORY_TAG_MAX_TAGS; i++)
 		{
 			char unit[4] = "XB";

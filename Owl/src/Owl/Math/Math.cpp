@@ -8,7 +8,7 @@
 namespace Owl
 {
 	bool Math::s_RandSeeded = false;
-	
+
 	float Math::Sin(const float pValue)
 	{
 		return sinf(pValue);

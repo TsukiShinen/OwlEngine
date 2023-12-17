@@ -12,12 +12,14 @@ namespace Owl
 			y = 0;
 			z = 0;
 		}
+
 		Vector3(const float pX, const float pY, const float pZ)
 		{
 			x = pX;
 			y = pY;
 			z = pZ;
 		}
+
 		Vector3(const Vector2& pVector2, const float pZ)
 		{
 			x = pVector2.x;
@@ -74,12 +76,14 @@ namespace Owl
 			p += z * pValue.z;
 			return p;
 		}
-		
+
 		[[nodiscard]] Vector3 Cross(const Vector3& pValue) const
 		{
-			return {y * pValue.z - z * pValue.y,
-			z * pValue.x - x * pValue.z,
-			x * pValue.y - y * pValue.x};
+			return {
+				y * pValue.z - z * pValue.y,
+				z * pValue.x - x * pValue.z,
+				x * pValue.y - y * pValue.x
+			};
 		}
 
 		// ========== Addition ==========
@@ -96,7 +100,7 @@ namespace Owl
 			pValue += pValue2;
 			return pValue;
 		}
-		
+
 		// ========== Subtract ==========
 		Vector3& operator-=(const Vector3& pValue)
 		{
@@ -111,7 +115,7 @@ namespace Owl
 			pValue -= pValue2;
 			return pValue;
 		}
-		
+
 		// ========== Multiplication ==========
 		Vector3& operator*=(const Vector3& pValue)
 		{
@@ -126,7 +130,7 @@ namespace Owl
 			pValue *= pValue2;
 			return pValue;
 		}
-		
+
 		Vector3& operator*=(const float& pValue)
 		{
 			x *= pValue;
@@ -140,7 +144,7 @@ namespace Owl
 			pValue *= pValue2;
 			return pValue;
 		}
-		
+
 		// ========== Divide ==========
 		Vector3& operator/=(const Vector3& pValue)
 		{
@@ -155,7 +159,7 @@ namespace Owl
 			pValue /= pValue2;
 			return pValue;
 		}
-		
+
 		Vector3& operator/=(const float& pValue)
 		{
 			x /= pValue;
@@ -177,7 +181,7 @@ namespace Owl
 				Math::Abs(y - pValue.y) < FLOAT_EPSILON &&
 				Math::Abs(z - pValue.z) < FLOAT_EPSILON;
 		}
-		
+
 		bool operator!=(const Vector3& pValue) const
 		{
 			return Math::Abs(x - pValue.x) > FLOAT_EPSILON ||
@@ -185,16 +189,22 @@ namespace Owl
 				Math::Abs(z - pValue.z) > FLOAT_EPSILON;
 		}
 
-		struct {
-			union {
+		struct
+		{
+			union
+			{
 				// The first element.
 				float x, r, s, u;
 			};
-			union {
+
+			union
+			{
 				// The second element.
 				float y, g, t, v;
 			};
-			union {
+
+			union
+			{
 				// The third element.
 				float z, b, p, w;
 			};

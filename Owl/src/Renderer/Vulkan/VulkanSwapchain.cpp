@@ -172,7 +172,8 @@ namespace Owl
 		OWL_CORE_ASSERT(result == VK_SUCCESS, "[VulkanSwapchain] Failed to get image count!")
 		m_Images.resize(m_ImageCount);
 		m_Views.resize(m_ImageCount);
-		result = vkGetSwapchainImagesKHR(m_Context->Device->GetLogicalDevice(), m_Handle, &m_ImageCount, m_Images.data());
+		result = vkGetSwapchainImagesKHR(m_Context->Device->GetLogicalDevice(), m_Handle, &m_ImageCount,
+		                                 m_Images.data());
 		OWL_CORE_ASSERT(result == VK_SUCCESS, "[VulkanSwapchain] Failed to create images!")
 
 		for (uint32_t i = 0; i < m_ImageCount; ++i)
@@ -205,7 +206,7 @@ namespace Owl
 		OWL_PROFILE_FUNCTION();
 		vkDeviceWaitIdle(m_Context->Device->GetLogicalDevice());
 		delete m_DepthAttachment;
-		
+
 		for (uint32_t i = 0; i < m_ImageCount; ++i)
 			vkDestroyImageView(m_Context->Device->GetLogicalDevice(), m_Views[i], m_Context->Allocator);
 

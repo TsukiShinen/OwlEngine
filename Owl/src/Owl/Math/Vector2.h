@@ -10,6 +10,7 @@ namespace Owl
 			x = 0;
 			y = 0;
 		}
+
 		Vector2(const float pX, const float pY)
 		{
 			x = pX;
@@ -63,7 +64,7 @@ namespace Owl
 			pValue += pValue2;
 			return pValue;
 		}
-		
+
 		// ========== Subtract ==========
 		Vector2& operator-=(const Vector2& pValue)
 		{
@@ -77,7 +78,7 @@ namespace Owl
 			pValue -= pValue2;
 			return pValue;
 		}
-		
+
 		// ========== Multiplication ==========
 		Vector2& operator*=(const Vector2& pValue)
 		{
@@ -91,7 +92,7 @@ namespace Owl
 			pValue *= pValue2;
 			return pValue;
 		}
-		
+
 		Vector2& operator*=(const float& pValue)
 		{
 			x *= pValue;
@@ -104,7 +105,7 @@ namespace Owl
 			pValue *= pValue2;
 			return pValue;
 		}
-		
+
 		// ========== Divide ==========
 		Vector2& operator/=(const Vector2& pValue)
 		{
@@ -118,7 +119,7 @@ namespace Owl
 			pValue /= pValue2;
 			return pValue;
 		}
-		
+
 		Vector2& operator/=(const float& pValue)
 		{
 			x /= pValue;
@@ -137,18 +138,22 @@ namespace Owl
 		{
 			return Math::Abs(x - pValue.x) < FLOAT_EPSILON && Math::Abs(y - pValue.y) < FLOAT_EPSILON;
 		}
-		
+
 		bool operator!=(const Vector2& pValue) const
 		{
 			return Math::Abs(x - pValue.x) > FLOAT_EPSILON || Math::Abs(y - pValue.y) > FLOAT_EPSILON;
 		}
 
-		struct {
-			union {
+		struct
+		{
+			union
+			{
 				// The first element.
 				float x, r, s, u;
 			};
-			union {
+
+			union
+			{
 				// The second element.
 				float y, g, t, v;
 			};

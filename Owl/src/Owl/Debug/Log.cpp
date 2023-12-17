@@ -9,7 +9,7 @@
 namespace Owl
 {
 	Log* Log::s_Instance;
-	
+
 	void Log::Initialize()
 	{
 		OWL_CORE_ASSERT(!s_Instance, "Can only have one instance of Log")
@@ -38,7 +38,7 @@ namespace Owl
 		std::strftime(timestamp, sizeof(timestamp), "%H:%M:%S", timeInfo);
 
 		const bool isError = pLevel < Warn;
-		
+
 		va_list args;
 		va_start(args, pMessage);
 		auto message = FormatMessageV(pMessage, args);

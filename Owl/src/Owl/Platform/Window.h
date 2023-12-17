@@ -18,9 +18,13 @@ namespace Owl
 	{
 	public:
 		using EventCallbackFn = std::function<void(Event&)>;
-		
+
 		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, Owl::MemoryTagPlatform); }
-		void operator delete(void* pBlock, const size_t pSize) { return OWL_FREE(pBlock, pSize, Owl::MemoryTagPlatform); }
+
+		void operator delete(void* pBlock, const size_t pSize)
+		{
+			return OWL_FREE(pBlock, pSize, Owl::MemoryTagPlatform);
+		}
 
 		virtual ~Window() = default;
 

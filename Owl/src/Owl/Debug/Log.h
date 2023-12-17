@@ -42,6 +42,7 @@ namespace Owl
 		 * \return A pointer to the logger instance
 		 */
 		static Log* Get() { return s_Instance; }
+
 	private:
 		static char* LogFormatMessage(const char* pFormat, ...);
 		static char* FormatMessageV(const char* pFormat, va_list pVaList);

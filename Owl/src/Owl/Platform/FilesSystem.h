@@ -11,17 +11,18 @@ namespace Owl
 		bool IsValid;
 	};
 
-	enum  FileModes
+	enum FileModes
 	{
 		FileModeRead = 0x1,
 		FileModeWrite = 0x2,
 		FileModeNew = 0x3
 	};
+
 	inline FileModes operator|(FileModes a, FileModes b)
 	{
 		return static_cast<FileModes>(static_cast<int>(a) | static_cast<int>(b));
 	}
-	
+
 	class FilesSystem
 	{
 	public:
@@ -31,7 +32,7 @@ namespace Owl
 		 * \return True if exist; otherwise false.
 		 */
 		static bool Exist(const char* pPath);
-		
+
 		/**
 		 * \brief Attempt to open file located at path.
 		 * \param pPath The path of the file to be checked.
@@ -95,5 +96,4 @@ namespace Owl
 		 */
 		static bool TryWrite(const File* pFile, uint64_t pDataSize, const void* pData, uint64_t* pOutBytesWritten);
 	};
-	
 }
