@@ -26,6 +26,6 @@ namespace Owl
 		VulkanContext* m_Context;
 
 		VulkanShaderStage m_Stages[SPRITE_SHADER_STAGE_COUNT];
-		VulkanPipeline m_Pipeline;
+		VulkanPipeline* m_Pipeline;
 	};
 }

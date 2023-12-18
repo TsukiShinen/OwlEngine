@@ -41,7 +41,7 @@ namespace Owl
 		                         &pStage->Handle) != VK_SUCCESS)
 			throw std::runtime_error("[VulkanShaderUtils] Failed to vkCreateShaderModule!");
 
-		pStage->ShaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
+		pStage->ShaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		pStage->ShaderStageCreateInfo.stage = pFlags;
 		pStage->ShaderStageCreateInfo.module = pStage->Handle;
 		pStage->ShaderStageCreateInfo.pName = "main";
