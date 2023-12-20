@@ -34,7 +34,7 @@ namespace Owl
 		[[nodiscard]] VulkanCommandBufferState GetState() const { return m_State; }
 		void SetState(const VulkanCommandBufferState pState) { m_State = pState; }
 
-		static VulkanCommandBuffer* CreateAndBeginSingleTimeUse(VulkanContext* pVulkanContext, VkCommandPool& pPool);
+		static VulkanCommandBuffer CreateAndBeginSingleTimeUse(VulkanContext* pVulkanContext, VkCommandPool& pPool);
 		static void DeleteAndEndSingleTimeUse(VulkanContext* pVulkanContext, VkCommandPool& pPool,
 		                                      VulkanCommandBuffer* pCommandBuffer, VkQueue pQueue);
 

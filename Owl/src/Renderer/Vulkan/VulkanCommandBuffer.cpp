@@ -72,12 +72,12 @@ namespace Owl
 		m_State = CommandBufferStateReady;
 	}
 
-	VulkanCommandBuffer* VulkanCommandBuffer::CreateAndBeginSingleTimeUse(VulkanContext* pVulkanContext,
+	VulkanCommandBuffer VulkanCommandBuffer::CreateAndBeginSingleTimeUse(VulkanContext* pVulkanContext,
 	                                                                      VkCommandPool& pPool)
 	{
 		OWL_PROFILE_FUNCTION();
-		const auto commandBuffer = new VulkanCommandBuffer(pVulkanContext, pPool, true);
-		commandBuffer->Begin(false, false, true);
+		auto commandBuffer = VulkanCommandBuffer(pVulkanContext, pPool, true);
+		commandBuffer.Begin(false, false, true);
 		return commandBuffer;
 	}
 

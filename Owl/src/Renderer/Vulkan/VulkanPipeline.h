@@ -11,6 +11,13 @@ namespace Owl
 			VkViewport pViewport, VkRect2D pScissor, bool pIsWireframe);
 		~VulkanPipeline();
 
+		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, Owl::MemoryTagRenderer); }
+
+		void operator delete(void* pBlock, const size_t pSize)
+		{
+			return OWL_FREE(pBlock, pSize, Owl::MemoryTagRenderer);
+		}
+
 		void Bind(VulkanCommandBuffer* pCommandBuffer, VkPipelineBindPoint pBindPoint) const;
 
 	private:

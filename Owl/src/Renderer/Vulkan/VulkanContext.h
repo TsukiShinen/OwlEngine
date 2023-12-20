@@ -12,6 +12,7 @@ namespace Owl
 	class VulkanCommandBuffer;
 	class VulkanFence;
 	class VulkanSpriteShader;
+	class VulkanBuffer;
 
 	struct VulkanContext
 	{
@@ -28,6 +29,8 @@ namespace Owl
 		bool RecreateSwapChain();
 
 		[[nodiscard]] int FindMemoryIndex(uint32_t pTypeFilter, VkFlags pPropertyFlags) const;
+
+		bool CreateBuffers();
 
 		VkInstance Instance;
 		VkAllocationCallbacks* Allocator;
@@ -56,6 +59,9 @@ namespace Owl
 
 		uint8_t CurrentFrame;
 		uint32_t ImageIndex;
+
+		VulkanBuffer* SpriteVertexBuffer;
+		VulkanBuffer* SpriteIndexBuffer;
 
 	private:
 		void RegenerateFrameBuffers();

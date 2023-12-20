@@ -1,12 +1,14 @@
 ﻿#include "opch.h"
 #include "VulkanContext.h"
 
+#include "VulkanBuffer.h"
 #include "VulkanCommandBuffer.h"
 #include "VulkanRenderPass.h"
 #include "VulkanDevice.h"
 #include "VulkanFence.h"
 #include "VulkanSwapchain.h"
 #include "Owl/Core/Application.h"
+#include "Owl/Math/Vertex2D.h"
 #include "Shaders/VulkanSpriteShader.h"
 
 namespace Owl
@@ -33,6 +35,8 @@ namespace Owl
 
 		// Create BuiltinShaders
 		SpriteShader = new VulkanSpriteShader(this);
+
+		CreateBuffers();
 	}
 
 	VulkanContext::~VulkanContext()
@@ -40,6 +44,10 @@ namespace Owl
 		OWL_PROFILE_FUNCTION();
 		vkDeviceWaitIdle(Device->GetLogicalDevice());
 
+
+		delete SpriteVertexBuffer;
+		delete SpriteIndexBuffer;
+		
 		delete SpriteShader;
 
 		for (const auto& semaphore : ImageAvailableSemaphore)
@@ -121,6 +129,27 @@ namespace Owl
 
 		OWL_CORE_WARN("[VulkanContext] Unable to find suitable memory type!");
 		return -1;
+	}
+
+	bool VulkanContext::CreateBuffers()
+	{
+		constexpr VkMemoryPropertyFlagBits memoryPropertyFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+
+		constexpr uint64_t vertexBufferSize = sizeof(Vertex2D) * 4;
+		SpriteVertexBuffer = new VulkanBuffer(
+				this,
+				vertexBufferSize,
+				VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+				memoryPropertyFlags);
+
+		constexpr uint64_t indexBufferSize = sizeof(uint32_t) * 6;
+		SpriteIndexBuffer = new VulkanBuffer(
+				this,
+				indexBufferSize,
+				VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+				memoryPropertyFlags);
+
+		return true;
 	}
 
 	void VulkanContext::RegenerateFrameBuffers()
