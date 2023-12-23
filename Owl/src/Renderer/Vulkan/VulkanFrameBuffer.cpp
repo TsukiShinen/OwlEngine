@@ -7,7 +7,7 @@
 namespace Owl
 {
 	VulkanFrameBuffer::VulkanFrameBuffer(VulkanContext* pContext, VulkanRenderPass* pRenderPass, const uint32_t pWidth,
-	                                     const uint32_t pHeight, std::vector<VkImageView>& pAttachments)
+	                                     const uint32_t pHeight, const std::vector<VkImageView>& pAttachments)
 		: m_Context(pContext), m_Attachments(pAttachments), m_RenderPass(pRenderPass)
 	{
 		VkFramebufferCreateInfo framebufferCreateInfo = {VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO};

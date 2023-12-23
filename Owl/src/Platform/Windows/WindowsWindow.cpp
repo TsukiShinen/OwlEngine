@@ -1,5 +1,6 @@
 ﻿#include "WindowsWindow.h"
 
+#include <iostream>
 #include <stdexcept>
 #include <windowsx.h>
 #include <vulkan/vulkan_win32.h>
@@ -124,15 +125,10 @@ namespace Owl
 		const HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 
 		CONSOLE_SCREEN_BUFFER_INFO csbi;
-		auto t = Application::Get();
-		if (Application::Get() && Application::Get()->GetWindow())
-		{
-			csbi = static_cast<WindowsWindow*>(Application::Get()->GetWindow())->m_StdOutputCsbi;
-		}
+		if (Application::Get() && Application::Get()->WindowExist())
+			csbi = dynamic_cast<WindowsWindow&>(Application::Get()->GetWindow()).m_StdOutputCsbi;
 		else
-		{
-			GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-		}
+		GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
 
 		// FATAL,ERROR,WARN,INFO,DEBUG,TRACE
 		static uint8_t levels[6] = {64, 4, 6, 2, 1, 8};
@@ -150,14 +146,10 @@ namespace Owl
 		const HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 
 		CONSOLE_SCREEN_BUFFER_INFO csbi;
-		if (Application::Get() && Application::Get()->GetWindow())
-		{
-			csbi = static_cast<WindowsWindow*>(Application::Get()->GetWindow())->m_ErrOutputCsbi;
-		}
+		if (Application::Get() && Application::Get()->WindowExist())
+			csbi = dynamic_cast<WindowsWindow&>(Application::Get()->GetWindow()).m_ErrOutputCsbi;
 		else
-		{
 			GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &csbi);
-		}
 
 		// FATAL,ERROR,WARN,INFO,DEBUG,TRACE
 		static uint8_t levels[6] = {64, 4, 6, 2, 1, 8};

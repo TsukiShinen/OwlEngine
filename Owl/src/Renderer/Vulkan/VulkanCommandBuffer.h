@@ -42,7 +42,7 @@ namespace Owl
 		VulkanContext* m_Context;
 
 		VkCommandBuffer m_Handle;
-		VkCommandPool& m_Pool;
+		VkCommandPool m_Pool;
 
 		VulkanCommandBufferState m_State;
 	};

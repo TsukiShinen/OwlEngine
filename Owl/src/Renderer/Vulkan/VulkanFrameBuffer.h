@@ -9,7 +9,7 @@ namespace Owl
 	{
 	public:
 		VulkanFrameBuffer(VulkanContext* pContext, VulkanRenderPass* pRenderPass, uint32_t pWidth, uint32_t pHeight,
-		                  std::vector<VkImageView>& pAttachments);
+		                  const std::vector<VkImageView>& pAttachments);
 		~VulkanFrameBuffer();
 
 		void* operator new(const size_t pSize) { return OWL_ALLOCATE(pSize, Owl::MemoryTagRenderer); }
@@ -25,7 +25,7 @@ namespace Owl
 		VulkanContext* m_Context;
 
 		VkFramebuffer m_Handle;
-		std::vector<VkImageView>& m_Attachments;
+		std::vector<VkImageView> m_Attachments;
 		VulkanRenderPass* m_RenderPass;
 	};
 }

@@ -6,20 +6,12 @@ namespace Owl
 	enum MemoryTag
 	{
 		MemoryTagUnknown,
-		MemoryTagLinearAllocator,
 		MemoryTagApplication,
 		MemoryTagPlatform,
 		MemoryTagRenderer,
-		MemoryTagJob,
 		MemoryTagTexture,
-		MemoryTagMaterialInstance,
-		MemoryTagGame,
-		MemoryTagTransform,
-		MemoryTagEntity,
-		MemoryTagEntityNode,
-		MemoryTagScene,
 
-		MEMORY_TAG_MAX_TAGS
+		MemoryTagMaxTags
 	};
 
 	struct Memory
@@ -30,27 +22,19 @@ namespace Owl
 		static char* OwlGetMemoryUsageString();
 
 		static uint64_t TotalAllocated;
-		static uint64_t TaggedAllocations[MEMORY_TAG_MAX_TAGS];
+		static uint64_t TaggedAllocations[MemoryTagMaxTags];
 		static uint64_t AllocationCount;
 
 		static constexpr uint64_t k_Gib = 1024 * 1024 * 1024;
 		static constexpr uint64_t k_Mib = 1024 * 1024;
 		static constexpr uint64_t k_Kib = 1024;
 
-		inline static const char* k_MemoryTagStrings[MEMORY_TAG_MAX_TAGS] = {
+		inline static const char* k_MemoryTagStrings[MemoryTagMaxTags] = {
 			"UNKNOWN    ",
-			"LINEAR     ",
 			"APPLICATION",
 			"PLATFORM   ",
 			"RENDERER   ",
-			"JOB        ",
 			"TEXTURE    ",
-			"MAT_INST   ",
-			"GAME       ",
-			"TRANSFORM  ",
-			"ENTITY     ",
-			"ENTITY_NODE",
-			"SCENE      "
 		};
 	};
 }

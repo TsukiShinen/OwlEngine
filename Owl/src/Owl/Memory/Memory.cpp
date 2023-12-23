@@ -4,7 +4,7 @@
 namespace Owl
 {
 	uint64_t Memory::TotalAllocated = 0;
-	uint64_t Memory::TaggedAllocations[MEMORY_TAG_MAX_TAGS];
+	uint64_t Memory::TaggedAllocations[MemoryTagMaxTags];
 	uint64_t Memory::AllocationCount = 0;
 
 	void* Memory::OwlAllocate(const uint64_t pSize, const MemoryTag pTag)
@@ -61,7 +61,7 @@ namespace Owl
 
 		offset += snprintf(buffer + offset, 8000, "Memory Usage : %.2f%s // Number of allocations : %llu\n%s", amount1,
 		                   unit1, AllocationCount, "System memory use (tagged):\n");
-		for (uint32_t i = 0; i < MEMORY_TAG_MAX_TAGS; i++)
+		for (uint32_t i = 0; i < MemoryTagMaxTags; i++)
 		{
 			char unit[4] = "XB";
 			float amount = 1.f;

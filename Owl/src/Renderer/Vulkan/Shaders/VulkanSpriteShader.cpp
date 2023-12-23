@@ -52,10 +52,10 @@ namespace Owl
 		constexpr int attributeCount = 1;
 	    VkVertexInputAttributeDescription attributeDescriptions[attributeCount];
 	    // Position
-	    VkFormat formats[attributeCount] = {
+		constexpr VkFormat formats[attributeCount] = {
 	        VK_FORMAT_R32G32_SFLOAT
 	    };
-	    uint64_t sizes[attributeCount] = {
+		constexpr uint64_t sizes[attributeCount] = {
 	        sizeof(Vector2)
 	    };
 	    for (uint32_t i = 0; i < attributeCount; ++i) {
@@ -76,12 +76,11 @@ namespace Owl
 	        stageCreateInfos[i].sType = m_Stages[i].ShaderStageCreateInfo.sType;
 	    }
 
-	    m_Pipeline = new VulkanPipeline(m_Context, m_Context->MainRenderPass, attributeCount, attributeDescriptions, 0, 0,  SPRITE_SHADER_STAGE_COUNT, stageCreateInfos, viewport, scissor, false);
+	    m_Pipeline = CreateScope<VulkanPipeline>(m_Context, m_Context->MainRenderPass, attributeCount, attributeDescriptions, 0, nullptr,  SPRITE_SHADER_STAGE_COUNT, stageCreateInfos, viewport, scissor, false);
 	}
 
 	VulkanSpriteShader::~VulkanSpriteShader()
 	{
-		delete m_Pipeline;
 		for (const auto& stage : m_Stages)
 			vkDestroyShaderModule(m_Context->Device->GetLogicalDevice(), stage.Handle, m_Context->Allocator);
 	}

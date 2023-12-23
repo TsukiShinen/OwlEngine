@@ -17,14 +17,14 @@ namespace Owl
 		s_Instance = new Log();
 		s_Instance->m_LogFile = new File();
 
-		if (!FilesSystem::TryOpen("console.log", FileModeWrite | FileModeNew, false, s_Instance->m_LogFile))
+		if (!FilesSystem::TryOpen("console.log", FileModeWrite | FileModeNew, false, *s_Instance->m_LogFile))
 			Window::ConsoleWriteError("[Log] Unable to open console.log for writing.\n", Error);
 	}
 
 	void Log::Shutdown()
 	{
 		if (s_Instance->m_LogFile)
-			FilesSystem::Close(s_Instance->m_LogFile);
+			FilesSystem::Close(*s_Instance->m_LogFile);
 		delete s_Instance->m_LogFile;
 		delete s_Instance;
 	}
@@ -82,14 +82,14 @@ namespace Owl
 		return buffer;
 	}
 
-	void Log::AppendToLogFile(const char* pMessage)
+	void Log::AppendToLogFile(const char* pMessage) const
 	{
 		if (!m_LogFile->IsValid)
 			return;
 
-		uint64_t length = strlen(pMessage);
+		const uint64_t length = strlen(pMessage);
 		uint64_t written = 0;
-		if (!FilesSystem::TryWrite(m_LogFile, length, pMessage, &written))
+		if (!FilesSystem::TryWrite(*m_LogFile, length, pMessage, &written))
 			Window::ConsoleWriteError("[Log] Error writing to console.log.", Error);
 	}
 }

@@ -17,17 +17,16 @@ namespace Owl
 	{
 		OWL_PROFILE_FUNCTION();
 
-		const auto sizeFrameBuffer = Application::Get()->GetFrameBufferSize();
-		FramebufferWidth = sizeFrameBuffer.x;
-		FramebufferHeight = sizeFrameBuffer.y;
+		const Vector2 sizeFrameBuffer{ static_cast<float>(Application::Get()->GetWindow().GetWidth()), static_cast<float>(Application::Get()->GetWindow().GetHeight()) };
+		FramebufferWidth = static_cast<uint32_t>(sizeFrameBuffer.x);
+		FramebufferHeight = static_cast<uint32_t>(sizeFrameBuffer.y);
 
-		Surface = Application::Get()->GetWindow()->CreateVulkanSurface(this);
+		Surface = Application::Get()->GetWindow().CreateVulkanSurface(this);
 		Device = new VulkanDevice(this);
 		Swapchain = new VulkanSwapchain(this, FramebufferWidth, FramebufferHeight);
 		MainRenderPass = new VulkanRenderPass(this, {
 			                                      0, 0, static_cast<float>(FramebufferWidth),
-			                                      static_cast<float>(FramebufferHeight)
-		                                      });
+			                                      static_cast<float>(FramebufferHeight)});
 		RegenerateFrameBuffers();
 		CreateCommandBuffers();
 		CreateSemaphoresAndFences();
@@ -73,11 +72,7 @@ namespace Owl
 			return false;
 
 		if (FramebufferWidth == 0 || FramebufferHeight == 0)
-		{
-			Application::Get()->SetMinimized(true);
 			return false;
-		}
-		Application::Get()->SetMinimized(false);
 
 		IsRecreatingSwapchain = true;
 

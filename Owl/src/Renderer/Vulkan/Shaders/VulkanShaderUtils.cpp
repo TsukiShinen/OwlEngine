@@ -18,7 +18,7 @@ namespace Owl
 		pStage->CreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 
 		File shaderFile;
-		if (!FilesSystem::TryOpen(filePath.c_str(), FileModeRead, true, &shaderFile))
+		if (!FilesSystem::TryOpen(filePath.c_str(), FileModeRead, true, shaderFile))
 		{
 			OWL_CORE_ERROR("[VulkanShaderUtils] Unable to open shader module: %s.", filePath);
 			return false;
@@ -26,7 +26,7 @@ namespace Owl
 
 		uint64_t size = 0;
 		char* fileBuffer = nullptr;
-		if (!FilesSystem::TryReadAllBytes(&shaderFile, &fileBuffer, &size))
+		if (!FilesSystem::TryReadAllBytes(shaderFile, &fileBuffer, &size))
 		{
 			OWL_CORE_ERROR("[VulkanShaderUtils] Unable to binary read shader module: %s.", filePath);
 			return false;
@@ -35,7 +35,7 @@ namespace Owl
 		pStage->CreateInfo.codeSize = size;
 		pStage->CreateInfo.pCode = reinterpret_cast<const uint32_t*>(fileBuffer);
 
-		FilesSystem::Close(&shaderFile);
+		FilesSystem::Close(shaderFile);
 
 		if (vkCreateShaderModule(pContext->Device->GetLogicalDevice(), &pStage->CreateInfo, pContext->Allocator,
 		                         &pStage->Handle) != VK_SUCCESS)

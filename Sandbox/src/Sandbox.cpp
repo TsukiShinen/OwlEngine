@@ -9,66 +9,21 @@
 class Sandbox final : public Owl::Application
 {
 public:
-	Sandbox(const Owl::ApplicationSpecification& specification)
-		: Application(specification)
+	Sandbox(const Owl::ApplicationSpecification& pSpecification)
+		: Application(pSpecification)
 	{
 	}
 
 	~Sandbox() override
 	{
 	}
-
-	void InitializeEcs() override
-	{
-		/*
-				Application::InitializeEcs();
-		
-				m_World.RegisterComponent<KeyboardInputComponent>();
-				m_World.RegisterComponent<MovementComponent>();*/
-	}
-
-	void InitializeEntities() override
-	{
-		/*
-				Application::InitializeEntities();
-		
-				m_CameraEntity = m_World.CreateEntity();
-				m_World.AddComponent(m_CameraEntity, Owl::TransformComponent{
-					                     .Position = {0.f, 0.f, -2.5f}
-				                     });
-				m_World.AddComponent(m_CameraEntity, KeyboardInputComponent{});
-				m_World.AddComponent(m_CameraEntity, MovementComponent{
-					                     .MoveSpeed = 3.0f,
-					                     .RotationSpeed = 1.5f
-				                     });
-		
-				auto sprite = m_World.CreateEntity();
-				m_World.AddComponent(sprite, Owl::TransformComponent{});
-				m_World.AddComponent(sprite, Owl::SpriteComponent{
-					                     .Sprite = Owl::CreateRef<Owl::Renderer::Vulkan::Sprite>(m_VulkanApi->GetDevice(),
-						                     Vector2{1, 1},
-						                     Vector2{0.5f, 0.5f},
-						                     "Assets/Textures/texture.jpg")
-				                     });*/
-	}
-
-	void PlaySystem() override
-	{
-		Application::PlaySystem();
-		/*
-				const auto& cameraTransform = m_World.GetComponent<Owl::TransformComponent>(m_CameraEntity);
-				m_MainCamera.SetViewYxz(cameraTransform.Position, cameraTransform.Rotation);*/
-	}
-
-private:
-	//Owl::Ecs::Entity m_CameraEntity;
 };
 
-Owl::Application* Owl::CreateApplication(ApplicationCommandLineArgs args)
+Owl::Application* Owl::CreateApplication(ApplicationCommandLineArgs pArgs)
 {
 	ApplicationSpecification spec;
 	spec.Name = "Sandbox";
-	spec.CommandLineArgs = args;
+	spec.CommandLineArgs = pArgs;
 
 	return new Sandbox(spec);
 }

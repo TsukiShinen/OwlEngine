@@ -47,7 +47,7 @@ namespace Owl
 		static char* LogFormatMessage(const char* pFormat, ...);
 		static char* FormatMessageV(const char* pFormat, va_list pVaList);
 
-		void AppendToLogFile(const char* pMessage);
+		void AppendToLogFile(const char* pMessage) const;
 
 		static Log* s_Instance;
 		File* m_LogFile;
@@ -62,6 +62,12 @@ namespace Owl
  * \param ... Any formatted data that should be included in the log entry.
  */
 #define OWL_CORE_TRACE(pMessage, ...)    ::Owl::Log::Get()->Print(::Owl::LogLevel::Trace, "Owl", pMessage, ##__VA_ARGS__)
+/**
+ * \brief Logs a debug-level message. Should be used for debug debugging purposes.
+ * \param pMessage The message to be logged.
+ * \param ... Any formatted data that should be included in the log entry.
+ */
+#define OWL_CORE_DEBUG(pMessage, ...)    ::Owl::Log::Get()->Print(::Owl::LogLevel::Debug, "Owl", pMessage, ##__VA_ARGS__)
 /**
  * \brief Logs an info-level message. Should be used for non-erroneous informational purposes.
  * \param pMessage The message to be logged.

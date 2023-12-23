@@ -162,7 +162,7 @@ namespace Owl
 		// ===== Required Extensions =====
 		std::vector<const char*> requiredExtensions{};
 		requiredExtensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME);
-		requiredExtensions.emplace_back(Application::Get()->GetWindow()->GetVulkanRequiredExtension());
+		requiredExtensions.emplace_back(Application::Get()->GetWindow().GetVulkanRequiredExtension());
 #ifdef OWL_DEBUG
 		requiredExtensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 #endif

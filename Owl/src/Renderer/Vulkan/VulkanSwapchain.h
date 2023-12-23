@@ -49,6 +49,6 @@ namespace Owl
 
 		std::vector<VulkanFrameBuffer*> m_FrameBuffers;
 		uint8_t m_MaxFrameInFlight;
-		friend class VulkanContext;
+		friend struct VulkanContext;
 	};
 }
